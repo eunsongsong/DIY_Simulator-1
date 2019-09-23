@@ -11,6 +11,5 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 as정하는 바보다
-
-    }
+dddddd
 }
