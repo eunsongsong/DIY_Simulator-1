@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "508334293887",
+    "firebase_url": "https://diy-simulator-607c9.firebaseio.com",
+    "project_id": "diy-simulator-607c9",
+    "storage_bucket": "diy-simulator-607c9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:508334293887:android:8f99ee5c31b9eb241ad04a",
+        "android_client_info": {
+          "package_name": "com.example.diy_simulator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "508334293887-viqd8mump1eme3ij035lmqikou53uemd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.diy_simulator",
+            "certificate_hash": "aa2fc9da4156c287af373725ab705600194fe93b"
+          }
+        },
+        {
+          "client_id": "508334293887-g5othlq188b984o2urduehqkh1inhjro.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbPOFGhdnVmuFf197HnTwUqLaGHTS8VNA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "508334293887-g5othlq188b984o2urduehqkh1inhjro.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
