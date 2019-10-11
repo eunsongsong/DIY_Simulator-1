@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SignInActivity">
+
+    <android.widget.Toolbar
+        android:id="@+id/sign_in_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#EEEEEE"
+        android:minHeight="?attr/actionBarSize"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <TextView
+            android:id="@+id/signin_toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="로 그 인"
+            android:textColor="#777777"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </android.widget.Toolbar>
+
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:id="@+id/signin_email"
+        android:layout_centerHorizontal="true"
+        android:hint="이메일"
+        android:layout_marginTop="151dp" />
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:id="@+id/signin_pwd"
+        android:layout_centerHorizontal="true"
+        android:hint="비밀번호"
+        android:password="true"
+        android:layout_below="@+id/signin_email" />
+
+    <Button
+        android:id="@+id/signin_btn"
+        android:layout_width="300dp"
+        android:layout_height="55dp"
+        android:layout_below="@+id/signin_pwd"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="15dp"
+        android:background="#3DC1AB"
+        android:onClick="sign_In"
+        android:text="Sign In"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/seller_signup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/signin_btn"
+        android:layout_marginLeft="90dp"
+        android:layout_marginRight="20dp"
+        android:background="#00ff0000"
+        android:text="판매자 회원가입"
+        android:textColor="#777777"/>
+
+    <View
+        android:id="@+id/line_between"
+        android:layout_width="1dp"
+        android:layout_height="25dp"
+        android:layout_below="@+id/signin_btn"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="12dp"
+        android:layout_toRightOf="@+id/seller_signup"
+        android:background="#AAAAAA" />
+
+    <Button
+        android:id="@+id/customer_signup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/signin_btn"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@+id/line_between"
+        android:background="#00ff0000"
+        android:text="고객 회원가입"
+        android:textColor="#777777"/>
+
+</RelativeLayout>

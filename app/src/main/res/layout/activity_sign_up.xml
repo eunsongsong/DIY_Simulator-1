@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <android.widget.Toolbar
+        android:id="@+id/sign_up_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#EEEEEE"
+        android:minHeight="?attr/actionBarSize"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <TextView
+            android:id="@+id/signup_toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="회 원 가 입"
+            android:textColor="#777777"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </android.widget.Toolbar>
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:id="@+id/emailInput"
+        android:layout_centerHorizontal="true"
+        android:hint="이메일"
+        android:layout_marginTop="100dp" />
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:id="@+id/passwordInput"
+        android:layout_centerHorizontal="true"
+        android:hint="비밀번호 4~16자리"
+        android:password="true"
+        android:layout_below="@+id/emailInput" />
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:id="@+id/passwordCheck"
+        android:layout_centerHorizontal="true"
+        android:hint="비밀번호 확인"
+        android:password="true"
+        android:layout_below="@+id/passwordInput" />
+
+    <EditText
+        android:id="@+id/nameInput"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/passwordCheck"
+        android:layout_centerHorizontal="true"
+        android:hint="이름" />
+
+    <EditText
+        android:id="@+id/phonenumberInput"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/nameInput"
+        android:layout_centerHorizontal="true"
+        android:hint="전화번호"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/addressInput"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/phonenumberInput"
+        android:layout_centerHorizontal="true"
+        android:hint="주소"/>
+
+    <EditText
+        android:id="@+id/storenameInput"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/addressInput"
+        android:layout_centerHorizontal="true"
+        android:hint="상호명"/>
+
+    <Button
+        android:id="@+id/signup_button"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:background="#3DC1AB"
+        android:text="Sign Up"
+        android:textColor="#000000"
+        android:enabled="false"
+        android:textAllCaps="false"
+        android:layout_below="@id/checkText"
+        android:layout_centerInParent="true"/>
+
+    <TextView
+        android:id="@+id/checkText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/storenameInput"
+        android:layout_marginLeft="65dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="15dp"
+        android:textColor="#AA3DC1AB"
+        android:textSize="15dp" />
+
+</RelativeLayout>
+
