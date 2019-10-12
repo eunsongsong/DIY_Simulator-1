@@ -1,0 +1,257 @@
+package com.example.diy_simulator;
+
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
+import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class ImageUploadActivity extends AppCompatActivity {
+
+    FirebaseStorage storage = FirebaseStorage.getInstance("gs://diy-simulator-607c9.appspot.com");
+    // Create a storage reference from our app
+    StorageReference storageRef = storage.getReference();
+    // Create a reference to 'images/mountains.jpg'
+
+    //이 레퍼런스 child() 매개변수를 수정 하면 끝!
+    StorageReference mountainImagesRef = storageRef.child("images/불펌금지.jpg");
+
+    private ImageView imageView;
+
+    private AlertDialog alert;
+
+    static int PICK_IMAGE = 11;
+    static int CAPTURE_IMAGE = 12;
+    private String imagePath;
+
+    @SuppressLint("WrongThread")
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_image_upload);
+        imageView = (ImageView) findViewById(R.id.image_view);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+                    checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                    checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                Log.d("TAG", "권한 설정 완료");
+                photoDialogRadio();
+            } else {
+                Log.d("TAG", "권한 설정 요청");
+                ActivityCompat.requestPermissions(ImageUploadActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            }
+        }
+    }
+
+    // 권한 요청
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED || grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+            Log.d("TAG", "Permission: " + permissions[0] + " was " + grantResults[0]);
+            Log.d("TAG", "Permission: " + permissions[1] + " was " + grantResults[1]);
+        }
+    }
+
+    //사진찍기 or 앨범에서 가져오기 선택 다이얼로그
+    private void photoDialogRadio() {
+        final CharSequence[] PhotoModels = {"찍어서 가져오기","갤러리에서 가져오기"};
+        AlertDialog.Builder alt_bld = new AlertDialog.Builder(this);
+        alt_bld.setIcon(R.drawable.minticon);
+        alt_bld.setTitle("부자재 사진 ");
+        alt_bld.setSingleChoiceItems(PhotoModels, -1, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) {
+                if (item == 0) { //찍어서 가져오기
+                    sendTakePhotoIntent();
+
+                } else if (item == 1) { //갤러리에서 가져오기
+                    takePhotoFromGallery();
+                }
+
+            }
+        });
+        alert = alt_bld.create();
+        alert.show();
+    }
+
+
+    //찍어서 가져오기
+    private void sendTakePhotoIntent() {
+        // Camera Application을 실행한다.
+        Intent cameraApp = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // 찍은 사진을 보관할 파일 객체를 만들어서 보낸다.
+        File picture = savePictureFile();
+        if (picture != null) {
+            cameraApp.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(getApplicationContext(),"com.example.diy_simulator.fileprovider" ,picture));
+            startActivityForResult(cameraApp, CAPTURE_IMAGE);
+        }
+    }
+
+    /**
+     * 카메라에서 찍은 사진을 외부 저장소에 저장한다.
+     * @return
+     */
+    private  File savePictureFile(){
+
+        //사진 파일의 이름을 만든다.
+        //Date는 java.util 을 Import 한다.
+        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss") .format(new Date());
+        String fileName = "IMG_" + timestamp;
+        /** * 사진파일이 저장될 장소를 구한다.
+         *  * 외장메모리에서 사진을 저장하는 폴더를 찾아서
+         *  * 그곳에 MYAPP 이라는 폴더를 만든다
+         *  . */
+        File pictureStorage = new File(
+                Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES), "MYAPP/");
+        // 만약 장소가 존재하지 않는다면 폴더를 새롭게 만든다.
+         if (!pictureStorage.exists()) {
+        // /** * mkdir은 폴더를 하나만 만들고,
+        // * mkdirs는 경로상에 존재하는 모든 폴더를 만들어준다.
+        pictureStorage.mkdirs();
+        }
+
+         try{
+
+             File file = File.createTempFile(fileName, ".jpg", pictureStorage);
+             // ImageView에 보여주기위해 사진파일의 절대 경로를 얻어온다.
+
+             imagePath = file.getAbsolutePath();
+
+             // 찍힌 사진을 "갤러리" 앱에 추가한다.
+             Intent mediaScanIntent =
+                     new Intent( Intent.ACTION_MEDIA_SCANNER_SCAN_FILE );
+
+             File f = new File( imagePath );
+             Uri contentUri = Uri.fromFile( f );
+             mediaScanIntent.setData( contentUri );
+             this.sendBroadcast( mediaScanIntent );
+
+             return file;
+         } catch (IOException e) {
+             e.printStackTrace();
+         }
+         return null;
+    }
+
+    //갤러리에서 사진 불러오기
+    private void takePhotoFromGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+        intent.setType("image/*");
+        startActivityForResult(intent, PICK_IMAGE);
+    }
+    //갤러리 사진가져온거 결과(비트맵으로) 저장
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(!(resultCode == RESULT_OK))
+        {
+            return;
+        }
+      //  if (resultCode == RESULT_OK && data.getData() != null) {
+            if (requestCode == PICK_IMAGE && data.getData() != null) {
+                //이미지뷰에 세팅
+                try {
+                    // 이미지 표시
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                    imageView.setImageBitmap(bitmap);
+                    imageView.setDrawingCacheEnabled(true);
+                    imageView.buildDrawingCache();
+
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    byte[] data_arr = baos.toByteArray();
+
+                    UploadTask uploadTask = mountainImagesRef.putBytes(data_arr);
+                    // Handle unsuccessful uploads
+                    uploadTask.addOnFailureListener( new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // 실패!
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            // 성공!
+                            // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                        }
+                    });
+                    alert.cancel();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                }
+            }
+            else if (requestCode == CAPTURE_IMAGE){
+                // 사진을 ImageView에 보여준다.
+                BitmapFactory.Options factory = new BitmapFactory.Options();
+                factory.inJustDecodeBounds = false;
+                factory.inPurgeable = true;
+
+                Bitmap bitmap = BitmapFactory.decodeFile(imagePath, factory);
+                imageView.setImageBitmap(bitmap);
+                imageView.setDrawingCacheEnabled(true);
+                imageView.buildDrawingCache();
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                byte[] data_arr = baos.toByteArray();
+
+                UploadTask uploadTask = mountainImagesRef.putBytes(data_arr);
+                // Handle unsuccessful uploads
+                uploadTask.addOnFailureListener( new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // 실패!
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // 성공!
+                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                    }
+                });
+                alert.cancel();
+
+            }
+      //  }
+    }
+}
+
+
+
+
+
