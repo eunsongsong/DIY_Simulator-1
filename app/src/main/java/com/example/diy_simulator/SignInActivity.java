@@ -170,7 +170,7 @@ public class SignInActivity extends AppCompatActivity {
                 }
                 else isSeller = false;
             }
-            Log.d("판매자인지?", isSeller+"");
+
             firebaseAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -189,7 +189,7 @@ public class SignInActivity extends AppCompatActivity {
                                         dialog = ProgressDialog.show(SignInActivity.this, "로그인중입니다."
                                                 , "잠시만 기다려주세요.");
                                         mHandler.sendEmptyMessageDelayed(TIME_OUT, 2000);
-
+                                        Log.d("판매자인지?", isSeller+"");
                                         startActivity(new Intent(getApplicationContext(), ImageUploadActivity.class));
                                     }
                                 }

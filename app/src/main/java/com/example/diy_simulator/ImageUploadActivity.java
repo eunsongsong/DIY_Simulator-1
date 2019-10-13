@@ -12,11 +12,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -67,7 +72,9 @@ public class ImageUploadActivity extends AppCompatActivity {
     private Button upload_btn;
     private EditText mname, mprice, mwidth, mheight, mdepth, mstock, mkeyword;
     private String name, price, width, height, depth, stock, keyword;
+    private CheckBox keycheck, casecheck, earcheck, bracecheck, etccheck;
 
+    private Spinner keyspinner, casespinner, earspinner, bracespinner, etcspinner;
     private AlertDialog alert;
 
     static int PICK_IMAGE = 11;
@@ -79,15 +86,18 @@ public class ImageUploadActivity extends AppCompatActivity {
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference("부자재");
     private DatabaseReference myRef2 = database.getReference("판매자");
+    private DatabaseReference myRef3 = database.getReference("카테고리");
 
     @SuppressLint("WrongThread")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_upload);
+        //사진 찍어서 or 갤러리에서 가져온 사진 나타내는 이미지뷰
         imageView = (ImageView) findViewById(R.id.preview);
-        choose_btn = (Button) findViewById(R.id.choose_btn);
-        upload_btn = (Button) findViewById(R.id.upload_btn);
+        choose_btn = (Button) findViewById(R.id.choose_btn); //사진 선택 버튼
+        upload_btn = (Button) findViewById(R.id.upload_btn); //업로드 버튼
+        //부자재 정보 - 판매자 입력
         mname = (EditText) findViewById(R.id.material_name);
         mprice = (EditText) findViewById(R.id.material_price);
         mwidth = (EditText) findViewById(R.id.size_width);
@@ -95,7 +105,30 @@ public class ImageUploadActivity extends AppCompatActivity {
         mdepth = (EditText) findViewById(R.id.size_depth);
         mstock = (EditText) findViewById(R.id.material_stock);
         mkeyword = (EditText) findViewById(R.id.material_keyword);
+        //세부 카테고리 나타내는 스피너
+        keyspinner = (Spinner) findViewById(R.id.spinner_keyring);
+        casespinner = (Spinner) findViewById(R.id.spinner_case);
+        earspinner = (Spinner) findViewById(R.id.spinner_earring);
+        bracespinner = (Spinner) findViewById(R.id.spinner_bracelet);
+        etcspinner = (Spinner) findViewById(R.id.spinner_etc);
+        //큰 카테고리 선택 체크박스
+        keycheck = (CheckBox) findViewById(R.id.category_check_keyring);
+        casecheck = (CheckBox) findViewById(R.id.category_check_case);
+        earcheck = (CheckBox) findViewById(R.id.category_check_earring);
+        bracecheck = (CheckBox) findViewById(R.id.category_check_bracelet);
+        etccheck = (CheckBox) findViewById(R.id.category_check_etc);
 
+        //스피너 설정
+        ArrayAdapter Adapter1 = ArrayAdapter.createFromResource(this, R.array.keyring, android.R.layout.simple_spinner_dropdown_item);
+        keyspinner.setAdapter(Adapter1);
+        ArrayAdapter Adapter2 = ArrayAdapter.createFromResource(this, R.array.phone_case, android.R.layout.simple_spinner_dropdown_item);
+        casespinner.setAdapter(Adapter2);
+        ArrayAdapter Adapter3 = ArrayAdapter.createFromResource(this, R.array.earring, android.R.layout.simple_spinner_dropdown_item);
+        earspinner.setAdapter(Adapter3);
+        ArrayAdapter Adapter4 = ArrayAdapter.createFromResource(this, R.array.bracelet, android.R.layout.simple_spinner_dropdown_item);
+        bracespinner.setAdapter(Adapter4);
+        ArrayAdapter Adapter5 = ArrayAdapter.createFromResource(this, R.array.etc, android.R.layout.simple_spinner_dropdown_item);
+        etcspinner.setAdapter(Adapter5);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
@@ -111,6 +144,7 @@ public class ImageUploadActivity extends AppCompatActivity {
                 upload_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        getMyChildrenCount();
                         UploadFile();
                     }
                 });
@@ -138,6 +172,7 @@ public class ImageUploadActivity extends AppCompatActivity {
             upload_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    getMyChildrenCount();
                     UploadFile();
                 }
             });
@@ -275,7 +310,6 @@ public class ImageUploadActivity extends AppCompatActivity {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 data_arr = baos.toByteArray();
             }
-        getMyChildrenCount();
         alert.cancel();
     }
 
@@ -304,6 +338,9 @@ public class ImageUploadActivity extends AppCompatActivity {
                 Material material = new Material(name, price, width, height, depth, stock, keyword);
                 myRef.child(count+"").setValue(material);
 
+                //부자재 정보를 판매자, 카테고리 디비에 고유 아이디 값만 업데이트함
+                UpdateSellerMaterialinfo();
+
                 Log.d("----ddd----","업로드 성공");
                 Toast.makeText(ImageUploadActivity.this, "이미지 업로드를 완료하였습니다.", Toast.LENGTH_SHORT).show();
                 // 성공!
@@ -327,6 +364,30 @@ public class ImageUploadActivity extends AppCompatActivity {
         });
     }
 
+    //부자재 정보가 디비에 저장될때 부자재의 아이디 값만 판매자 디비에 추가
+    private void UpdateSellerMaterialinfo(){
+        getMyChildrenCount();
+        firebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = firebaseAuth.getCurrentUser();
+        myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                    String u = mFirebaseUser.getEmail();
+                    if(u.equals(ds.child("email").getValue().toString())){
+                        String tmp = ds.child("material").getValue().toString();
+                        myRef2.child(ds.getKey()).child("material").setValue(tmp+"#"+count);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
 }
 

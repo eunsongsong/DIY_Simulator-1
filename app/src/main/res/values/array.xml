@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="keyring">
+        <item>선택안함</item>
+        <item>체인</item>
+        <item>키링용고리</item>
+        <item>팬던트</item>
+    </string-array>
+
+    <string-array name="phone_case">
+        <item>선택안함</item>
+        <item>소프트케이스</item>
+        <item>하드케이스</item>
+        <item>파츠</item>
+    </string-array>
+
+    <string-array name="earring">
+        <item>선택안함</item>
+        <item>귀걸이침</item>
+        <item>팬던트</item>
+    </string-array>
+
+    <string-array name="bracelet">
+        <item>선택안함</item>
+        <item>파츠</item>
+        <item>팔찌대</item>
+        <item>팬던트_참</item>
+    </string-array>
+
+    <string-array name="etc">
+        <item>선택안함</item>
+        <item>공구</item>
+        <item>부자재</item>
+        <item>접착제</item>
+    </string-array>
+</resources>

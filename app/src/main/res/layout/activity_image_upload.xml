@@ -1,97 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ImageUploadActivity">
 
-    <ImageView
-        android:id="@+id/preview"
-        android:layout_width="300dp"
-        android:layout_height="300dp">
-    </ImageView>
-
-    <EditText
-        android:id="@+id/material_name"
-        android:layout_width="200dp"
-        android:layout_below="@+id/choose_btn"
-        android:hint="제품명"
-        android:layout_height="wrap_content"/>
-    <EditText
-        android:id="@+id/material_price"
-        android:layout_width="120dp"
-        android:layout_below="@+id/material_name"
-        android:inputType="number"
-        android:hint="가격(원)"
-        android:layout_height="wrap_content"/>
-    <TextView
-        android:id="@+id/size_guide_txt"
-        android:layout_width="200dp"
-        android:layout_below="@+id/material_price"
-        android:hint="사이즈"
-        android:layout_height="wrap_content"/>
-    <EditText
-        android:id="@+id/size_width"
-        android:layout_width="120dp"
-        android:layout_below="@+id/size_guide_txt"
-        android:inputType="number"
-        android:hint="가로(mm)"
-        android:layout_height="wrap_content"/>
-    <EditText
-        android:id="@+id/size_height"
-        android:layout_width="120dp"
-        android:layout_below="@+id/size_guide_txt"
-        android:layout_toRightOf="@+id/size_width"
-        android:inputType="number"
-        android:hint="세로(mm)"
-        android:layout_height="wrap_content"/>
-    <EditText
-        android:id="@+id/size_depth"
-        android:layout_width="120dp"
-        android:layout_below="@+id/size_guide_txt"
-        android:layout_toRightOf="@+id/size_height"
-        android:inputType="number"
-        android:hint="높이(mm)"
-        android:layout_height="wrap_content"/>
-    <EditText
-        android:id="@+id/material_stock"
-        android:layout_width="120dp"
-        android:layout_below="@+id/size_width"
-        android:inputType="number"
-        android:hint="재고"
-        android:layout_height="wrap_content"/>
-    <TextView
-        android:id="@+id/keyword_guide_txt1"
-        android:text="검색시 이용될 키워드를 입력해주세요."
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_below="@+id/material_stock"
-        android:layout_height="wrap_content"/>
-    <TextView
-        android:id="@+id/keyword_guide_txt2"
-        android:text="ex) #태슬#빨간색#귀걸이재료#키링재료"
-        android:layout_width="match_parent"
-        android:layout_below="@+id/keyword_guide_txt1"
-        android:layout_height="wrap_content"/>
-    <EditText
-        android:id="@+id/material_keyword"
-        android:layout_width="300dp"
-        android:layout_below="@+id/keyword_guide_txt2"
-        android:hint="제품 검색 키워드"
-        android:layout_height="wrap_content"/>
-
-    <Button
-        android:id="@+id/choose_btn"
-        android:text="이미지 선택"
-        android:layout_below="@+id/preview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-    <Button
-        android:id="@+id/upload_btn"
-        android:text="업로드"
-        android:layout_toRightOf="@+id/choose_btn"
-        android:layout_below="@+id/preview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-</RelativeLayout>
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/preview"
+            android:layout_width="300dp"
+            android:layout_height="300dp">
+        </ImageView>
+        <EditText
+            android:id="@+id/material_name"
+            android:layout_width="200dp"
+            android:layout_below="@+id/choose_btn"
+            android:hint="제품명"
+            android:layout_height="wrap_content"/>
+        <EditText
+            android:id="@+id/material_price"
+            android:layout_width="120dp"
+            android:layout_below="@+id/material_name"
+            android:inputType="number"
+            android:hint="가격(원)"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/size_guide_txt"
+            android:layout_width="200dp"
+            android:layout_below="@+id/material_price"
+            android:hint="사이즈"
+            android:layout_height="wrap_content"/>
+        <EditText
+            android:id="@+id/size_width"
+            android:layout_width="120dp"
+            android:layout_below="@+id/size_guide_txt"
+            android:inputType="number"
+            android:hint="가로(mm)"
+            android:layout_height="wrap_content"/>
+        <EditText
+            android:id="@+id/size_height"
+            android:layout_width="120dp"
+            android:layout_below="@+id/size_guide_txt"
+            android:layout_toRightOf="@+id/size_width"
+            android:inputType="number"
+            android:hint="세로(mm)"
+            android:layout_height="wrap_content"/>
+        <EditText
+            android:id="@+id/size_depth"
+            android:layout_width="120dp"
+            android:layout_below="@+id/size_guide_txt"
+            android:layout_toRightOf="@+id/size_height"
+            android:inputType="number"
+            android:hint="두께(mm)"
+            android:layout_height="wrap_content"/>
+        <EditText
+            android:id="@+id/material_stock"
+            android:layout_width="120dp"
+            android:layout_below="@+id/size_width"
+            android:inputType="number"
+            android:hint="재고"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/keyword_guide_txt"
+            android:text="검색시 이용될 키워드 ex) #태슬#빨간색#귀걸이재료#키링재료 "
+            android:layout_width="match_parent"
+            android:layout_below="@+id/material_stock"
+            android:layout_height="wrap_content"/>
+        <EditText
+            android:id="@+id/material_keyword"
+            android:layout_width="300dp"
+            android:layout_below="@+id/keyword_guide_txt"
+            android:hint="제품 검색 키워드"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/category_guide_txt"
+            android:text="카테고리(중복 선택 가능)"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/material_keyword"
+            android:layout_height="wrap_content"/>
+        <CheckBox
+            android:id="@+id/category_check_keyring"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/category_guide_txt"
+            android:text="키링"/>
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinner_keyring"
+            android:layout_below="@id/category_guide_txt"
+            android:layout_toRightOf="@id/category_check_keyring"/>
+        <CheckBox
+            android:id="@+id/category_check_case"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/category_check_keyring"
+            android:text="폰케이스"/>
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinner_case"
+            android:layout_below="@id/category_check_keyring"
+            android:layout_toRightOf="@id/category_check_case"/>
+        <CheckBox
+            android:id="@+id/category_check_earring"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/category_check_case"
+            android:text="귀걸이"/>
+        <Spinner
+            android:id="@+id/spinner_earring"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/category_check_case"
+            android:layout_toRightOf="@+id/category_check_earring" />
+        <CheckBox
+            android:id="@+id/category_check_bracelet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/category_check_earring"
+            android:text="팔찌"/>
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinner_bracelet"
+            android:layout_below="@+id/category_check_earring"
+            android:layout_toRightOf="@+id/category_check_bracelet"/>
+        <CheckBox
+            android:id="@+id/category_check_etc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/category_check_bracelet"
+            android:text="기타"/>
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinner_etc"
+            android:layout_below="@+id/category_check_bracelet"
+            android:layout_toRightOf="@+id/category_check_etc"/>
+        <Button
+            android:id="@+id/choose_btn"
+            android:text="이미지 선택"
+            android:layout_below="@+id/preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/upload_btn"
+            android:text="업로드"
+            android:layout_below="@+id/category_check_etc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+</ScrollView>
