@@ -170,7 +170,7 @@ public class SignInActivity extends AppCompatActivity {
                 }
                 else isSeller = false;
             }
-
+            Log.d("판매자인지?", isSeller+"");
             firebaseAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -190,7 +190,7 @@ public class SignInActivity extends AppCompatActivity {
                                                 , "잠시만 기다려주세요.");
                                         mHandler.sendEmptyMessageDelayed(TIME_OUT, 2000);
 
-                                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                        startActivity(new Intent(getApplicationContext(), ImageUploadActivity.class));
                                     }
                                 }
                             } else {

@@ -9,16 +9,30 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/favorite"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginBottom="10dp"
-            android:enabled="true"
-            android:text=" 카테고리 "
-            android:textSize="20sp" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/material_category"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="5dp"
+                android:paddingLeft="30dp"
+                android:text=" 카테고리 "
+                android:textSize="20sp" />
+
+            <ImageButton
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="240dp"
+                android:background="@drawable/search"/>
+        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,6 +42,7 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:orientation="horizontal">
 
                 <ImageButton
@@ -37,19 +52,17 @@
                     android:layout_marginLeft="12dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
-                    android:background="#3DC1AB" />
+                    android:background="@drawable/mint_circle" />
 
                 <TextView
                     android:id="@+id/keyring"
-                    android:layout_width="85dp"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:layout_marginTop="76dp"
                     android:text="키링"
                     android:textAlignment="center"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textColor="#000000"/>
 
                 <ImageButton
                     android:id="@+id/back_img_2"
@@ -58,19 +71,17 @@
                     android:layout_marginLeft="112dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
-                    android:background="#3DC1AB"></ImageButton>
+                    android:background="@drawable/mint_circle"></ImageButton>
 
                 <TextView
                     android:id="@+id/phonecase"
-                    android:layout_width="85dp"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="117dp"
                     android:layout_marginTop="76dp"
                     android:text="폰케이스"
                     android:textAlignment="center"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textColor="#000000"/>
 
                 <ImageButton
                     android:id="@+id/back_img_3"
@@ -79,19 +90,17 @@
                     android:layout_marginLeft="212dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
-                    android:background="#3DC1AB"></ImageButton>
+                    android:background="@drawable/mint_circle"></ImageButton>
 
                 <TextView
                     android:id="@+id/acc"
-                    android:layout_width="85dp"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="215dp"
                     android:layout_marginTop="76dp"
                     android:text="액세서리"
                     android:textAlignment="center"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textColor="#000000"/>
 
                 <ImageButton
                     android:id="@+id/back_img_4"
@@ -100,19 +109,17 @@
                     android:layout_marginLeft="312dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
-                    android:background="#3DC1AB"></ImageButton>
+                    android:background="@drawable/mint_circle"></ImageButton>
 
                 <TextView
                     android:id="@+id/etc"
-                    android:layout_width="85dp"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="315dp"
                     android:layout_marginTop="76dp"
                     android:text="기타"
                     android:textAlignment="center"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textColor="#000000"/>
 
 
                 <LinearLayout
@@ -154,11 +161,9 @@
                         android:layout_marginLeft="22dp"
                         android:layout_marginTop="20dp"
                         android:layout_marginRight="10dp"
-                        android:background="@drawable/etc" />
+                        android:background="@drawable/tools" />
 
                 </LinearLayout>
-
-
             </FrameLayout>
 
 

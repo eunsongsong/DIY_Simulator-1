@@ -13,7 +13,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,15 +28,26 @@ import androidx.core.content.FileProvider;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import org.w3c.dom.Comment;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.StringTokenizer;
 
 public class ImageUploadActivity extends AppCompatActivity {
 
@@ -42,9 +57,16 @@ public class ImageUploadActivity extends AppCompatActivity {
     // Create a reference to 'images/mountains.jpg'
 
     //이 레퍼런스 child() 매개변수를 수정 하면 끝!
-    StorageReference mountainImagesRef = storageRef.child("images/불펌금지.jpg");
+    StorageReference mountainImagesRef;
+
+    FirebaseAuth firebaseAuth;
+    FirebaseUser mFirebaseUser;
 
     private ImageView imageView;
+    private Button choose_btn;
+    private Button upload_btn;
+    private EditText mname, mprice, mwidth, mheight, mdepth, mstock, mkeyword;
+    private String name, price, width, height, depth, stock, keyword;
 
     private AlertDialog alert;
 
@@ -52,19 +74,46 @@ public class ImageUploadActivity extends AppCompatActivity {
     static int CAPTURE_IMAGE = 12;
     private String imagePath;
 
+    byte[] data_arr;
+    long count;  //DB의 부자재 개수
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference myRef = database.getReference("부자재");
+    private DatabaseReference myRef2 = database.getReference("판매자");
+
     @SuppressLint("WrongThread")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_upload);
-        imageView = (ImageView) findViewById(R.id.image_view);
+        imageView = (ImageView) findViewById(R.id.preview);
+        choose_btn = (Button) findViewById(R.id.choose_btn);
+        upload_btn = (Button) findViewById(R.id.upload_btn);
+        mname = (EditText) findViewById(R.id.material_name);
+        mprice = (EditText) findViewById(R.id.material_price);
+        mwidth = (EditText) findViewById(R.id.size_width);
+        mheight = (EditText) findViewById(R.id.size_height);
+        mdepth = (EditText) findViewById(R.id.size_depth);
+        mstock = (EditText) findViewById(R.id.material_stock);
+        mkeyword = (EditText) findViewById(R.id.material_keyword);
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
                     checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
                     checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 Log.d("TAG", "권한 설정 완료");
-                photoDialogRadio();
+                choose_btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        photoDialogRadio();
+                    }
+                });
+                upload_btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        UploadFile();
+                    }
+                });
             } else {
                 Log.d("TAG", "권한 설정 요청");
                 ActivityCompat.requestPermissions(ImageUploadActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
@@ -80,6 +129,18 @@ public class ImageUploadActivity extends AppCompatActivity {
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED || grantResults[1] == PackageManager.PERMISSION_GRANTED) {
             Log.d("TAG", "Permission: " + permissions[0] + " was " + grantResults[0]);
             Log.d("TAG", "Permission: " + permissions[1] + " was " + grantResults[1]);
+            choose_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    photoDialogRadio();
+                }
+            });
+            upload_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    UploadFile();
+                }
+            });
         }
     }
 
@@ -192,23 +253,7 @@ public class ImageUploadActivity extends AppCompatActivity {
 
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                    byte[] data_arr = baos.toByteArray();
-
-                    UploadTask uploadTask = mountainImagesRef.putBytes(data_arr);
-                    // Handle unsuccessful uploads
-                    uploadTask.addOnFailureListener( new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            // 실패!
-                        }
-                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            // 성공!
-                            // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                        }
-                    });
-                    alert.cancel();
+                    data_arr = baos.toByteArray();
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -228,27 +273,61 @@ public class ImageUploadActivity extends AppCompatActivity {
 
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                byte[] data_arr = baos.toByteArray();
+                data_arr = baos.toByteArray();
+            }
+        getMyChildrenCount();
+        alert.cancel();
+    }
 
-                UploadTask uploadTask = mountainImagesRef.putBytes(data_arr);
-                // Handle unsuccessful uploads
-                uploadTask.addOnFailureListener( new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // 실패!
-                    }
-                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        // 성공!
-                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                    }
-                });
-                alert.cancel();
+    //파이어베이스에 이미지 업로드
+    private void UploadFile(){
+        mountainImagesRef = storageRef.child(count+"");
+        UploadTask uploadTask = mountainImagesRef.putBytes(data_arr);
+        // Handle unsuccessful uploads
+        uploadTask.addOnFailureListener( new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.d("----ddd----","업로드 실패");
+                Toast.makeText(ImageUploadActivity.this, "이미지 업로드를 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                // 실패!
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                name = mname.getText().toString();
+                price = mprice.getText().toString();
+                width = mwidth.getText().toString();
+                height = mheight.getText().toString();
+                depth = mdepth.getText().toString();
+                stock = mstock.getText().toString();
+                keyword = mkeyword.getText().toString();
+                Material material = new Material(name, price, width, height, depth, stock, keyword);
+                myRef.child(count+"").setValue(material);
+
+                Log.d("----ddd----","업로드 성공");
+                Toast.makeText(ImageUploadActivity.this, "이미지 업로드를 완료하였습니다.", Toast.LENGTH_SHORT).show();
+                // 성공!
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+            }
+        });
+        alert.cancel();
+    }
+
+    //부자재의 child 개수 가져오기
+    private void getMyChildrenCount(){
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                 count = dataSnapshot.getChildrenCount();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-      //  }
+        });
     }
+
+
 }
 
 

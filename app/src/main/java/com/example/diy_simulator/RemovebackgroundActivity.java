@@ -6,16 +6,11 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
 import java.io.IOException;
 
 public class RemovebackgroundActivity extends AppCompatActivity {
 
-
+/*
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +34,7 @@ public class RemovebackgroundActivity extends AppCompatActivity {
                   Log.d("어디보자","element: "+el);
                 //Log.d("어디보자",doc.toString());
                 //필요한 녀석만 꼬집어서 지정
-                /*
+
                 Elements mElementDataSize = doc.select("ul[class=lst_detail_t1]").select("li");
                 //목록이 몇개인지 알아낸다. 그만큼 루프를 돌려야 하나깐.
 
@@ -57,7 +52,7 @@ public class RemovebackgroundActivity extends AppCompatActivity {
                     String my_director = "감독: " + dElem.select("a").text();
 
                     // list.add(new ItemObject(my_title, my_imgUrl, my_link, my_release, my_director));
-                    */
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -65,4 +60,7 @@ public class RemovebackgroundActivity extends AppCompatActivity {
             return null;
         }
     }
+
+    */
+
 }
