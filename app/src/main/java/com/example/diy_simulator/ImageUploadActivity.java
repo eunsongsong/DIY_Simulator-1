@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -35,7 +34,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,14 +43,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import org.w3c.dom.Comment;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.StringTokenizer;
 
 public class ImageUploadActivity extends AppCompatActivity {
 
@@ -75,6 +70,7 @@ public class ImageUploadActivity extends AppCompatActivity {
     private CheckBox keycheck, casecheck, earcheck, bracecheck, etccheck;
 
     private Spinner keyspinner, casespinner, earspinner, bracespinner, etcspinner;
+    private String keyspin, casespin, earspin, bracespin, etcspin;
     private AlertDialog alert;
 
     static int PICK_IMAGE = 11;
@@ -130,21 +126,80 @@ public class ImageUploadActivity extends AppCompatActivity {
         ArrayAdapter Adapter5 = ArrayAdapter.createFromResource(this, R.array.etc, android.R.layout.simple_spinner_dropdown_item);
         etcspinner.setAdapter(Adapter5);
 
+        //스피너 눌렸을 때 아이템 값 받아오기 - 키링
+        keyspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(final AdapterView<?> parent, View view, final int position, long id) {
+                keyspin = parent.getItemAtPosition(position).toString();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        //스피너 눌렸을 때 아이템 값 받아오기 - 폰케이스
+        casespinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                casespin = parent.getItemAtPosition(position).toString();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        //스피너 눌렸을 때 아이템 값 받아오기 - 귀걸이
+        earspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                earspin = parent.getItemAtPosition(position).toString();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        //스피너 눌렸을 때 아이템 값 받아오기 - 팔찌
+        bracespinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                bracespin = parent.getItemAtPosition(position).toString();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        //스피너 눌렸을 때 아이템 값 받아오기 - 기타
+        etcspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                etcspin = parent.getItemAtPosition(position).toString();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
                     checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
                     checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 Log.d("TAG", "권한 설정 완료");
+                //이미지 선택 버튼 누르면 사진 찍기 or 갤러리에서 선택 다이얼로그 실행
                 choose_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        ClearMaterialinfo(); //업로드 후에 이미지 선택을 또 하면 입력 칸 비움
                         photoDialogRadio();
                     }
                 });
+                //업로드 버튼 누르면 파이어베이스에 업로드 실행
                 upload_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        getMyChildrenCount();
                         UploadFile();
                     }
                 });
@@ -172,7 +227,6 @@ public class ImageUploadActivity extends AppCompatActivity {
             upload_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    getMyChildrenCount();
                     UploadFile();
                 }
             });
@@ -310,6 +364,7 @@ public class ImageUploadActivity extends AppCompatActivity {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 data_arr = baos.toByteArray();
             }
+        getMyChildrenCount();  //UploadFile() 함수에서 실행하면 시간차로 이미지 파일명이 '0'이 됨
         alert.cancel();
     }
 
@@ -340,7 +395,7 @@ public class ImageUploadActivity extends AppCompatActivity {
 
                 //부자재 정보를 판매자, 카테고리 디비에 고유 아이디 값만 업데이트함
                 UpdateSellerMaterialinfo();
-
+                UpdateCategoryMaterialinfo();
                 Log.d("----ddd----","업로드 성공");
                 Toast.makeText(ImageUploadActivity.this, "이미지 업로드를 완료하였습니다.", Toast.LENGTH_SHORT).show();
                 // 성공!
@@ -366,7 +421,6 @@ public class ImageUploadActivity extends AppCompatActivity {
 
     //부자재 정보가 디비에 저장될때 부자재의 아이디 값만 판매자 디비에 추가
     private void UpdateSellerMaterialinfo(){
-        getMyChildrenCount();
         firebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = firebaseAuth.getCurrentUser();
         myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -387,6 +441,122 @@ public class ImageUploadActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    //부자재 정보가 디비에 저장될때 부자재의 아이디 값만 카테고리 디비에 추가
+    private void UpdateCategoryMaterialinfo(){
+        //체크박스를 누르고 스피너는 '선택안함'이 아닐경우 카테고리에 저장
+        //키링 카테고리 업데이트
+        if(keycheck.isChecked() && !keyspin.equals("선택안함")){
+            myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot ds : dataSnapshot.getChildren()){
+                        if(ds.getKey().equals("키링")){
+                            String tmp = ds.child(keyspin).getValue().toString();
+                            myRef3.child("키링").child(keyspin).setValue(tmp+"#"+count);
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+        //폰케이스 카테고리 업데이트
+        if(casecheck.isChecked() && !casespin.equals("선택안함")){
+            myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot ds : dataSnapshot.getChildren()){
+                        if(ds.getKey().equals("폰케이스")){
+                            String tmp = ds.child(casespin).getValue().toString();
+                            myRef3.child("폰케이스").child(casespin).setValue(tmp+"#"+count);
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+        //액세서리 카테고리 업데이트 - 귀걸이
+        if(earcheck.isChecked() && !earspin.equals("선택안함")){
+            myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot ds : dataSnapshot.getChildren()){
+                        if(ds.getKey().equals("액세서리")){
+                            String tmp = ds.child("귀걸이").child(earspin).getValue().toString();
+                            myRef3.child("액세서리").child("귀걸이").child(earspin).setValue(tmp+"#"+count);
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+        //액세서리 카테고리 업데이트 - 팔찌
+        if(bracecheck.isChecked() && !bracespin.equals("선택안함")){
+            myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot ds : dataSnapshot.getChildren()){
+                        if(ds.getKey().equals("액세서리")){
+                            String tmp = ds.child("팔찌").child(bracespin).getValue().toString();
+                            myRef3.child("액세서리").child("팔찌").child(bracespin).setValue(tmp+"#"+count);
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+        //기타 카테고리 업데이트
+        if(etccheck.isChecked() && !etcspin.equals("선택안함")){
+            myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot ds : dataSnapshot.getChildren()){
+                        if(ds.getKey().equals("기타")){
+                            String tmp = ds.child(etcspin).getValue().toString();
+                            myRef3.child("기타").child(etcspin).setValue(tmp+"#"+count);
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
+    //입력 칸 비우기
+    private void ClearMaterialinfo(){
+        mname.setText(null);
+        mprice.setText(null);
+        mwidth.setText(null);
+        mheight.setText(null);
+        mdepth.setText(null);
+        mstock.setText(null);
+        mkeyword.setText(null);
+        keycheck.setChecked(false);
+        casecheck.setChecked(false);
+        earcheck.setChecked(false);
+        bracecheck.setChecked(false);
+        etccheck.setChecked(false);
+        keyspinner.setSelection(0);
+        casespinner.setSelection(0);
+        earspinner.setSelection(0);
+        bracespinner.setSelection(0);
+        etcspinner.setSelection(0);
     }
 
 }
