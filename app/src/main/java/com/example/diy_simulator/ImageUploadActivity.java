@@ -2,6 +2,7 @@ package com.example.diy_simulator;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -56,6 +57,7 @@ public class ImageUploadActivity extends AppCompatActivity {
     StorageReference storageRef = storage.getReference();
     // Create a reference to 'images/mountains.jpg'
 
+    ProgressDialog dialog;
     //이 레퍼런스 child() 매개변수를 수정 하면 끝!
     StorageReference mountainImagesRef;
 
@@ -200,6 +202,7 @@ public class ImageUploadActivity extends AppCompatActivity {
                 upload_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        dialog = ProgressDialog.show(ImageUploadActivity.this, "업로드 진행중", "잠시만 기다려주세요.", true);
                         UploadFile();
                     }
                 });
@@ -221,12 +224,14 @@ public class ImageUploadActivity extends AppCompatActivity {
             choose_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    ClearMaterialinfo(); //업로드 후에 이미지 선택을 또 하면 입력 칸 비움
                     photoDialogRadio();
                 }
             });
             upload_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    dialog = ProgressDialog.show(ImageUploadActivity.this, "업로드 진행중", "잠시만 기다려주세요.", true);
                     UploadFile();
                 }
             });
@@ -377,7 +382,7 @@ public class ImageUploadActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 Log.d("----ddd----","업로드 실패");
-                Toast.makeText(ImageUploadActivity.this, "이미지 업로드를 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ImageUploadActivity.this, "업로드를 실패하였습니다.", Toast.LENGTH_SHORT).show();
                 // 실패!
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -397,7 +402,9 @@ public class ImageUploadActivity extends AppCompatActivity {
                 UpdateSellerMaterialinfo();
                 UpdateCategoryMaterialinfo();
                 Log.d("----ddd----","업로드 성공");
-                Toast.makeText(ImageUploadActivity.this, "이미지 업로드를 완료하였습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ImageUploadActivity.this, "업로드를 완료하였습니다.", Toast.LENGTH_LONG).show();
+                dialog.dismiss();
+
                 // 성공!
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
             }
@@ -558,6 +565,7 @@ public class ImageUploadActivity extends AppCompatActivity {
         bracespinner.setSelection(0);
         etcspinner.setSelection(0);
     }
+
 
 }
 
