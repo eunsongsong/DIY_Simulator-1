@@ -42,24 +42,22 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:orientation="horizontal">
 
                 <ImageButton
                     android:id="@+id/back_img_1"
                     android:layout_width="90dp"
                     android:layout_height="90dp"
-                    android:layout_marginLeft="12dp"
+                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/mint_circle" />
+                    android:background="#00ff0000" />
 
                 <TextView
                     android:id="@+id/keyring"
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
-                    android:layout_marginTop="76dp"
+                    android:layout_marginTop="77dp"
                     android:text="키링"
                     android:textAlignment="center"
                     android:textColor="#000000"/>
@@ -68,17 +66,17 @@
                     android:id="@+id/back_img_2"
                     android:layout_width="90dp"
                     android:layout_height="90dp"
-                    android:layout_marginLeft="112dp"
+                    android:layout_marginLeft="110dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
-                    android:background="@drawable/mint_circle"></ImageButton>
+                    android:background="#00ff0000"/>
 
                 <TextView
                     android:id="@+id/phonecase"
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="117dp"
-                    android:layout_marginTop="76dp"
+                    android:layout_marginLeft="115dp"
+                    android:layout_marginTop="77dp"
                     android:text="폰케이스"
                     android:textAlignment="center"
                     android:textColor="#000000"/>
@@ -87,17 +85,17 @@
                     android:id="@+id/back_img_3"
                     android:layout_width="90dp"
                     android:layout_height="90dp"
-                    android:layout_marginLeft="212dp"
+                    android:layout_marginLeft="210dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
-                    android:background="@drawable/mint_circle"></ImageButton>
+                    android:background="#00ff0000"/>
 
                 <TextView
                     android:id="@+id/acc"
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="215dp"
-                    android:layout_marginTop="76dp"
+                    android:layout_marginTop="77dp"
                     android:text="액세서리"
                     android:textAlignment="center"
                     android:textColor="#000000"/>
@@ -106,17 +104,17 @@
                     android:id="@+id/back_img_4"
                     android:layout_width="90dp"
                     android:layout_height="90dp"
-                    android:layout_marginLeft="312dp"
+                    android:layout_marginLeft="310dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
-                    android:background="@drawable/mint_circle"></ImageButton>
+                    android:background="#00ff0000"/>
 
                 <TextView
                     android:id="@+id/etc"
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="315dp"
-                    android:layout_marginTop="76dp"
+                    android:layout_marginTop="77dp"
                     android:text="기타"
                     android:textAlignment="center"
                     android:textColor="#000000"/>
@@ -129,39 +127,35 @@
 
                     <ImageView
                         android:id="@+id/keyring_img"
-                        android:layout_width="90dp"
-                        android:layout_height="55dp"
+                        android:layout_width="80dp"
+                        android:layout_height="65dp"
                         android:layout_marginLeft="15dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/keyring" />
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/keychain" />
 
                     <ImageView
                         android:id="@+id/phonecase_img"
-                        android:layout_width="70dp"
-                        android:layout_height="55dp"
-                        android:layout_marginLeft="9dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/phonecase" />
+                        android:layout_width="80dp"
+                        android:layout_height="65dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/phone_case" />
 
                     <ImageView
                         android:id="@+id/acc_img"
-                        android:layout_width="65dp"
-                        android:layout_height="55dp"
-                        android:layout_marginLeft="22dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/earring" />
+                        android:layout_width="80dp"
+                        android:layout_height="65dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/earrings" />
 
                     <ImageView
                         android:id="@+id/etc_img"
-                        android:layout_width="68dp"
-                        android:layout_height="55dp"
-                        android:layout_marginLeft="22dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/tools" />
+                        android:layout_width="80dp"
+                        android:layout_height="65dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/tool" />
 
                 </LinearLayout>
             </FrameLayout>
@@ -171,7 +165,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
+                android:layout_height="15dp"
                 android:background="#EEEEEE"></View>
 
             <TextView

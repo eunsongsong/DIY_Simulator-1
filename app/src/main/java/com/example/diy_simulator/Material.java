@@ -1,5 +1,9 @@
 package com.example.diy_simulator;
 
+/**
+ * 부자재의 정보를 담는 클래스
+ * 이름, 가격, 가로, 세로, 두께, 이미지 URL, 배경 없는 이미지 URL, 재고, 검색 키워드
+ */
 public class Material {
     public String material_name = "";
     public String price = "";
