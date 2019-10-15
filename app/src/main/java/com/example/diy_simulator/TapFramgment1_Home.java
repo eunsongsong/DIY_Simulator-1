@@ -18,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TapFramgment1_Home extends AppCompatActivity implements View.OnClickListener {
@@ -46,6 +47,9 @@ public class TapFramgment1_Home extends AppCompatActivity implements View.OnClic
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         storename_recyclerview.setHasFixedSize(true);
         storename_recyclerview.setLayoutManager(layoutManager);
+        storename_recyclerview.setAdapter(storenameAdapter);
+
+        getStoreNameCategorize();
 
         btn1 = findViewById(R.id.kor1);
         btn2 = findViewById(R.id.kor2);
@@ -79,12 +83,10 @@ public class TapFramgment1_Home extends AppCompatActivity implements View.OnClic
         btn14.setOnClickListener((View.OnClickListener) this);
         btn15.setOnClickListener((View.OnClickListener) this);
 
-
-        storename_recyclerview.setAdapter(storenameAdapter);
-
     }
 
-    //상호명 가나다순으로 분류해 n1~n15 스트링에 담아오는 함수
+    //파이어베이스에서 판매자의 storname을 모두 가져와서 names[] 배열에 넣기
+    //names[]를 initial_Categorizing 넣어서 실행
     private void getStoreNameCategorize(){
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -106,6 +108,7 @@ public class TapFramgment1_Home extends AppCompatActivity implements View.OnClic
         });
     }
 
+    //상호명을 가나다순으로 분류해 n1~n15 스트링에 #으로 구분하여 담아오는 함수
     private void initial_Categorizing(String[] names){
         for(int i = 0; i < names.length; i++){
             String init  = getInitialSound(names[i]); //상호명의 초성
@@ -225,8 +228,6 @@ public class TapFramgment1_Home extends AppCompatActivity implements View.OnClic
                 Log.d("히읗 : ", n14);
             }
         }
-
-
     }
 
     //스트링의 초성 자음을 얻어오는 함수
@@ -251,8 +252,7 @@ public class TapFramgment1_Home extends AppCompatActivity implements View.OnClic
         return null;
     }
 
-
-
+    //버튼에 따라 가게 이름 출력
     @Override
     public void onClick(View v) {
 
@@ -262,43 +262,69 @@ public class TapFramgment1_Home extends AppCompatActivity implements View.OnClic
                 showStoreNameList(n1, 1);
                 break;
             case R.id.kor2 :
+                storename_item.clear();
+                showStoreNameList(n2, 2);
                 break;
             case R.id.kor3 :
+                storename_item.clear();
+                showStoreNameList(n3, 3);
                 break;
             case R.id.kor4 :
+                storename_item.clear();
+                showStoreNameList(n4, 4);
                 break;
             case R.id.kor5 :
+                storename_item.clear();
+                showStoreNameList(n5, 5);
                 break;
             case R.id.kor6 :
+                storename_item.clear();
+                showStoreNameList(n6, 6);
                 break;
             case R.id.kor7 :
+                storename_item.clear();
+                showStoreNameList(n7, 7);
                 break;
             case R.id.kor8 :
+                storename_item.clear();
+                showStoreNameList(n8, 8);
                 break;
             case R.id.kor9 :
+                storename_item.clear();
+                showStoreNameList(n9, 9);
                 break;
             case R.id.kor10 :
+                storename_item.clear();
+                showStoreNameList(n10, 10);
                 break;
             case R.id.kor11:
+                storename_item.clear();
+                showStoreNameList(n11, 11);
                 break;
             case R.id.kor12 :
+                storename_item.clear();
+                showStoreNameList(n12, 12);
                 break;
             case R.id.kor13 :
+                storename_item.clear();
+                showStoreNameList(n13, 13);
                 break;
             case R.id.kor14 :
+                storename_item.clear();
+                showStoreNameList(n14, 14);
                 break;
             case R.id.kor15 :
                 storename_item.clear();
                 showStoreNameList(n15, 15);
-
                 break;
 
         }
     }
+    //리사이클러뷰에 가게 이름 add
     private void showStoreNameList(String cho , int idx){
-
         if(!TextUtils.isEmpty(cho)){
             categorize_storename[idx - 1] = cho.split("#");
+            Arrays.sort(categorize_storename[idx - 1]);  //사전순 정렬
             Tab1_Home_StorenameInfo[] item = new Tab1_Home_StorenameInfo[categorize_storename[idx - 1].length];
             for (int i = 0; i < categorize_storename[idx - 1].length; i++) {
                 item[i] = new Tab1_Home_StorenameInfo(categorize_storename[idx - 1][i]);

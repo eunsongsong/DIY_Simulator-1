@@ -175,7 +175,7 @@
                 android:id="@+id/store_category"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginBottom="10dp"
                 android:paddingLeft="30dp"
                 android:text=" 가게별 검색 "
@@ -302,6 +302,13 @@
                 <!-- 가게명 검색 버튼 15개 (ㄱ~ㅎ,etc.) -->
 
             </LinearLayout>
+
+            <View
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="#EEEEEE"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/home_storename_recyclerView"
