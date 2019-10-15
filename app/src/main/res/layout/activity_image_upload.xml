@@ -9,8 +9,29 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <android.widget.Toolbar
+            android:id="@+id/sign_in_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#EEEEEE"
+            android:minHeight="?attr/actionBarSize"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            <TextView
+                android:id="@+id/image_upload_toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="부자재 업로드"
+                android:textColor="#777777"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </android.widget.Toolbar>
+
         <ImageView
             android:id="@+id/preview"
+            android:layout_marginTop="70dp"
             android:layout_width="300dp"
             android:layout_height="300dp">
         </ImageView>
@@ -143,7 +164,7 @@
             android:layout_toRightOf="@+id/category_check_etc"/>
         <Button
             android:id="@+id/choose_btn"
-            android:text="이미지 선택"
+            android:text="사진 선택"
             android:layout_below="@+id/preview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
