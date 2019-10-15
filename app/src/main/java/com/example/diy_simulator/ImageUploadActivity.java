@@ -31,6 +31,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -404,6 +405,22 @@ public class ImageUploadActivity extends AppCompatActivity {
                 Log.d("----ddd----","업로드 성공");
                 Toast.makeText(ImageUploadActivity.this, "업로드를 완료하였습니다.", Toast.LENGTH_LONG).show();
                 dialog.dismiss();
+                // Alternatively way to get download URL
+                StorageReference pathReference = storageRef.child(count+"");
+                //Url을 다운받기
+                pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        //
+                        Add_URL_Info(uri);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(), "다운로드 실패", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
 
                 // 성공!
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
@@ -566,6 +583,28 @@ public class ImageUploadActivity extends AppCompatActivity {
         etcspinner.setSelection(0);
     }
 
+
+    //디비에 부자재 URL 넣기
+    private void Add_URL_Info(final Uri uri) {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for( DataSnapshot ds : dataSnapshot.getChildren()){
+                    if(ds.getKey().equals(count+"")){
+                        myRef.child(count+"").child("image_url").setValue(uri+"");
+                    }
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
 
 }
 

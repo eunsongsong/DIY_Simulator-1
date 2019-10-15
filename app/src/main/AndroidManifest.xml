@@ -3,15 +3,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.diy_simulator">
     <!-- 네트워크 사용에 대한 퍼미션 -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <!-- 카메라 관련 -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- 카메라 관련 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="true" />
+        android:required="false" /> <!-- opencv -> false -->
+    <uses-permission android:name="android.permission.CAMERA" />
 
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.front.autofocus"
+        android:required="false" />
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true" />
 
     <application
         android:allowBackup="true"
@@ -21,11 +38,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".TapFramgment1_Home"></activity>
+        <activity android:name=".Final"/>
+
+        <activity android:name=".TapFramgment1_Home" />
+        <activity android:name=".ImageActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".SignInActivity" />
-        <activity android:name=".ImageUploadActivity"/>
-        <activity android:name=".RemovebackgroundActivity"/>
+        <activity android:name=".ImageUploadActivity" />
+        <activity
+            android:name=".RemovebackgroundActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="landscape" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,7 +69,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
-
     </application>
 
 </manifest>
