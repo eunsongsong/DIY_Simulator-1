@@ -6,16 +6,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,14 +16,12 @@ import java.util.List;
 
 public class TapFramgment1_Home extends AppCompatActivity implements View.OnClickListener {
 
-    private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference myRef = database.getReference("판매자");
-
     int count = 0; //판매자 명수 (storename 개수)
     final List<Tab1_Home_StorenameInfo> storename_item =new ArrayList<>();
     final Tab1_Home_Storename_Adapter storenameAdapter = new Tab1_Home_Storename_Adapter(TapFramgment1_Home.this,storename_item,R.layout.activity_tap_framgment1_home);
 
     String[][] categorize_storename = new String[15][];
+    String names[] = {};
     String n1,n2,n3,n4,n5,n6,n7,n8,n9,n10,n11,n12,n13,n14,n15;
 
     Button btn1,btn2,btn3,btn4,btn5,btn6,btn7,btn8,btn9,btn10,btn11,btn12,btn13,btn14,btn15;
@@ -49,7 +40,10 @@ public class TapFramgment1_Home extends AppCompatActivity implements View.OnClic
         storename_recyclerview.setLayoutManager(layoutManager);
         storename_recyclerview.setAdapter(storenameAdapter);
 
-        getStoreNameCategorize();
+        //스플래시에서 상호명이 담겨있는 배열 names에 받아오기
+        names = getIntent().getStringArrayExtra("names");
+        //names를 초성별로 나누기
+        Initial_Categorizing_Names(names);
 
         btn1 = findViewById(R.id.kor1);
         btn2 = findViewById(R.id.kor2);
@@ -85,31 +79,8 @@ public class TapFramgment1_Home extends AppCompatActivity implements View.OnClic
 
     }
 
-    //파이어베이스에서 판매자의 storname을 모두 가져와서 names[] 배열에 넣기
-    //names[]를 initial_Categorizing 넣어서 실행
-    private void getStoreNameCategorize(){
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                count =(int) dataSnapshot.getChildrenCount();
-                String[] names = new String[count];
-                int i = 0;
-                for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    names[i] = ds.child("storename").getValue().toString(); //상호명
-                    i++;
-                }
-                initial_Categorizing(names);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
     //상호명을 가나다순으로 분류해 n1~n15 스트링에 #으로 구분하여 담아오는 함수
-    private void initial_Categorizing(String[] names){
+    private void Initial_Categorizing_Names(String[] names){
         for(int i = 0; i < names.length; i++){
             String init  = getInitialSound(names[i]); //상호명의 초성
             //etc - 영어, 숫자로 시작
