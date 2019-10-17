@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/material_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="5dp"
+                    android:paddingLeft="30dp"
+                    android:text=" 카테고리 "
+                    android:textSize="20sp" />
+
+                <ImageButton
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="240dp"
+                    android:background="@drawable/search"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/back_img_1"
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:background="#00ff0000" />
+
+                    <TextView
+                        android:id="@+id/keyring"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="77dp"
+                        android:text="키링"
+                        android:textAlignment="center"
+                        android:textColor="#000000"/>
+
+                    <ImageButton
+                        android:id="@+id/back_img_2"
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
+                        android:layout_marginLeft="110dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="#00ff0000"/>
+
+                    <TextView
+                        android:id="@+id/phonecase"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="115dp"
+                        android:layout_marginTop="77dp"
+                        android:text="폰케이스"
+                        android:textAlignment="center"
+                        android:textColor="#000000"/>
+
+                    <ImageButton
+                        android:id="@+id/back_img_3"
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
+                        android:layout_marginLeft="210dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="#00ff0000"/>
+
+                    <TextView
+                        android:id="@+id/acc"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="215dp"
+                        android:layout_marginTop="77dp"
+                        android:text="액세서리"
+                        android:textAlignment="center"
+                        android:textColor="#000000"/>
+
+                    <ImageButton
+                        android:id="@+id/back_img_4"
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
+                        android:layout_marginLeft="310dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="#00ff0000"/>
+
+                    <TextView
+                        android:id="@+id/etc"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="315dp"
+                        android:layout_marginTop="77dp"
+                        android:text="기타"
+                        android:textAlignment="center"
+                        android:textColor="#000000"/>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/keyring_img"
+                            android:layout_width="80dp"
+                            android:layout_height="65dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/keychain" />
+
+                        <ImageView
+                            android:id="@+id/phonecase_img"
+                            android:layout_width="80dp"
+                            android:layout_height="65dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/phone_case" />
+
+                        <ImageView
+                            android:id="@+id/acc_img"
+                            android:layout_width="80dp"
+                            android:layout_height="65dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/earrings" />
+
+                        <ImageView
+                            android:id="@+id/etc_img"
+                            android:layout_width="80dp"
+                            android:layout_height="65dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/tool" />
+
+                    </LinearLayout>
+                </FrameLayout>
+
+
+                <View
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="15dp"
+                    android:background="#EEEEEE"></View>
+
+                <TextView
+                    android:id="@+id/store_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:paddingLeft="30dp"
+                    android:text=" 가게별 검색 "
+                    android:textSize="20sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- 가게명 검색 버튼 15개 (ㄱ~ㅎ,etc.) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/kor1"
+                            android:layout_marginLeft="30dp"
+                            android:layout_gravity="center"
+                            android:text="ㄱ"
+                            android:layout_width="70dp"
+                            android:layout_height="60dp"/>
+                        <Button
+                            android:id="@+id/kor2"
+                            android:layout_gravity="center"
+                            android:text="ㄴ"
+                            android:layout_width="70dp"
+                            android:layout_height="60dp" />
+                        <Button
+                            android:id="@+id/kor3"
+                            android:layout_gravity="center"
+                            android:text="ㄷ"
+                            android:layout_width="70dp"
+                            android:layout_height="60dp"/>
+                        <Button
+                            android:id="@+id/kor4"
+                            android:layout_gravity="center"
+                            android:text="ㄹ"
+                            android:layout_width="70dp"
+                            android:layout_height="60dp"/>
+                        <Button
+                            android:id="@+id/kor5"
+                            android:layout_gravity="center"
+                            android:text="ㅁ"
+                            android:layout_width="70dp"
+                            android:layout_height="60dp"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/kor6"
+                            android:layout_marginLeft="30dp"
+                            android:layout_gravity="center"
+                            android:text="ㅂ"
+                            android:layout_width="70dp"
+                            android:layout_height="60dp"/>
+                        <Button
+                            android:id="@+id/kor7"
+                            android:layout_gravity="center"
+                            android:text="ㅅ"
+                            android:layout_width="70dp"
+                            android:layout_height="60dp" />
+                        <Button
+                            android:id="@+id/kor8"
+                            android:layout_gravity="center"
+                            android:text="ㅇ"
+                            android:layout_width="70dp"
+                            android:layout_height="60dp"/>
+                        <Button
+                            android:id="@+id/kor9"
+                            android:layout_gravity="center"
+                            android:text="ㅈ"
+                            android:layout_width="70dp"
+                            android:layout_height="60dp"/>
+                        <Button
+                            android:id="@+id/kor10"
+                            android:layout_gravity="center"
+                            android:text="ㅊ"
+                            android:layout_width="70dp"
+                            android:layout_height="60dp"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/kor11"
+                            android:layout_marginLeft="30dp"
+                            android:layout_gravity="center"
+                            android:text="ㅋ"
+                            android:layout_width="70dp"
+                            android:layout_height="60dp"/>
+                        <Button
+                            android:id="@+id/kor12"
+                            android:layout_gravity="center"
+                            android:text="ㅌ"
+                            android:layout_width="70dp"
+                            android:layout_height="60dp" />
+                        <Button
+                            android:id="@+id/kor13"
+                            android:layout_gravity="center"
+                            android:text="ㅍ"
+                            android:layout_width="70dp"
+                            android:layout_height="60dp"/>
+                        <Button
+                            android:id="@+id/kor14"
+                            android:layout_gravity="center"
+                            android:text="ㅎ"
+                            android:layout_width="70dp"
+                            android:layout_height="60dp"/>
+                        <Button
+                            android:id="@+id/kor15"
+                            android:layout_gravity="center"
+                            android:textAllCaps="false"
+                            android:text="etc."
+                            android:layout_width="70dp"
+                            android:layout_height="60dp"/>
+                    </LinearLayout>
+                    <!-- 가게명 검색 버튼 15개 (ㄱ~ㅎ,etc.) -->
+
+                </LinearLayout>
+
+                <View
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="#EEEEEE"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/home_storename_recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

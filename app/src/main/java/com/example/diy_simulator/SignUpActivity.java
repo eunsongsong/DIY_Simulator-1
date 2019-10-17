@@ -1,12 +1,9 @@
 package com.example.diy_simulator;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -121,6 +118,8 @@ public class SignUpActivity extends AppCompatActivity {
         sign_up_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dialog = ProgressDialog.show(SignUpActivity.this, "회원가입 진행 중입니다!"
+                        , "이메일로 인증 메일이 발송됩니다.", true);
                 registerUser();
 
                 email_join.setText(null);
@@ -133,16 +132,6 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
     }
-
-
-    @SuppressLint("HandlerLeak")
-    Handler mHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            if (msg.what == TIME_OUT) { // 타임아웃이 발생하면
-                dialog.dismiss(); // ProgressDialog를 종료
-            }
-        }
-    };
 
     // 이메일 유효성 검사
     private boolean isValidEmail() {
@@ -178,12 +167,10 @@ public class SignUpActivity extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
+                                            dialog.dismiss();
                                             Toast.makeText(SignUpActivity.this,
-                                                    "인증 메일이 " + mFirebaseUser.getEmail()+ "로 발송되었습니다. 이메일 인증 후 이용해주세요.",
+                                                    "인증 메일이 " + mFirebaseUser.getEmail()+ "로 발송되었습니다. 인증 후 이용해주세요.",
                                                     Toast.LENGTH_LONG).show();
-                                            dialog = ProgressDialog.show(SignUpActivity.this, "회원가입이 완료되었습니다!"
-                                                    , mFirebaseUser.getEmail() + "으로 인증 메일이 발송되었습니다.", true);
-                                            mHandler.sendEmptyMessageDelayed(TIME_OUT, 3000);
 
                                             //디비에 유저 등록 - 고객
                                             if(whois.equals("customer")) {

@@ -10,8 +10,6 @@
         android:id="@+id/move_btn"
         android:text="넘어갓"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </Button>
+        android:layout_height="match_parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

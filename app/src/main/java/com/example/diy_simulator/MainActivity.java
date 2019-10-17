@@ -1,4 +1,5 @@
 package com.example.diy_simulator;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -27,12 +28,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         btn = (Button) findViewById(R.id.move_btn);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, TapFramgment1_Home.class  ));
+                startActivity(new Intent(MainActivity.this, Tab1_Home.class  ));
             }
         });
+
     }
 }

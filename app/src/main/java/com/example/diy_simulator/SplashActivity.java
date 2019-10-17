@@ -34,9 +34,8 @@ public class SplashActivity extends AppCompatActivity {
                     Log.d("하는 중?", names[i]+"");
                     i++;
                 }
-
                 //홈액티비티로 전환
-                Intent mainIntent = new Intent(getApplicationContext(), TapFramgment1_Home.class);
+                Intent mainIntent = new Intent(getApplicationContext(), MainTabActivity.class);
                 mainIntent.putExtra("names", names);
                 startActivity(mainIntent);
                 finish();

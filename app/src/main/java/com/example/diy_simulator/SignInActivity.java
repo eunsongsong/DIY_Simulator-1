@@ -190,7 +190,9 @@ public class SignInActivity extends AppCompatActivity {
                                                 , "잠시만 기다려주세요.");
                                         mHandler.sendEmptyMessageDelayed(TIME_OUT, 2000);
                                         Log.d("판매자인지?", isSeller+"");
-                                        startActivity(new Intent(getApplicationContext(), ImageUploadActivity.class));
+                                        Intent intent = new Intent(getApplicationContext(), MainTabActivity.class);
+                                        intent.putExtra("whoIs", isSeller);
+                                        startActivity(intent);
                                     }
                                 }
                             } else {
