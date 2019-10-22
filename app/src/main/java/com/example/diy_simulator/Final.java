@@ -40,7 +40,7 @@ public class Final extends AppCompatActivity {
         Mat imgC3 = new Mat();
         Imgproc.cvtColor(img, imgC3, Imgproc.COLOR_RGBA2RGB);
 
-        Imgproc.grabCut(imgC3, mask, rect, bgdModel, fgdModel, 5, Imgproc.
+        Imgproc.grabCut(imgC3, mask, rect, bgdModel, fgdModel, 8, Imgproc.
                 GC_INIT_WITH_RECT);
 
         Mat source = new Mat(1, 1, CvType.CV_8U, new Scalar(3.0));
@@ -68,7 +68,7 @@ public class Final extends AppCompatActivity {
             // Handle initialization error
             finish();
         }
-        Drawable drawable = getResources().getDrawable(R.drawable.minticon);
+        Drawable drawable = getResources().getDrawable(R.drawable.qwe);
 
         imageView = ( ImageView) findViewById(R.id.woo_iv);
         // drawable 타입을 bitmap으로 변경
