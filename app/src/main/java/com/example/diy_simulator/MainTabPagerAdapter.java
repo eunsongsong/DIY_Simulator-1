@@ -26,11 +26,9 @@ public class MainTabPagerAdapter extends FragmentStatePagerAdapter {
             case 1: //마이페이지
                 Tab2_MyPage tab2 = new Tab2_MyPage();
                 return tab2;
-            case 2: //장바구니
-                Tab3_MyStore tab3_seller = new Tab3_MyStore();
-                Tab3_Cart tab3_customer = new Tab3_Cart();
-                if(isSeller) return tab3_seller;
-                else return tab3_customer;
+            case 2: //판매자 - 내가게, 고객 - 장바구니
+                if(isSeller) return new Tab3_MyStore();
+                else return new Tab3_Cart();
             case 3: //시뮬레이션
                 Tab4_Simulation tab4 = new Tab4_Simulation();
                 return tab4;
