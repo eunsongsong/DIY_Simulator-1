@@ -18,7 +18,7 @@
         android:minHeight="?attr/actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FCFCFC"
+        android:background="#FFFFFF"
         app:tabIndicatorColor="#3DC1AB"
         app:tabIndicatorGravity="top"
         app:tabGravity="fill"

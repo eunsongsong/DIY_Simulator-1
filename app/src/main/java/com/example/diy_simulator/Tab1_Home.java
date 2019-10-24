@@ -1,5 +1,6 @@
 package com.example.diy_simulator;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -8,9 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,12 +34,35 @@ public class Tab1_Home extends Fragment implements View.OnClickListener {
     private String n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15;
 
     public RecyclerView storename_recyclerview;
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference myRef = database.getReference("판매자");
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_tab1_home, container, false);
 
-        //메인탭 액티비티에서 상호명이 담겨있는 배열 names에 받아오기
-        names = getActivity().getIntent().getStringArrayExtra("names");
+        //파이어베이스에서 판매자의 storname을 모두 가져와서 names[] 배열에 넣기
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int count = (int) dataSnapshot.getChildrenCount();
+                names = new String[count];
+                int i = 0;
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    names[i] = ds.child("storename").getValue().toString(); //상호명
+                    Log.d("하는 중?", names[i]+"");
+                    i++;
+                }
+
+                //names를 초성별로 나누기
+                Initial_Categorizing_Names(names);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12, btn13, btn14, btn15;
         storename_recyclerview = rootview.findViewById(R.id.home_storename_recyclerView);
@@ -40,9 +71,6 @@ public class Tab1_Home extends Fragment implements View.OnClickListener {
         storename_recyclerview.setHasFixedSize(true);
         storename_recyclerview.setLayoutManager(layoutManager);
         storename_recyclerview.setAdapter(storenameAdapter);
-
-        //names를 초성별로 나누기
-        Initial_Categorizing_Names(names);
 
         btn1 = rootview.findViewById(R.id.kor1);
         btn2 = rootview.findViewById(R.id.kor2);

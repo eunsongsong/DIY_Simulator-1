@@ -1,17 +1,24 @@
 package com.example.diy_simulator;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainTabActivity extends AppCompatActivity {
 
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
+
+    FirebaseAuth firebaseAuth;
+    FirebaseUser mFirebaseUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +48,17 @@ public class MainTabActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition(),true);
+
+                if(tab.getPosition() != 0) {
+                    firebaseAuth = FirebaseAuth.getInstance();
+                    mFirebaseUser = firebaseAuth.getCurrentUser();
+                    Log.d("언제까지","로그인할거야"+mFirebaseUser.getEmail());
+                    //로그인 되어있지 않으면 로그인 요청
+                    if (mFirebaseUser == null)  {
+                        Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
+                        startActivity(intent);
+                    }
+                }
             }
 
             @Override
