@@ -6,8 +6,11 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -341,7 +344,13 @@ public class ImageUploadActivity extends AppCompatActivity {
                 //이미지뷰에 세팅
                 try {
                     // 이미지 표시
+                    //사진의 주소를 가져와 EXIF에서 회전 값을 읽어와 회전된 상태만큼 다시 회전시켜 원상복구 시킨다.
+                    //* EXIF : 사진의 크기, 화소, 회전, 노출정도 등의 메타데이터.
+                    imagePath = getRealPathFromURI(data.getData());
+                    int degree = getExifOrientation(imagePath);
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                    bitmap = getRotatedBitmap(bitmap, degree);
+
                     imageView.setImageBitmap(bitmap);
                     imageView.setDrawingCacheEnabled(true);
                     imageView.buildDrawingCache();
@@ -361,7 +370,13 @@ public class ImageUploadActivity extends AppCompatActivity {
                 factory.inJustDecodeBounds = false;
                 factory.inPurgeable = true;
 
+
+                //사진의 주소를 가져와 EXIF에서 회전 값을 읽어와 회전된 상태만큼 다시 회전시켜 원상복구 시킨다.
+                //* EXIF : 사진의 크기, 화소, 회전, 노출정도 등의 메타데이터.
+                Log.d("경로",imagePath);
+                int degree = getExifOrientation(imagePath);
                 Bitmap bitmap = BitmapFactory.decodeFile(imagePath, factory);
+                bitmap = getRotatedBitmap(bitmap, degree);
                 imageView.setImageBitmap(bitmap);
                 imageView.setDrawingCacheEnabled(true);
                 imageView.buildDrawingCache();
@@ -604,6 +619,75 @@ public class ImageUploadActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    //이미지 회전하기
+    private Bitmap getRotatedBitmap(Bitmap bitmap, int degree) {
+        if (degree != 0 && bitmap != null) {
+            Matrix matrix = new Matrix();
+            matrix.setRotate(degree, (float) bitmap.getWidth() / 2, (float) bitmap.getHeight() / 2);
+
+            try {
+                Bitmap tmpBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+
+                if (bitmap != tmpBitmap) {
+                    bitmap.recycle();
+                    bitmap = tmpBitmap;
+                }
+            } catch (OutOfMemoryError e) {
+                e.printStackTrace();
+            }
+        }
+
+        return bitmap;
+    }
+
+    //회전 각도 구하기
+    private int getExifOrientation(String filePath) {
+        ExifInterface exif = null;
+
+        try {
+            exif = new ExifInterface(filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (exif != null) {
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
+
+            if (orientation != -1) {
+                switch (orientation) {
+                    case ExifInterface.ORIENTATION_ROTATE_90:
+                        return 90;
+
+                    case ExifInterface.ORIENTATION_ROTATE_180:
+                        return 180;
+
+                    case ExifInterface.ORIENTATION_ROTATE_270:
+                        return 270;
+                }
+            }
+        }
+
+        return 0;
+    }
+
+    private String getRealPathFromURI(Uri contentURI){
+        String result;
+
+        Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
+        if (cursor == null) { // Source is Dropbox or other similar local file path
+            result = contentURI.getPath();
+        }
+        else{
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            result = cursor.getString(idx);
+            cursor.close();
+        }
+
+        return result;
     }
 
 }
