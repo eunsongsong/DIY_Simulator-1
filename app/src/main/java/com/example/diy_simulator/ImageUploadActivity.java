@@ -206,8 +206,13 @@ public class ImageUploadActivity extends AppCompatActivity {
                 upload_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog = ProgressDialog.show(ImageUploadActivity.this, "업로드 진행중", "잠시만 기다려주세요.", true);
-                        UploadFile();
+                        if(data_arr == null) {
+                            Toast.makeText(ImageUploadActivity.this, "데이터가 없습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            dialog = ProgressDialog.show(ImageUploadActivity.this, "업로드 진행중", "잠시만 기다려주세요.", true);
+                            UploadFile();
+                        }
                     }
                 });
             } else {
@@ -235,8 +240,13 @@ public class ImageUploadActivity extends AppCompatActivity {
             upload_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dialog = ProgressDialog.show(ImageUploadActivity.this, "업로드 진행중", "잠시만 기다려주세요.", true);
-                    UploadFile();
+                    if(data_arr == null) {
+                        Toast.makeText(ImageUploadActivity.this, "데이터가 없습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        dialog = ProgressDialog.show(ImageUploadActivity.this, "업로드 진행중", "잠시만 기다려주세요.", true);
+                        UploadFile();
+                    }
                 }
             });
         }

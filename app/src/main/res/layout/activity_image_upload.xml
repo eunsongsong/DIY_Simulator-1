@@ -5,55 +5,86 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ImageUploadActivity">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <android.widget.Toolbar
+        android:id="@+id/sign_in_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#EEEEEE"
+        android:minHeight="?attr/actionBarSize"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <TextView
+            android:id="@+id/image_upload_toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="부자재 업로드"
+            android:textColor="#777777"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </android.widget.Toolbar>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <android.widget.Toolbar
-            android:id="@+id/sign_in_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#EEEEEE"
-            android:minHeight="?attr/actionBarSize"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-            <TextView
-                android:id="@+id/image_upload_toolbar_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="부자재 업로드"
-                android:textColor="#777777"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-        </android.widget.Toolbar>
+        android:layout_height="match_parent"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
 
         <ImageView
             android:id="@+id/preview"
-            android:layout_marginTop="70dp"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/photo_outline"
             android:layout_width="300dp"
-            android:layout_height="300dp">
-        </ImageView>
+            android:layout_height="300dp"/>
+        <Button
+            android:id="@+id/choose_btn"
+            android:text="사진 선택"
+            android:layout_below="@+id/preview"
+            android:layout_marginTop="5dp"
+            android:layout_centerHorizontal="true"
+            android:background="#AA3DC1AB"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/name_guide"
+            android:layout_below="@+id/choose_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="*고객에게 보여지는 제품 이름을 입력해주세요."/>
         <EditText
             android:id="@+id/material_name"
-            android:layout_width="200dp"
-            android:layout_below="@+id/choose_btn"
+            android:layout_width="300dp"
+            android:layout_below="@+id/name_guide"
             android:hint="제품명"
             android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/price_guide"
+            android:layout_below="@+id/material_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="*제품의 가격을 숫자로 입력해주세요."/>
         <EditText
             android:id="@+id/material_price"
-            android:layout_width="120dp"
-            android:layout_below="@+id/material_name"
+            android:layout_width="200dp"
+            android:layout_below="@+id/price_guide"
             android:inputType="number"
             android:hint="가격(원)"
             android:layout_height="wrap_content"/>
         <TextView
             android:id="@+id/size_guide_txt"
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/material_price"
-            android:hint="사이즈"
-            android:layout_height="wrap_content"/>
+            android:layout_marginTop="20dp"
+            android:text="*제품의 크기를 가로, 세로, 두께 순으로 입력해주세요." />
         <EditText
             android:id="@+id/size_width"
             android:layout_width="120dp"
@@ -77,102 +108,156 @@
             android:inputType="number"
             android:hint="두께(mm)"
             android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/stock_guide"
+            android:layout_below="@+id/size_width"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="*제품의 재고를 숫자로 입력해주세요."/>
         <EditText
             android:id="@+id/material_stock"
-            android:layout_width="120dp"
-            android:layout_below="@+id/size_width"
+            android:layout_width="200dp"
+            android:layout_below="@+id/stock_guide"
             android:inputType="number"
-            android:hint="재고"
+            android:hint="재고(개수)"
             android:layout_height="wrap_content"/>
         <TextView
             android:id="@+id/keyword_guide_txt"
-            android:text="검색시 이용될 키워드 ex) #태슬#빨간색#귀걸이재료#키링재료 "
+            android:text="*제품 검색시 이용될 키워드를 #으로 구분하여 입력해주세요.\n ex) #태슬#빨간색#키링재료#귀걸이재료 "
             android:layout_width="match_parent"
             android:layout_below="@+id/material_stock"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" />
         <EditText
             android:id="@+id/material_keyword"
             android:layout_width="300dp"
             android:layout_below="@+id/keyword_guide_txt"
             android:hint="제품 검색 키워드"
             android:layout_height="wrap_content"/>
+
         <TextView
             android:id="@+id/category_guide_txt"
-            android:text="카테고리(중복 선택 가능)"
+            android:text="*카테고리를 체크하고 세부 카테고리를 선택해주세요.\n 중복 선택 가능합니다."
             android:layout_width="match_parent"
             android:layout_below="@+id/material_keyword"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp" />
         <CheckBox
             android:id="@+id/category_check_keyring"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/category_guide_txt"
+            android:layout_marginBottom="10dp"
             android:text="키링"/>
         <Spinner
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/spinner_keyring"
+            android:paddingLeft="50dp"
             android:layout_below="@id/category_guide_txt"
             android:layout_toRightOf="@id/category_check_keyring"/>
+        <View
+            android:id="@+id/line_1"
+            android:layout_marginBottom="5dp"
+            android:layout_below="@+id/category_check_keyring"
+            android:layout_width="300dp"
+            android:layout_height="2dp"
+            android:background="#EEEEEE"/>
+
         <CheckBox
             android:id="@+id/category_check_case"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/category_check_keyring"
+            android:layout_below="@id/line_1"
+            android:layout_marginBottom="10dp"
             android:text="폰케이스"/>
         <Spinner
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
             android:id="@+id/spinner_case"
-            android:layout_below="@id/category_check_keyring"
+            android:layout_below="@id/line_1"
             android:layout_toRightOf="@id/category_check_case"/>
+        <View
+            android:id="@+id/line_2"
+            android:layout_marginBottom="5dp"
+            android:layout_below="@+id/category_check_case"
+            android:layout_width="300dp"
+            android:layout_height="2dp"
+            android:background="#EEEEEE"/>
         <CheckBox
             android:id="@+id/category_check_earring"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/category_check_case"
+            android:layout_below="@id/line_2"
+            android:layout_marginBottom="10dp"
             android:text="귀걸이"/>
         <Spinner
             android:id="@+id/spinner_earring"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/category_check_case"
+            android:paddingLeft="35dp"
+            android:layout_below="@id/line_2"
             android:layout_toRightOf="@+id/category_check_earring" />
+        <View
+            android:id="@+id/line_3"
+            android:layout_marginBottom="5dp"
+            android:layout_below="@+id/category_check_earring"
+            android:layout_width="300dp"
+            android:layout_height="2dp"
+            android:background="#EEEEEE"/>
         <CheckBox
             android:id="@+id/category_check_bracelet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/category_check_earring"
+            android:layout_below="@id/line_3"
+            android:layout_marginBottom="10dp"
             android:text="팔찌"/>
         <Spinner
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/spinner_bracelet"
-            android:layout_below="@+id/category_check_earring"
+            android:paddingLeft="50dp"
+            android:layout_below="@+id/line_3"
             android:layout_toRightOf="@+id/category_check_bracelet"/>
+        <View
+            android:id="@+id/line_4"
+            android:layout_marginBottom="5dp"
+            android:layout_below="@+id/category_check_bracelet"
+            android:layout_width="300dp"
+            android:layout_height="2dp"
+            android:background="#EEEEEE"/>
         <CheckBox
             android:id="@+id/category_check_etc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/category_check_bracelet"
+            android:layout_below="@id/line_4"
             android:text="기타"/>
         <Spinner
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/spinner_etc"
-            android:layout_below="@+id/category_check_bracelet"
+            android:paddingLeft="50dp"
+            android:layout_below="@+id/line_4"
             android:layout_toRightOf="@+id/category_check_etc"/>
-        <Button
-            android:id="@+id/choose_btn"
-            android:text="사진 선택"
-            android:layout_below="@+id/preview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+
         <Button
             android:id="@+id/upload_btn"
             android:text="업로드"
+            android:drawableStart="@mipmap/round_check_circle_black"
+            android:textAlignment="textStart"
+            android:textSize="18dp"
+            android:paddingLeft="95sp"
+            android:textStyle="bold"
             android:layout_below="@+id/category_check_etc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="35dp"
+            android:layout_marginBottom="25dp"
+            android:layout_centerHorizontal="true"
+            android:background="#3DC1AB"/>
     </RelativeLayout>
+</LinearLayout>
 </ScrollView>
