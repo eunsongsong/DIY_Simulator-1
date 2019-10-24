@@ -32,7 +32,7 @@
         android:layout_height="50dp"
         android:id="@+id/signin_email"
         android:layout_centerHorizontal="true"
-        android:text="seo1@cau.ac.kr"
+        android:hint="이메일"
         android:layout_marginTop="151dp" />
 
     <EditText
@@ -40,7 +40,7 @@
         android:layout_height="50dp"
         android:id="@+id/signin_pwd"
         android:layout_centerHorizontal="true"
-        android:text="wlslwlsl"
+        android:hint="비밀번호"
         android:password="true"
         android:layout_below="@+id/signin_email" />
 

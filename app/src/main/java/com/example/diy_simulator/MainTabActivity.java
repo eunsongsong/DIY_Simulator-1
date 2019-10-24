@@ -43,7 +43,7 @@ public class MainTabActivity extends AppCompatActivity {
         mTabLayout.addTab(mTabLayout.newTab().setIcon(drawable4));
 
         //페이지어답터 설정
-        final MainTabPagerAdapter adapter = new MainTabPagerAdapter(getSupportFragmentManager(), mTabLayout.getTabCount());
+        final MainTabPagerAdapter adapter = new MainTabPagerAdapter(getSupportFragmentManager(), mTabLayout.getTabCount(), isSeller);
         mViewPager.setAdapter(adapter);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
 
@@ -61,6 +61,7 @@ public class MainTabActivity extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
                         startActivity(intent);
                     }
+                    else Log.d("현재 유저", mFirebaseUser.getEmail());
                 }
             }
 

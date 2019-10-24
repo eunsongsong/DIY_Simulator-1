@@ -7,14 +7,17 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 public class MainTabPagerAdapter extends FragmentStatePagerAdapter {
     // Count number of tabs
     private int tabCount;
+    boolean isSeller;
 
-    public MainTabPagerAdapter(FragmentManager fm, int tabCount) {
+    public MainTabPagerAdapter(FragmentManager fm, int tabCount, boolean isSeller) {
         super(fm);
         this.tabCount = tabCount;
+        this.isSeller = isSeller;
     }
 
     @Override
     public Fragment getItem(int position) {
+
         // Returning the current tabs
         switch (position) {
             case 0: //홈
@@ -24,8 +27,10 @@ public class MainTabPagerAdapter extends FragmentStatePagerAdapter {
                 Tab2_MyPage tab2 = new Tab2_MyPage();
                 return tab2;
             case 2: //장바구니
-                Tab3_Cart tab3 = new Tab3_Cart();
-                return tab3;
+                Tab3_MyStore tab3_seller = new Tab3_MyStore();
+                Tab3_Cart tab3_customer = new Tab3_Cart();
+                if(isSeller) return tab3_seller;
+                else return tab3_customer;
             case 3: //시뮬레이션
                 Tab4_Simulation tab4 = new Tab4_Simulation();
                 return tab4;
