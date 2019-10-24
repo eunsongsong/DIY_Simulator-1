@@ -34,9 +34,12 @@ public class MainTabActivity extends AppCompatActivity {
         Drawable drawable3_sell = getResources().getDrawable(R.drawable.tab3_seller_cart_selector);
         Drawable drawable4 = getResources().getDrawable(R.drawable.tab4_simulation_selector);
 
+        Boolean isSeller = getIntent().getBooleanExtra("whoIs",false);
+
         mTabLayout.addTab(mTabLayout.newTab().setIcon(drawable1));
         mTabLayout.addTab(mTabLayout.newTab().setIcon(drawable2));
-        mTabLayout.addTab(mTabLayout.newTab().setIcon(drawable3_cus));
+        if(isSeller) mTabLayout.addTab(mTabLayout.newTab().setIcon(drawable3_sell));
+        else mTabLayout.addTab(mTabLayout.newTab().setIcon(drawable3_cus));
         mTabLayout.addTab(mTabLayout.newTab().setIcon(drawable4));
 
         //페이지어답터 설정
@@ -52,8 +55,8 @@ public class MainTabActivity extends AppCompatActivity {
                 if(tab.getPosition() != 0) {
                     firebaseAuth = FirebaseAuth.getInstance();
                     mFirebaseUser = firebaseAuth.getCurrentUser();
-                    Log.d("언제까지","로그인할거야"+mFirebaseUser.getEmail());
                     //로그인 되어있지 않으면 로그인 요청
+                    Log.d("언제까지","로그인할거야");
                     if (mFirebaseUser == null)  {
                         Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
                         startActivity(intent);
