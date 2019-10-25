@@ -31,40 +31,20 @@ public class Tab1_Home extends Fragment implements View.OnClickListener {
     private final Tab1_Home_Storename_Adapter storenameAdapter = new Tab1_Home_Storename_Adapter(getContext(), storename_item, R.layout.fragment_tab1_home);
 
     private String[][] categorize_storename = new String[15][];
-    private String[] names = {};  //모든 상호명이 담긴 배열
+    private ArrayList<String> names;  //모든 상호명이 담긴 배열
     private String n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15;
 
     public RecyclerView storename_recyclerview;
-    private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference myRef = database.getReference("판매자");
+
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_tab1_home, container, false);
 
-        //파이어베이스에서 판매자의 storname을 모두 가져와서 names[] 배열에 넣기
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int count = (int) dataSnapshot.getChildrenCount();
-                names = new String[count];
-                int i = 0;
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    names[i] = ds.child("storename").getValue().toString(); //상호명
-                    Log.d("하는 중?", names[i]+"");
-                    i++;
-                }
+        if(getArguments() != null)
+            names = getArguments().getStringArrayList("names");
 
-                //names를 초성별로 나누기
-                Initial_Categorizing_Names(names);
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
+        //names를 초성별로 나누기
+        Initial_Categorizing_Names(names);
         Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12, btn13, btn14, btn15;
         storename_recyclerview = rootview.findViewById(R.id.home_storename_recyclerView);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -120,117 +100,117 @@ public class Tab1_Home extends Fragment implements View.OnClickListener {
     }
 
     //상호명을 가나다순으로 분류해 n1~n15 스트링에 #으로 구분하여 담아오는 함수
-    private void Initial_Categorizing_Names(String[] names) {
-        for (int i = 0; i < names.length; i++) {
-            String init = getInitialSound(names[i]); //상호명의 초성
+    private void Initial_Categorizing_Names(ArrayList<String> names) {
+        for (int i = 0; i < names.size(); i++) {
+            String init = getInitialSound(names.get(i)); //상호명의 초성
             //etc - 영어, 숫자로 시작
             if (TextUtils.isEmpty(init)) {
-                if (TextUtils.isEmpty(n15)) n15 = names[i];
-                else n15 = n15 + "#" + names[i];
+                if (TextUtils.isEmpty(n15)) n15 = names.get(i);
+                else n15 = n15 + "#" + names.get(i);
                 Log.d("기타 : ", n15);
             }
             //ㄱ - 기역 + 쌍기역
             else if (init.equals("ㄱ")) {
-                if (TextUtils.isEmpty(n1)) n1 = names[i];
-                else n1 = n1 + "#" + names[i];
+                if (TextUtils.isEmpty(n1)) n1 = names.get(i);
+                else n1 = n1 + "#" + names.get(i);
                 Log.d("기역 : ", n1);
             } else if (init.equals("ㄲ")) {
-                if (TextUtils.isEmpty(n1)) n1 = names[i];
-                else n1 = n1 + "#" + names[i];
+                if (TextUtils.isEmpty(n1)) n1 = names.get(i);
+                else n1 = n1 + "#" + names.get(i);
                 Log.d("쌍기역 : ", n1);
             }
             //ㄴ
             else if (init.equals("ㄴ")) {
-                if (TextUtils.isEmpty(n2)) n2 = names[i];
-                else n2 = n2 + "#" + names[i];
+                if (TextUtils.isEmpty(n2)) n2 = names.get(i);
+                else n2 = n2 + "#" + names.get(i);
                 Log.d("니은 : ", n2);
             }
             //ㄷ - 디귿 + 쌍디귿
             else if (init.equals("ㄷ")) {
-                if (TextUtils.isEmpty(n3)) n3 = names[i];
-                else n3 = n3 + "#" + names[i];
+                if (TextUtils.isEmpty(n3)) n3 = names.get(i);
+                else n3 = n3 + "#" + names.get(i);
                 Log.d("디귿 : ", n3);
             } else if (init.equals("ㄸ")) {
-                if (TextUtils.isEmpty(n3)) n3 = names[i];
-                else n3 = n3 + "#" + names[i];
+                if (TextUtils.isEmpty(n3)) n3 = names.get(i);
+                else n3 = n3 + "#" + names.get(i);
                 Log.d("쌍디귿 : ", n3);
             }
             //ㄹ
             else if (init.equals("ㄹ")) {
-                if (TextUtils.isEmpty(n4)) n4 = names[i];
-                else n4 = n4 + "#" + names[i];
+                if (TextUtils.isEmpty(n4)) n4 = names.get(i);
+                else n4 = n4 + "#" + names.get(i);
                 Log.d("리을 : ", n4);
             }
             //ㅁ
             else if (init.equals("ㅁ")) {
-                if (TextUtils.isEmpty(n5)) n5 = names[i];
-                else n5 = n5 + "#" + names[i];
+                if (TextUtils.isEmpty(n5)) n5 = names.get(i);
+                else n5 = n5 + "#" + names.get(i);
                 Log.d("미음 : ", n5);
             }
             //ㅂ - 비읍 + 쌍비읍
             else if (init.equals("ㅂ")) {
-                if (TextUtils.isEmpty(n6)) n6 = names[i];
-                else n6 = n6 + "#" + names[i];
+                if (TextUtils.isEmpty(n6)) n6 = names.get(i);
+                else n6 = n6 + "#" + names.get(i);
                 Log.d("비읍 : ", n6);
             } else if (init.equals("ㅃ")) {
-                if (TextUtils.isEmpty(n6)) n6 = names[i];
-                else n6 = n6 + "#" + names[i];
+                if (TextUtils.isEmpty(n6)) n6 = names.get(i);
+                else n6 = n6 + "#" + names.get(i);
                 Log.d("쌍비읍 : ", n6);
             }
             //ㅅ - 시옷 + 쌍시옷
             else if (init.equals("ㅅ")) {
-                if (TextUtils.isEmpty(n7)) n7 = names[i];
-                else n7 = n7 + "#" + names[i];
+                if (TextUtils.isEmpty(n7)) n7 = names.get(i);
+                else n7 = n7 + "#" + names.get(i);
                 Log.d("시옷 : ", n7);
             } else if (init.equals("ㅆ")) {
-                if (TextUtils.isEmpty(n7)) n7 = names[i];
-                else n7 = n7 + "#" + names[i];
+                if (TextUtils.isEmpty(n7)) n7 = names.get(i);
+                else n7 = n7 + "#" + names.get(i);
                 Log.d("쌍시옷 : ", n7);
             }
             //ㅇ
             else if (init.equals("ㅇ")) {
-                if (TextUtils.isEmpty(n8)) n8 = names[i];
-                else n8 = n8 + "#" + names[i];
+                if (TextUtils.isEmpty(n8)) n8 = names.get(i);
+                else n8 = n8 + "#" +names.get(i);
                 Log.d("이응 : ", n8);
             }
             //ㅈ - 지읒 + 쌍지읒
             else if (init.equals("ㅈ")) {
-                if (TextUtils.isEmpty(n9)) n9 = names[i];
-                else n9 = n9 + "#" + names[i];
+                if (TextUtils.isEmpty(n9)) n9 = names.get(i);
+                else n9 = n9 + "#" + names.get(i);
                 Log.d("지읒 : ", n9);
             } else if (init.equals("ㅉ")) {
-                if (TextUtils.isEmpty(n9)) n9 = names[i];
-                else n9 = n9 + "#" + names[i];
+                if (TextUtils.isEmpty(n9)) n9 = names.get(i);
+                else n9 = n9 + "#" + names.get(i);
                 Log.d("쌍지읒 : ", n9);
             }
             //ㅊ
             else if (init.equals("ㅊ")) {
-                if (TextUtils.isEmpty(n10)) n10 = names[i];
-                else n10 = n10 + "#" + names[i];
+                if (TextUtils.isEmpty(n10)) n10 = names.get(i);
+                else n10 = n10 + "#" + names.get(i);
                 Log.d("치읓 : ", n10);
             }
             //ㅋ
             else if (init.equals("ㅋ")) {
-                if (TextUtils.isEmpty(n11)) n11 = names[i];
-                else n11 = n11 + "#" + names[i];
+                if (TextUtils.isEmpty(n11)) n11 = names.get(i);
+                else n11 = n11 + "#" + names.get(i);
                 Log.d("키읔 : ", n11);
             }
             //ㅌ
             else if (init.equals("ㅌ")) {
-                if (TextUtils.isEmpty(n12)) n12 = names[i];
-                else n12 = n12 + "#" + names[i];
+                if (TextUtils.isEmpty(n12)) n12 = names.get(i);
+                else n12 = n12 + "#" + names.get(i);
                 Log.d("티읕 : ", n12);
             }
             //ㅍ
             else if (init.equals("ㅍ")) {
-                if (TextUtils.isEmpty(n13)) n13 = names[i];
-                else n13 = n13 + "#" + names[i];
+                if (TextUtils.isEmpty(n13)) n13 = names.get(i);
+                else n13 = n13 + "#" + names.get(i);
                 Log.d("피읖 : ", n13);
             }
             //ㅎ
             else if (init.equals("ㅎ")) {
-                if (TextUtils.isEmpty(n14)) n14 = names[i];
-                else n14 = n14 + "#" + names[i];
+                if (TextUtils.isEmpty(n14)) n14 = names.get(i);
+                else n14 = n14 + "#" + names.get(i);
                 Log.d("히읗 : ", n14);
             }
         }
