@@ -1,5 +1,6 @@
 package com.example.diy_simulator;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -32,10 +33,15 @@ public class MainTabActivity extends AppCompatActivity {
     private DatabaseReference myRef = database.getReference("판매자");
     ArrayList<String> names;
     Boolean isSeller;
+    private ProgressDialog pd;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tab);
+
+        showProgress("잠시만요~");
 
         mViewPager = (ViewPager) findViewById(R.id.mainViewPager);
         mTabLayout = (TabLayout) findViewById(R.id.mainTabLayout);
@@ -66,10 +72,10 @@ public class MainTabActivity extends AppCompatActivity {
                     //Log.d("하는 중?", names[i]+"");
                     i++;
                 }
-
                 //페이지어답터 설정
                 final MainTabPagerAdapter adapter = new MainTabPagerAdapter(getSupportFragmentManager(), mTabLayout.getTabCount(), isSeller, names);
                 mViewPager.setAdapter(adapter);
+                hideProgress();
                 mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
 
                 mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -99,8 +105,6 @@ public class MainTabActivity extends AppCompatActivity {
 
                     }
                 });
-
-
             }
 
             @Override
@@ -112,5 +116,18 @@ public class MainTabActivity extends AppCompatActivity {
 
 
     }
-
+    // 프로그레스 다이얼로그 보이기
+    public void showProgress(String msg) {
+        if( pd == null ) { // 객체를 1회만 생성한다
+            pd = new ProgressDialog(this); // 생성한다.
+            pd.setCancelable(false); // 백키로 닫는 기능을 제거한다.
+            pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        } pd.setMessage(msg); // 원하는 메시지를 세팅한다.
+        pd.show(); // 화면에 띠워라//
+    }
+    public void hideProgress(){
+        if( pd != null && pd.isShowing() ){
+            pd.dismiss();
+        }
+    }
 }
