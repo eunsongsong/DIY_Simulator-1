@@ -1,6 +1,5 @@
 package com.example.diy_simulator;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -11,6 +10,8 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -71,6 +72,17 @@ public class Tab1_Home extends Fragment implements View.OnClickListener {
         storename_recyclerview.setHasFixedSize(true);
         storename_recyclerview.setLayoutManager(layoutManager);
         storename_recyclerview.setAdapter(storenameAdapter);
+
+        //가게별 검색 결과 클릭시 해당 가게 페이지로 이동
+        storenameAdapter.setOnItemClickListener(new Tab1_Home_Storename_Adapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int positon) {
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.replace(R.id.tab1_layout, new HomeSearch_Store()).commit();
+            }
+        });
 
         btn1 = rootview.findViewById(R.id.kor1);
         btn2 = rootview.findViewById(R.id.kor2);
@@ -328,5 +340,7 @@ public class Tab1_Home extends Fragment implements View.OnClickListener {
         }
         storenameAdapter.notifyDataSetChanged();
     }
+
+
 }
 

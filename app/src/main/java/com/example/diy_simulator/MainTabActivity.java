@@ -56,7 +56,6 @@ public class MainTabActivity extends AppCompatActivity {
                     firebaseAuth = FirebaseAuth.getInstance();
                     mFirebaseUser = firebaseAuth.getCurrentUser();
                     //로그인 되어있지 않으면 로그인 요청
-                    Log.d("언제까지","로그인할거야");
                     if (mFirebaseUser == null)  {
                         Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
                         startActivity(intent);
@@ -75,5 +74,7 @@ public class MainTabActivity extends AppCompatActivity {
 
             }
         });
+
     }
+
 }

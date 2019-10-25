@@ -57,8 +57,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:text="*고객에게 보여지는 제품 이름을 입력해주세요."/>
-        <EditText
+            android:text="*고객에게 보여지는 제품 이름을 입력해주세요."
+            android:textColor="#555555"/>
+        <EditText   
             android:id="@+id/material_name"
             android:layout_width="300dp"
             android:layout_below="@+id/name_guide"
@@ -70,7 +71,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="*제품의 가격을 숫자로 입력해주세요."/>
+            android:text="*제품의 가격을 숫자로 입력해주세요."
+            android:textColor="#555555"/>
         <EditText
             android:id="@+id/material_price"
             android:layout_width="200dp"
@@ -84,7 +86,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/material_price"
             android:layout_marginTop="20dp"
-            android:text="*제품의 크기를 가로, 세로, 두께 순으로 입력해주세요." />
+            android:text="*제품의 크기를 가로, 세로, 두께 순으로 입력해주세요."
+            android:textColor="#555555"/>
         <EditText
             android:id="@+id/size_width"
             android:layout_width="120dp"
@@ -114,7 +117,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="*제품의 재고를 숫자로 입력해주세요."/>
+            android:text="*제품의 재고를 숫자로 입력해주세요."
+            android:textColor="#555555"/>
         <EditText
             android:id="@+id/material_stock"
             android:layout_width="200dp"
@@ -128,7 +132,8 @@
             android:layout_width="match_parent"
             android:layout_below="@+id/material_stock"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="20dp"
+            android:textColor="#555555"/>
         <EditText
             android:id="@+id/material_keyword"
             android:layout_width="300dp"
@@ -143,7 +148,8 @@
             android:layout_below="@+id/material_keyword"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="10dp" />
+            android:layout_marginBottom="10dp"
+            android:textColor="#555555"/>
         <CheckBox
             android:id="@+id/category_check_keyring"
             android:layout_width="wrap_content"

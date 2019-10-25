@@ -1,6 +1,8 @@
 package com.example.diy_simulator;
 
 import android.content.Context;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +25,18 @@ public class Tab1_Home_Storename_Adapter extends  RecyclerView.Adapter<com.examp
         this.item_layout = item_layout;
     }
 
+    public interface OnItemClickListener {
+        void onItemClick(View v, int positon);
+    }
+
+    // 리스너 객체 참조를 저장하는 변수
+    private OnItemClickListener mListener = null ;
+
+    // OnItemClickListener 리스너 객체 참조를 어댑터에 전달하는 메서드
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.mListener = listener ;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -31,10 +45,21 @@ public class Tab1_Home_Storename_Adapter extends  RecyclerView.Adapter<com.examp
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         final Tab1_Home_StorenameInfo item = items.get(position);
 
         holder.storename.setText(item.getStorename());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //가게 검색 결과가 존재할 때 가게 이름을 누르면 해당 가게 목록 페이지로 이동
+                if(!item.getStorename().equals("결과가 없습니다.")) {
+                    if (mListener != null) mListener.onItemClick(v, position);
+                }
+            }
+        });
+
 
     }
 
