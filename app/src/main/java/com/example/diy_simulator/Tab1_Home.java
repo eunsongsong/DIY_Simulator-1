@@ -8,18 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,11 +49,19 @@ public class Tab1_Home extends Fragment implements View.OnClickListener {
         //가게별 검색 결과 클릭시 해당 가게 페이지로 이동
         storenameAdapter.setOnItemClickListener(new Tab1_Home_Storename_Adapter.OnItemClickListener() {
             @Override
-            public void onItemClick(View v, int positon) {
+            public void onItemClick(View v, int position, String storename) {
+                Fragment tab1 = new HomeSearch_Store();
+
+                //번들에 가게 이름 담아서 가게 상세 페이지 프래그먼트로 보내기
+                Bundle bundle = new Bundle();
+                bundle.putString("storename", storename);
+                tab1.setArguments(bundle);
+
+                //프래그먼트 tab1 -> search store 로 교체
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
                 fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.replace(R.id.tab1_layout, new HomeSearch_Store()).commit();
+                fragmentTransaction.replace(R.id.tab1_layout, tab1).commit();
             }
         });
 

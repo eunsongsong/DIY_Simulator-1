@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -34,7 +35,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -479,7 +479,8 @@ public class ImageUploadActivity extends AppCompatActivity {
                     String u = mFirebaseUser.getEmail();
                     if(u.equals(ds.child("email").getValue().toString())){
                         String tmp = ds.child("material").getValue().toString();
-                        myRef2.child(ds.getKey()).child("material").setValue(tmp+"#"+count);
+                        if(TextUtils.isEmpty(tmp)) myRef2.child(ds.getKey()).child("material").setValue(count);
+                        else myRef2.child(ds.getKey()).child("material").setValue(tmp+"#"+count);
                         break;
                     }
                 }

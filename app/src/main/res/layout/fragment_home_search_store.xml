@@ -11,15 +11,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <android.widget.Toolbar
-            android:id="@+id/sign_in_toolbar"
+            android:id="@+id/search_store_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#AA3DC1AB"
             android:minHeight="?attr/actionBarSize">
 
             <TextView
-                android:id="@+id/signin_toolbar_title"
+                android:id="@+id/search_store_toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -29,6 +30,30 @@
                 android:textStyle="bold" />
         </android.widget.Toolbar>
 
+        <TextView
+            android:id="@+id/search_seller_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingStart="20dp"
+            android:text="판매자 이름"/>
+        <TextView
+            android:id="@+id/search_seller_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="20dp"
+            android:text="판매자 전화번호"/>
+        <TextView
+            android:id="@+id/search_seller_addr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="20dp"
+            android:text="판매자 주소"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/search_store_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 </FrameLayout>

@@ -1,8 +1,6 @@
 package com.example.diy_simulator;
 
 import android.content.Context;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +24,7 @@ public class Tab1_Home_Storename_Adapter extends  RecyclerView.Adapter<com.examp
     }
 
     public interface OnItemClickListener {
-        void onItemClick(View v, int positon);
+        void onItemClick(View v, int position, String item_name);
     }
 
     // 리스너 객체 참조를 저장하는 변수
@@ -55,7 +53,7 @@ public class Tab1_Home_Storename_Adapter extends  RecyclerView.Adapter<com.examp
             public void onClick(View v) {
                 //가게 검색 결과가 존재할 때 가게 이름을 누르면 해당 가게 목록 페이지로 이동
                 if(!item.getStorename().equals("결과가 없습니다.")) {
-                    if (mListener != null) mListener.onItemClick(v, position);
+                    if (mListener != null) mListener.onItemClick(v, position, item.getStorename());
                 }
             }
         });
