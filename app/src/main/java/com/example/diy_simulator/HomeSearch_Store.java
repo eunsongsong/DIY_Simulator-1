@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -118,5 +120,15 @@ public class HomeSearch_Store extends Fragment {
         store_item.add(item[0]);
 
         storeAdapter.notifyDataSetChanged();
+    }
+
+    //다른 탭으로 이동시 프래그먼트 destroy
+    @Override
+    public void onPause(){
+        super.onPause();
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        fragmentTransaction.remove(HomeSearch_Store.this).commit();
+        fm.popBackStack();
     }
 }
