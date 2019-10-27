@@ -48,6 +48,15 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.opencv.android.Utils;
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -380,7 +389,6 @@ public class ImageUploadActivity extends AppCompatActivity {
                 factory.inJustDecodeBounds = false;
                 factory.inPurgeable = true;
 
-
                 //사진의 주소를 가져와 EXIF에서 회전 값을 읽어와 회전된 상태만큼 다시 회전시켜 원상복구 시킨다.
                 //* EXIF : 사진의 크기, 화소, 회전, 노출정도 등의 메타데이터.
                 Log.d("경로",imagePath);
@@ -700,6 +708,48 @@ public class ImageUploadActivity extends AppCompatActivity {
 
         return result;
     }
+    /** Start pick image activity with chooser. */
+    public void onSelectImageClick(View view) {
+        CropImage.activity(null).setGuidelines(CropImageView.Guidelines.ON).start(this);
+    }
+
+    public Bitmap removeBackground(Bitmap bitmap) {
+        //GrabCut part
+        Mat img = new Mat();
+        Utils.bitmapToMat(bitmap, img);
+
+        int r = img.rows();
+        int c = img.cols();
+        Point p1 = new Point(c / 100, r / 100);
+        Point p2 = new Point(c - c / 100, r - r / 100);
+        Rect rect = new Rect(p1, p2);
+
+        Mat mask = new Mat();
+        Mat fgdModel = new Mat();
+        Mat bgdModel = new Mat();
+
+        Mat imgC3 = new Mat();
+        Imgproc.cvtColor(img, imgC3, Imgproc.COLOR_RGBA2RGB);
+
+        Imgproc.grabCut(imgC3, mask, rect, bgdModel, fgdModel, 8, Imgproc.
+                GC_INIT_WITH_RECT);
+
+        Mat source = new Mat(1, 1, CvType.CV_8U, new Scalar(3.0));
+        Core.compare(mask, source/* GC_PR_FGD */, mask, Core.CMP_EQ);
+
+        //This is important. You must use Scalar(255,255, 255,255), not Scalar(255,255,255)
+        Mat foreground = new Mat(img.size(), CvType.CV_8UC3, new Scalar(255,
+                255, 255,255));
+        img.copyTo(foreground, mask);
+
+        // convert matrix to output bitmap
+        bitmap = Bitmap.createBitmap((int) foreground.size().width,
+                (int) foreground.size().height,
+                Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(foreground, bitmap);
+        return bitmap;
+    }
+
 
 }
 

@@ -24,7 +24,7 @@ public class SplashActivity extends AppCompatActivity {
             FirebaseAuth.getInstance().signOut();
 
         //홈액티비티로 전환
-        Intent mainIntent = new Intent(getApplicationContext(), MainTabActivity.class);
+        Intent mainIntent = new Intent(getApplicationContext(), Final.class);
         startActivity(mainIntent);
         finish();
     }
