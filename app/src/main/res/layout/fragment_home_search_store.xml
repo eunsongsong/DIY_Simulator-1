@@ -36,19 +36,19 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:paddingStart="20dp"
-            android:text="판매자 이름"/>
+            android:text="판매자 :"/>
         <TextView
             android:id="@+id/search_seller_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="20dp"
-            android:text="판매자 전화번호"/>
+            android:text="전화번호 :"/>
         <TextView
             android:id="@+id/search_seller_addr"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="20dp"
-            android:text="판매자 주소"/>
+            android:text="가게 주소 :"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/search_store_recyclerView"

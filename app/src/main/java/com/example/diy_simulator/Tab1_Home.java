@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -45,6 +46,26 @@ public class Tab1_Home extends Fragment implements View.OnClickListener {
         storename_recyclerview.setHasFixedSize(true);
         storename_recyclerview.setLayoutManager(layoutManager);
         storename_recyclerview.setAdapter(storenameAdapter);
+
+        ImageButton category_keyring_Btn = rootview.findViewById(R.id.back_img_1);
+
+        category_keyring_Btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment tab1 = new HomeSearch_Category();
+
+                //번들에 카테고리 담아서 카테고리 검색 프래그먼트로 보내기
+                Bundle bundle = new Bundle();
+                bundle.putString("category", "키링");
+                tab1.setArguments(bundle);
+
+                //프래그먼트 tab1 -> search category 로 교체
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.replace(R.id.tab1_layout, tab1).commit();
+            }
+        });
 
         //가게별 검색 결과 클릭시 해당 가게 페이지로 이동
         storenameAdapter.setOnItemClickListener(new Tab1_Home_Storename_Adapter.OnItemClickListener() {
