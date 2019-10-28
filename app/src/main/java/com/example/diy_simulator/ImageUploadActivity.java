@@ -48,6 +48,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -104,6 +105,11 @@ public class ImageUploadActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_upload);
+
+        if (!OpenCVLoader.initDebug()) {
+            // Handle initialization error
+            finish();
+        }
         //사진 찍어서 or 갤러리에서 가져온 사진 나타내는 이미지뷰
         imageView = (ImageView) findViewById(R.id.preview);
         choose_btn = (Button) findViewById(R.id.choose_btn); //사진 선택 버튼
@@ -208,7 +214,8 @@ public class ImageUploadActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         ClearMaterialinfo(); //업로드 후에 이미지 선택을 또 하면 입력 칸 비움
-                        photoDialogRadio();
+                        //photoDialogRadio();
+                        onSelectImageClick();
                     }
                 });
                 //업로드 버튼 누르면 파이어베이스에 업로드 실행
@@ -243,7 +250,8 @@ public class ImageUploadActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     ClearMaterialinfo(); //업로드 후에 이미지 선택을 또 하면 입력 칸 비움
-                    photoDialogRadio();
+                    //photoDialogRadio();
+                    onSelectImageClick();
                 }
             });
             upload_btn.setOnClickListener(new View.OnClickListener() {
@@ -313,33 +321,33 @@ public class ImageUploadActivity extends AppCompatActivity {
                 Environment.getExternalStoragePublicDirectory(
                         Environment.DIRECTORY_PICTURES), "MYAPP/");
         // 만약 장소가 존재하지 않는다면 폴더를 새롭게 만든다.
-         if (!pictureStorage.exists()) {
-        // /** * mkdir은 폴더를 하나만 만들고,
-        // * mkdirs는 경로상에 존재하는 모든 폴더를 만들어준다.
-        pictureStorage.mkdirs();
+        if (!pictureStorage.exists()) {
+            // /** * mkdir은 폴더를 하나만 만들고,
+            // * mkdirs는 경로상에 존재하는 모든 폴더를 만들어준다.
+            pictureStorage.mkdirs();
         }
 
-         try{
+        try{
 
-             File file = File.createTempFile(fileName, ".jpg", pictureStorage);
-             // ImageView에 보여주기위해 사진파일의 절대 경로를 얻어온다.
+            File file = File.createTempFile(fileName, ".jpg", pictureStorage);
+            // ImageView에 보여주기위해 사진파일의 절대 경로를 얻어온다.
 
-             imagePath = file.getAbsolutePath();
+            imagePath = file.getAbsolutePath();
 
-             // 찍힌 사진을 "갤러리" 앱에 추가한다.
-             Intent mediaScanIntent =
-                     new Intent( Intent.ACTION_MEDIA_SCANNER_SCAN_FILE );
+            // 찍힌 사진을 "갤러리" 앱에 추가한다.
+            Intent mediaScanIntent =
+                    new Intent( Intent.ACTION_MEDIA_SCANNER_SCAN_FILE );
 
-             File f = new File( imagePath );
-             Uri contentUri = Uri.fromFile( f );
-             mediaScanIntent.setData( contentUri );
-             this.sendBroadcast( mediaScanIntent );
+            File f = new File( imagePath );
+            Uri contentUri = Uri.fromFile( f );
+            mediaScanIntent.setData( contentUri );
+            this.sendBroadcast( mediaScanIntent );
 
-             return file;
-         } catch (IOException e) {
-             e.printStackTrace();
-         }
-         return null;
+            return file;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     //갤러리에서 사진 불러오기
@@ -358,43 +366,65 @@ public class ImageUploadActivity extends AppCompatActivity {
         {
             return;
         }
-      //  if (resultCode == RESULT_OK && data.getData() != null) {
-            if (requestCode == PICK_IMAGE && data.getData() != null) {
-                //이미지뷰에 세팅
-                try {
-                    // 이미지 표시
-                    //사진의 주소를 가져와 EXIF에서 회전 값을 읽어와 회전된 상태만큼 다시 회전시켜 원상복구 시킨다.
-                    //* EXIF : 사진의 크기, 화소, 회전, 노출정도 등의 메타데이터.
-                    imagePath = getRealPathFromURI(data.getData());
-                    int degree = getExifOrientation(imagePath);
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                    bitmap = getRotatedBitmap(bitmap, degree);
-
-                    imageView.setImageBitmap(bitmap);
-                    imageView.setDrawingCacheEnabled(true);
-                    imageView.buildDrawingCache();
-
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                    data_arr = baos.toByteArray();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-
-                }
-            }
-            else if (requestCode == CAPTURE_IMAGE){
-                // 사진을 ImageView에 보여준다.
-                BitmapFactory.Options factory = new BitmapFactory.Options();
-                factory.inJustDecodeBounds = false;
-                factory.inPurgeable = true;
-
+        //  if (resultCode == RESULT_OK && data.getData() != null) {
+        if (requestCode == PICK_IMAGE && data.getData() != null) {
+            //이미지뷰에 세팅
+            try {
+                // 이미지 표시
                 //사진의 주소를 가져와 EXIF에서 회전 값을 읽어와 회전된 상태만큼 다시 회전시켜 원상복구 시킨다.
                 //* EXIF : 사진의 크기, 화소, 회전, 노출정도 등의 메타데이터.
-                Log.d("경로",imagePath);
+                imagePath = getRealPathFromURI(data.getData());
                 int degree = getExifOrientation(imagePath);
-                Bitmap bitmap = BitmapFactory.decodeFile(imagePath, factory);
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                 bitmap = getRotatedBitmap(bitmap, degree);
+
+                imageView.setImageBitmap(bitmap);
+                imageView.setDrawingCacheEnabled(true);
+                imageView.buildDrawingCache();
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                data_arr = baos.toByteArray();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            }
+        }
+        else if (requestCode == CAPTURE_IMAGE){
+            // 사진을 ImageView에 보여준다.
+            BitmapFactory.Options factory = new BitmapFactory.Options();
+            factory.inJustDecodeBounds = false;
+            factory.inPurgeable = true;
+
+            //사진의 주소를 가져와 EXIF에서 회전 값을 읽어와 회전된 상태만큼 다시 회전시켜 원상복구 시킨다.
+            //* EXIF : 사진의 크기, 화소, 회전, 노출정도 등의 메타데이터.
+            Log.d("경로",imagePath);
+            int degree = getExifOrientation(imagePath);
+            Bitmap bitmap = BitmapFactory.decodeFile(imagePath, factory);
+            bitmap = getRotatedBitmap(bitmap, degree);
+            imageView.setImageBitmap(bitmap);
+            imageView.setDrawingCacheEnabled(true);
+            imageView.buildDrawingCache();
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            data_arr = baos.toByteArray();
+        }
+        else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
+            //((ImageView) findViewById(R.id.quick_start_cropped_image)).setImageURI(result.getUri());
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            try {
+                // 이미지 표시
+                //사진의 주소를 가져와 EXIF에서 회전 값을 읽어와 회전된 상태만큼 다시 회전시켜 원상복구 시킨다.
+                //* EXIF : 사진의 크기, 화소, 회전, 노출정도 등의 메타데이터.
+                //imageView = (ImageView) findViewById(R.id.preview);
+                imagePath = getRealPathFromURI(result.getUri());
+                int degree = getExifOrientation(imagePath);
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), result.getUri());
+                bitmap = getRotatedBitmap(bitmap, degree);
+                bitmap = removeBackground(bitmap);
+
                 imageView.setImageBitmap(bitmap);
                 imageView.setDrawingCacheEnabled(true);
                 imageView.buildDrawingCache();
@@ -403,8 +433,18 @@ public class ImageUploadActivity extends AppCompatActivity {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 data_arr = baos.toByteArray();
             }
+            catch (Exception e) {
+                e.printStackTrace();
+
+            }
+            Toast.makeText(this, "Cropping successful, Sample: " + result.getSampleSize(), Toast.LENGTH_LONG).show();
+        }
+        else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            Toast.makeText(this, "Cropping failed: " + result.getError(), Toast.LENGTH_LONG).show();
+        }
         getMyChildrenCount();  //UploadFile() 함수에서 실행하면 시간차로 이미지 파일명이 '0'이 됨
-        alert.cancel();
+        //alert.cancel(); 잠시 안씀 사진불러오기 할 때 씀
     }
 
     //파이어베이스에 이미지 업로드
@@ -453,8 +493,6 @@ public class ImageUploadActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "다운로드 실패", Toast.LENGTH_SHORT).show();
                     }
                 });
-
-
                 // 성공!
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
             }
@@ -467,7 +505,7 @@ public class ImageUploadActivity extends AppCompatActivity {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                 count = dataSnapshot.getChildrenCount();
+                count = dataSnapshot.getChildrenCount();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -617,7 +655,6 @@ public class ImageUploadActivity extends AppCompatActivity {
         etcspinner.setSelection(0);
     }
 
-
     //디비에 부자재 URL 넣기
     private void Add_URL_Info(final Uri uri) {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -708,10 +745,6 @@ public class ImageUploadActivity extends AppCompatActivity {
 
         return result;
     }
-    /** Start pick image activity with chooser. */
-    public void onSelectImageClick(View view) {
-        CropImage.activity(null).setGuidelines(CropImageView.Guidelines.ON).start(this);
-    }
 
     public Bitmap removeBackground(Bitmap bitmap) {
         //GrabCut part
@@ -751,9 +784,9 @@ public class ImageUploadActivity extends AppCompatActivity {
     }
 
 
+    /** Start pick image activity with chooser. */
+    public void onSelectImageClick() {
+        CropImage.activity(null).setGuidelines(CropImageView.Guidelines.ON).start(ImageUploadActivity.this);
+        Log.d("언제이","ㅇㅇㅇ");
+    }
 }
-
-
-
-
-
