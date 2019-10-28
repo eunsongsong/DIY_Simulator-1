@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -23,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -34,6 +36,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -62,7 +67,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class ImageUploadActivity extends AppCompatActivity {
 
@@ -87,18 +94,23 @@ public class ImageUploadActivity extends AppCompatActivity {
 
     private Spinner keyspinner, casespinner, earspinner, bracespinner, etcspinner;
     private String keyspin, casespin, earspin, bracespin, etcspin;
-    private AlertDialog alert;
-
-    static int PICK_IMAGE = 11;
-    static int CAPTURE_IMAGE = 12;
     private String imagePath;
-
     byte[] data_arr;
     long count;  //DB의 부자재 개수
+
+    private CheckedTextView checkedTextView;
+
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference("부자재");
     private DatabaseReference myRef2 = database.getReference("판매자");
     private DatabaseReference myRef3 = database.getReference("카테고리");
+
+    private List<Preview_Image_Info> preview_image_infos = new ArrayList<>();
+    private Preview_Image_Adapter preview_image_adapter =
+            new Preview_Image_Adapter(ImageUploadActivity.this, preview_image_infos, R.layout.activity_image_upload);
+
+    private RecyclerView preview_recycler_view;
+
 
     @SuppressLint("WrongThread")
     @Override
@@ -111,8 +123,8 @@ public class ImageUploadActivity extends AppCompatActivity {
             finish();
         }
         //사진 찍어서 or 갤러리에서 가져온 사진 나타내는 이미지뷰
-        imageView = (ImageView) findViewById(R.id.preview);
-        choose_btn = (Button) findViewById(R.id.choose_btn); //사진 선택 버튼
+        checkedTextView = (CheckedTextView) findViewById(R.id.check_remove);
+        //imageView = (ImageView) findViewById(R.id.preview);
         upload_btn = (Button) findViewById(R.id.upload_btn); //업로드 버튼
         //부자재 정보 - 판매자 입력
         mname = (EditText) findViewById(R.id.material_name);
@@ -146,6 +158,17 @@ public class ImageUploadActivity extends AppCompatActivity {
         bracespinner.setAdapter(Adapter4);
         ArrayAdapter Adapter5 = ArrayAdapter.createFromResource(this, R.array.etc, android.R.layout.simple_spinner_dropdown_item);
         etcspinner.setAdapter(Adapter5);
+
+        preview_recycler_view = findViewById(R.id.image_recyclerview);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        layoutManager.setOrientation(RecyclerView.HORIZONTAL);
+        preview_recycler_view.setHasFixedSize(true);
+        preview_recycler_view.setLayoutManager(layoutManager);
+        preview_recycler_view.setAdapter(preview_image_adapter);
+        Log.d("먀!","ㅇㅇㅇ");
+        Preview_Image_Info item = new Preview_Image_Info();
+        preview_image_infos.add(item);
+        preview_image_adapter.notifyDataSetChanged();
 
         //스피너 눌렸을 때 아이템 값 받아오기 - 키링
         keyspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -203,6 +226,19 @@ public class ImageUploadActivity extends AppCompatActivity {
             }
         });
 
+        checkedTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!checkedTextView.isChecked()) {
+                    checkedTextView.setChecked(true);
+                    checkedTextView.setTextColor(Color.parseColor("#FF0000"));
+                }
+                else {
+                    checkedTextView.setChecked(false);
+                    checkedTextView.setTextColor(Color.parseColor("#555555"));
+                }
+            }
+        });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
@@ -210,14 +246,15 @@ public class ImageUploadActivity extends AppCompatActivity {
                     checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 Log.d("TAG", "권한 설정 완료");
                 //이미지 선택 버튼 누르면 사진 찍기 or 갤러리에서 선택 다이얼로그 실행
-                choose_btn.setOnClickListener(new View.OnClickListener() {
+
+                preview_image_adapter.setOnItemClickListener(new Preview_Image_Adapter.OnItemClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onItemClick(View v, int position) {
                         ClearMaterialinfo(); //업로드 후에 이미지 선택을 또 하면 입력 칸 비움
-                        //photoDialogRadio();
                         onSelectImageClick();
                     }
                 });
+
                 //업로드 버튼 누르면 파이어베이스에 업로드 실행
                 upload_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -246,14 +283,16 @@ public class ImageUploadActivity extends AppCompatActivity {
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED || grantResults[1] == PackageManager.PERMISSION_GRANTED) {
             Log.d("TAG", "Permission: " + permissions[0] + " was " + grantResults[0]);
             Log.d("TAG", "Permission: " + permissions[1] + " was " + grantResults[1]);
-            choose_btn.setOnClickListener(new View.OnClickListener() {
+
+
+            preview_image_adapter.setOnItemClickListener(new Preview_Image_Adapter.OnItemClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onItemClick(View v, int position) {
                     ClearMaterialinfo(); //업로드 후에 이미지 선택을 또 하면 입력 칸 비움
-                    //photoDialogRadio();
                     onSelectImageClick();
                 }
             });
+
             upload_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -269,96 +308,6 @@ public class ImageUploadActivity extends AppCompatActivity {
         }
     }
 
-    //사진찍기 or 앨범에서 가져오기 선택 다이얼로그
-    private void photoDialogRadio() {
-        final CharSequence[] PhotoModels = {"찍어서 가져오기","갤러리에서 가져오기"};
-        AlertDialog.Builder alt_bld = new AlertDialog.Builder(this);
-        alt_bld.setIcon(R.drawable.minticon);
-        alt_bld.setTitle("부자재 사진 ");
-        alt_bld.setSingleChoiceItems(PhotoModels, -1, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int item) {
-                if (item == 0) { //찍어서 가져오기
-                    sendTakePhotoIntent();
-
-                } else if (item == 1) { //갤러리에서 가져오기
-                    takePhotoFromGallery();
-                }
-
-            }
-        });
-        alert = alt_bld.create();
-        alert.show();
-    }
-
-
-    //찍어서 가져오기
-    private void sendTakePhotoIntent() {
-        // Camera Application을 실행한다.
-        Intent cameraApp = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // 찍은 사진을 보관할 파일 객체를 만들어서 보낸다.
-        File picture = savePictureFile();
-        if (picture != null) {
-            cameraApp.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(getApplicationContext(),"com.example.diy_simulator.fileprovider" ,picture));
-            startActivityForResult(cameraApp, CAPTURE_IMAGE);
-        }
-    }
-
-    /**
-     * 카메라에서 찍은 사진을 외부 저장소에 저장한다.
-     * @return
-     */
-    private  File savePictureFile(){
-
-        //사진 파일의 이름을 만든다.
-        //Date는 java.util 을 Import 한다.
-        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss") .format(new Date());
-        String fileName = "IMG_" + timestamp;
-        /** * 사진파일이 저장될 장소를 구한다.
-         *  * 외장메모리에서 사진을 저장하는 폴더를 찾아서
-         *  * 그곳에 MYAPP 이라는 폴더를 만든다
-         *  . */
-        File pictureStorage = new File(
-                Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES), "MYAPP/");
-        // 만약 장소가 존재하지 않는다면 폴더를 새롭게 만든다.
-        if (!pictureStorage.exists()) {
-            // /** * mkdir은 폴더를 하나만 만들고,
-            // * mkdirs는 경로상에 존재하는 모든 폴더를 만들어준다.
-            pictureStorage.mkdirs();
-        }
-
-        try{
-
-            File file = File.createTempFile(fileName, ".jpg", pictureStorage);
-            // ImageView에 보여주기위해 사진파일의 절대 경로를 얻어온다.
-
-            imagePath = file.getAbsolutePath();
-
-            // 찍힌 사진을 "갤러리" 앱에 추가한다.
-            Intent mediaScanIntent =
-                    new Intent( Intent.ACTION_MEDIA_SCANNER_SCAN_FILE );
-
-            File f = new File( imagePath );
-            Uri contentUri = Uri.fromFile( f );
-            mediaScanIntent.setData( contentUri );
-            this.sendBroadcast( mediaScanIntent );
-
-            return file;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    //갤러리에서 사진 불러오기
-    private void takePhotoFromGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
-        intent.setType("image/*");
-        startActivityForResult(intent, PICK_IMAGE);
-    }
-    //갤러리 사진가져온거 결과(비트맵으로) 저장
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -366,52 +315,7 @@ public class ImageUploadActivity extends AppCompatActivity {
         {
             return;
         }
-        //  if (resultCode == RESULT_OK && data.getData() != null) {
-        if (requestCode == PICK_IMAGE && data.getData() != null) {
-            //이미지뷰에 세팅
-            try {
-                // 이미지 표시
-                //사진의 주소를 가져와 EXIF에서 회전 값을 읽어와 회전된 상태만큼 다시 회전시켜 원상복구 시킨다.
-                //* EXIF : 사진의 크기, 화소, 회전, 노출정도 등의 메타데이터.
-                imagePath = getRealPathFromURI(data.getData());
-                int degree = getExifOrientation(imagePath);
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                bitmap = getRotatedBitmap(bitmap, degree);
-
-                imageView.setImageBitmap(bitmap);
-                imageView.setDrawingCacheEnabled(true);
-                imageView.buildDrawingCache();
-
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                data_arr = baos.toByteArray();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-
-            }
-        }
-        else if (requestCode == CAPTURE_IMAGE){
-            // 사진을 ImageView에 보여준다.
-            BitmapFactory.Options factory = new BitmapFactory.Options();
-            factory.inJustDecodeBounds = false;
-            factory.inPurgeable = true;
-
-            //사진의 주소를 가져와 EXIF에서 회전 값을 읽어와 회전된 상태만큼 다시 회전시켜 원상복구 시킨다.
-            //* EXIF : 사진의 크기, 화소, 회전, 노출정도 등의 메타데이터.
-            Log.d("경로",imagePath);
-            int degree = getExifOrientation(imagePath);
-            Bitmap bitmap = BitmapFactory.decodeFile(imagePath, factory);
-            bitmap = getRotatedBitmap(bitmap, degree);
-            imageView.setImageBitmap(bitmap);
-            imageView.setDrawingCacheEnabled(true);
-            imageView.buildDrawingCache();
-
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            data_arr = baos.toByteArray();
-        }
-        else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
             //((ImageView) findViewById(R.id.quick_start_cropped_image)).setImageURI(result.getUri());
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             try {
@@ -423,21 +327,38 @@ public class ImageUploadActivity extends AppCompatActivity {
                 int degree = getExifOrientation(imagePath);
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), result.getUri());
                 bitmap = getRotatedBitmap(bitmap, degree);
-                bitmap = removeBackground(bitmap);
+                //여기까지 회전된 이미지 복구
 
-                imageView.setImageBitmap(bitmap);
-                imageView.setDrawingCacheEnabled(true);
-                imageView.buildDrawingCache();
+                if(checkedTextView.isChecked())
+                    bitmap = removeBackground(bitmap);
+/*
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+                String path = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "Title", null);
+                */
+
+
+                //imageView.setImageBitmap(bitmap);
+               // imageView.setDrawingCacheEnabled(true);
+                //mageView.buildDrawingCache();
 
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 data_arr = baos.toByteArray();
+
+                Preview_Image_Info item;
+                item = new Preview_Image_Info(bitmap,data_arr);
+                if( preview_image_infos.size() == 1)
+                    preview_image_infos.add(0,item);
+                else
+                    preview_image_infos.add(preview_image_infos.size() - 1, item);
+                preview_image_adapter.notifyDataSetChanged();
             }
             catch (Exception e) {
                 e.printStackTrace();
 
             }
-            Toast.makeText(this, "Cropping successful, Sample: " + result.getSampleSize(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "성공!", Toast.LENGTH_LONG).show();
         }
         else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
@@ -497,7 +418,6 @@ public class ImageUploadActivity extends AppCompatActivity {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
             }
         });
-        alert.cancel();
     }
 
     //부자재의 child 개수 가져오기
@@ -550,7 +470,8 @@ public class ImageUploadActivity extends AppCompatActivity {
                     for(DataSnapshot ds : dataSnapshot.getChildren()){
                         if(ds.getKey().equals("키링")){
                             String tmp = ds.child(keyspin).getValue().toString();
-                            myRef3.child("키링").child(keyspin).setValue(tmp+"#"+count);
+                            if(TextUtils.isEmpty(tmp)) myRef3.child("키링").child(keyspin).setValue(count);
+                            else myRef3.child("키링").child(keyspin).setValue(tmp+"#"+count);
                         }
                     }
                 }
@@ -568,7 +489,8 @@ public class ImageUploadActivity extends AppCompatActivity {
                     for(DataSnapshot ds : dataSnapshot.getChildren()){
                         if(ds.getKey().equals("폰케이스")){
                             String tmp = ds.child(casespin).getValue().toString();
-                            myRef3.child("폰케이스").child(casespin).setValue(tmp+"#"+count);
+                            if(TextUtils.isEmpty(tmp)) myRef3.child("폰케이스").child(casespin).setValue(count);
+                            else myRef3.child("폰케이스").child(casespin).setValue(tmp+"#"+count);
                         }
                     }
                 }
@@ -586,7 +508,8 @@ public class ImageUploadActivity extends AppCompatActivity {
                     for(DataSnapshot ds : dataSnapshot.getChildren()){
                         if(ds.getKey().equals("액세서리")){
                             String tmp = ds.child("귀걸이").child(earspin).getValue().toString();
-                            myRef3.child("액세서리").child("귀걸이").child(earspin).setValue(tmp+"#"+count);
+                            if(TextUtils.isEmpty(tmp)) myRef3.child("액세서리").child("귀걸이").child(earspin).setValue(count);
+                            else myRef3.child("액세서리").child("귀걸이").child(earspin).setValue(tmp+"#"+count);
                         }
                     }
                 }
@@ -604,7 +527,8 @@ public class ImageUploadActivity extends AppCompatActivity {
                     for(DataSnapshot ds : dataSnapshot.getChildren()){
                         if(ds.getKey().equals("액세서리")){
                             String tmp = ds.child("팔찌").child(bracespin).getValue().toString();
-                            myRef3.child("액세서리").child("팔찌").child(bracespin).setValue(tmp+"#"+count);
+                            if(TextUtils.isEmpty(tmp)) myRef3.child("액세서리").child("팔찌").child(bracespin).setValue(count);
+                            else myRef3.child("액세서리").child("팔찌").child(bracespin).setValue(tmp+"#"+count);
                         }
                     }
                 }
@@ -622,7 +546,8 @@ public class ImageUploadActivity extends AppCompatActivity {
                     for(DataSnapshot ds : dataSnapshot.getChildren()){
                         if(ds.getKey().equals("기타")){
                             String tmp = ds.child(etcspin).getValue().toString();
-                            myRef3.child("기타").child(etcspin).setValue(tmp+"#"+count);
+                            if(TextUtils.isEmpty(tmp)) myRef3.child("기타").child(etcspin).setValue(count);
+                            else myRef3.child("기타").child(etcspin).setValue(tmp+"#"+count);
                         }
                     }
                 }
@@ -664,8 +589,6 @@ public class ImageUploadActivity extends AppCompatActivity {
                     if(ds.getKey().equals(count+"")){
                         myRef.child(count+"").child("image_url").setValue(uri+"");
                     }
-
-
                 }
             }
 
@@ -782,7 +705,6 @@ public class ImageUploadActivity extends AppCompatActivity {
         Utils.matToBitmap(foreground, bitmap);
         return bitmap;
     }
-
 
     /** Start pick image activity with chooser. */
     public void onSelectImageClick() {

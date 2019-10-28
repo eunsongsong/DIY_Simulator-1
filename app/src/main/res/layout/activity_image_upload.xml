@@ -33,7 +33,14 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp">
-
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/image_recyclerview"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/photo_outline"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"/>
+<!--
         <ImageView
             android:id="@+id/preview"
             android:layout_marginTop="20dp"
@@ -41,19 +48,37 @@
             android:src="@drawable/photo_outline"
             android:layout_width="300dp"
             android:layout_height="300dp"/>
+
         <Button
             android:id="@+id/choose_btn"
             android:text="사진 선택"
-            android:layout_below="@+id/preview"
-            android:layout_marginTop="5dp"
+            android:layout_below="@+id/image_recyclerview"
+            android:layout_marginTop="20dp"
             android:layout_centerHorizontal="true"
             android:background="#AA3DC1AB"
             android:layout_width="300dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"/> -->
+        <CheckedTextView
+            android:id="@+id/check_remove"
+            android:text="배경 제거하기"
+            android:layout_below="@+id/image_recyclerview"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"
+            android:background="#00ff0000"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:checkMark="?android:attr/listChoiceIndicatorSingle"
+            android:textAppearance="?android:attr/textAppearanceListItemSmall"
+            android:paddingTop="5dp"
+            android:textAlignment="textEnd"
+            android:clickable="true"
+            android:focusable="true"
+            android:ellipsize="end"
+            android:textColor="#555555"/>
 
         <TextView
             android:id="@+id/name_guide"
-            android:layout_below="@+id/choose_btn"
+            android:layout_below="@+id/check_remove"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
