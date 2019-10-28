@@ -39,12 +39,10 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".MainTabActivity"></activity>
-        <activity android:name=".Final" />
         <activity android:name=".ImageActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".SignInActivity" />
         <activity android:name=".ImageUploadActivity" />
-        <activity android:name=".MainActivity" />
         <activity
             android:name=".RemovebackgroundActivity"
             android:configChanges="keyboardHidden|orientation"
