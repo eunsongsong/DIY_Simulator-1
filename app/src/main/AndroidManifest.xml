@@ -38,7 +38,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".MainTabActivity"></activity>
+        <activity android:name=".SimulationMenu"></activity>
+        <activity android:name=".MainTabActivity" />
         <activity android:name=".ImageActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".SignInActivity" />
