@@ -25,6 +25,7 @@ public class Tab4_Simulation extends Fragment {
                 //프래그먼트 tab4 -> SimulationMenu 로 교체
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.replace(R.id.tab4_layout, tab4).commit();
             }

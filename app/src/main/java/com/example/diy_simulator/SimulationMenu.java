@@ -52,6 +52,7 @@ public class SimulationMenu extends Fragment {
         super.onPause();
         FragmentManager fm = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right);
         fragmentTransaction.remove(SimulationMenu.this).commit();
         fm.popBackStack();
     }
