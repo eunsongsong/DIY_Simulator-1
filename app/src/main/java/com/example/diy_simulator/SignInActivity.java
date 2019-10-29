@@ -193,6 +193,7 @@ public class SignInActivity extends AppCompatActivity {
                                         Intent intent = new Intent(getApplicationContext(), MainTabActivity.class);
                                         intent.putExtra("whoIs", isSeller);
                                         startActivity(intent);
+                                        //finish();
                                     }
                                 }
                             } else {

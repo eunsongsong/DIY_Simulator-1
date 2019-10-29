@@ -3,6 +3,7 @@ package com.example.diy_simulator;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,17 +61,19 @@ public class Preview_Image_Adapter extends  RecyclerView.Adapter<com.example.diy
             }
         });
 
-        if(item.getBitmap() != null) {
+        if(position == getItemCount() - 1){
+            holder.button.setVisibility(View.VISIBLE);
+            holder.imageView.setVisibility(View.INVISIBLE);
+        }
+        else
+        {
             //제품 이미지 url로 나타내기
+            Log.d("이미지","ㅇㅇㅇ");
+            holder.imageView.setVisibility(View.VISIBLE);
             holder.imageView.setImageBitmap(item.getBitmap());
             holder.imageView.setDrawingCacheEnabled(true);
             holder.imageView.buildDrawingCache();
             holder.button.setVisibility(View.INVISIBLE);
-
-        }
-        else
-        {
-            holder.button.setVisibility(View.VISIBLE);
         }
 
     }

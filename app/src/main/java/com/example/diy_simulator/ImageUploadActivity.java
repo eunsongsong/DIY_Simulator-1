@@ -352,6 +352,7 @@ public class ImageUploadActivity extends AppCompatActivity {
                     preview_image_infos.add(0,item);
                 else
                     preview_image_infos.add(preview_image_infos.size() - 1, item);
+                Log.d("ddd", preview_image_infos.size()+"");
                 preview_image_adapter.notifyDataSetChanged();
             }
             catch (Exception e) {
