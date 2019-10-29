@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -41,6 +42,7 @@ public class Tab3_MyStore extends Fragment {
         final ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_tab3_my_store, container, false);
 
         Button upload_btn = rootview.findViewById(R.id.image_upload_btn_tab3);
+        final TextView mystore_title = rootview.findViewById(R.id.mystore_toolbar_title);
         firebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = firebaseAuth.getCurrentUser();
 
@@ -59,6 +61,8 @@ public class Tab3_MyStore extends Fragment {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     if (mFirebaseUser.getEmail().equals(ds.child("email").getValue().toString())){
                         material = ds.child("material").getValue().toString();
+                        String name = ds.child("storename").getValue().toString();
+                        mystore_title.setText(name);
                         break;
                     }
                 }

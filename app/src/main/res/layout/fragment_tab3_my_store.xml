@@ -7,17 +7,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <android.widget.Toolbar
+        android:id="@+id/mystore_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#EEEEEE"
+        android:minHeight="?attr/actionBarSize">
+
+        <TextView
+            android:id="@+id/mystore_toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="#3DC1AB"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </android.widget.Toolbar>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/mystore_recyclerView"
+        android:layout_below="@id/mystore_toolbar"
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <Button
         android:id="@+id/image_upload_btn_tab3"
-        android:layout_width="match_parent"
+        android:layout_width="330dp"
+        android:layout_centerHorizontal="true"
+        android:background="#3DC1AB"
         android:layout_height="wrap_content"
         android:layout_below="@+id/mystore_recyclerView"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:text="upload" />
 </RelativeLayout>
 
