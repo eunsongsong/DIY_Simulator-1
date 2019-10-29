@@ -70,17 +70,20 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.StringTokenizer;
+
 
 public class ImageUploadActivity extends AppCompatActivity {
 
+    private ProgressDialog pd;
     FirebaseStorage storage = FirebaseStorage.getInstance("gs://diy-simulator-607c9.appspot.com");
     // Create a storage reference from our app
     StorageReference storageRef = storage.getReference();
     // Create a reference to 'images/mountains.jpg'
 
-    ProgressDialog dialog;
     //이 레퍼런스 child() 매개변수를 수정 하면 끝!
     StorageReference mountainImagesRef;
+    StorageReference mountainImagesRef2;
 
     FirebaseAuth firebaseAuth;
     FirebaseUser mFirebaseUser;
@@ -95,7 +98,8 @@ public class ImageUploadActivity extends AppCompatActivity {
     private Spinner keyspinner, casespinner, earspinner, bracespinner, etcspinner;
     private String keyspin, casespin, earspin, bracespin, etcspin;
     private String imagePath;
-    byte[] data_arr;
+    ArrayList<byte[]> data_arr;
+    ArrayList<byte[]> rm_data_arr;
     long count;  //DB의 부자재 개수
 
     private CheckedTextView checkedTextView;
@@ -110,14 +114,16 @@ public class ImageUploadActivity extends AppCompatActivity {
             new Preview_Image_Adapter(ImageUploadActivity.this, preview_image_infos, R.layout.activity_image_upload);
 
     private RecyclerView preview_recycler_view;
-
+    UploadTask uploadTask;
+    ByteArrayOutputStream baos;
 
     @SuppressLint("WrongThread")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_upload);
-
+        data_arr = new ArrayList<>();
+         rm_data_arr = new ArrayList<>();
         if (!OpenCVLoader.initDebug()) {
             // Handle initialization error
             finish();
@@ -259,11 +265,11 @@ public class ImageUploadActivity extends AppCompatActivity {
                 upload_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(data_arr == null) {
+                        if(data_arr == null || rm_data_arr == null) {
                             Toast.makeText(ImageUploadActivity.this, "데이터가 없습니다.", Toast.LENGTH_SHORT).show();
                         }
                         else{
-                            dialog = ProgressDialog.show(ImageUploadActivity.this, "업로드 진행중", "잠시만 기다려주세요.", true);
+                            showProgress("잠시만여~");
                             UploadFile();
                         }
                     }
@@ -284,7 +290,6 @@ public class ImageUploadActivity extends AppCompatActivity {
             Log.d("TAG", "Permission: " + permissions[0] + " was " + grantResults[0]);
             Log.d("TAG", "Permission: " + permissions[1] + " was " + grantResults[1]);
 
-
             preview_image_adapter.setOnItemClickListener(new Preview_Image_Adapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View v, int position) {
@@ -296,11 +301,11 @@ public class ImageUploadActivity extends AppCompatActivity {
             upload_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(data_arr == null) {
+                    if(data_arr == null || rm_data_arr == null) {
                         Toast.makeText(ImageUploadActivity.this, "데이터가 없습니다.", Toast.LENGTH_SHORT).show();
                     }
                     else{
-                        dialog = ProgressDialog.show(ImageUploadActivity.this, "업로드 진행중", "잠시만 기다려주세요.", true);
+                        showProgress("잠시만여~");
                         UploadFile();
                     }
                 }
@@ -329,31 +334,43 @@ public class ImageUploadActivity extends AppCompatActivity {
                 bitmap = getRotatedBitmap(bitmap, degree);
                 //여기까지 회전된 이미지 복구
 
-                if(checkedTextView.isChecked())
+                if(checkedTextView.isChecked()) {
                     bitmap = removeBackground(bitmap);
+                    baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    rm_data_arr.add(baos.toByteArray());
+                    Preview_Image_Info item;
+                    item = new Preview_Image_Info(bitmap,rm_data_arr.get(rm_data_arr.size() - 1));
+                    if( preview_image_infos.size() == 1)
+                        preview_image_infos.add(0,item);
+                    else
+                        preview_image_infos.add(preview_image_infos.size() - 1, item);
+                    Log.d("ddd", preview_image_infos.size()+"");
+                    checkedTextView.setChecked(false);
+
+                }
+                else{
+                    baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    data_arr.add(baos.toByteArray());
+                    Preview_Image_Info item;
+                    item = new Preview_Image_Info(bitmap,data_arr.get(data_arr.size() - 1));
+                    if( preview_image_infos.size() == 1)
+                        preview_image_infos.add(0,item);
+                    else
+                        preview_image_infos.add(preview_image_infos.size() - 1, item);
+                    Log.d("ddd", preview_image_infos.size()+"");
+
+                }
 /*
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
                 String path = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "Title", null);
-                */
-
-
+                */          preview_image_adapter.notifyDataSetChanged();
                 //imageView.setImageBitmap(bitmap);
                // imageView.setDrawingCacheEnabled(true);
                 //mageView.buildDrawingCache();
 
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                data_arr = baos.toByteArray();
-
-                Preview_Image_Info item;
-                item = new Preview_Image_Info(bitmap,data_arr);
-                if( preview_image_infos.size() == 1)
-                    preview_image_infos.add(0,item);
-                else
-                    preview_image_infos.add(preview_image_infos.size() - 1, item);
-                Log.d("ddd", preview_image_infos.size()+"");
-                preview_image_adapter.notifyDataSetChanged();
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -371,55 +388,132 @@ public class ImageUploadActivity extends AppCompatActivity {
 
     //파이어베이스에 이미지 업로드
     private void UploadFile(){
-        mountainImagesRef = storageRef.child(count+"");
-        UploadTask uploadTask = mountainImagesRef.putBytes(data_arr);
-        // Handle unsuccessful uploads
-        uploadTask.addOnFailureListener( new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Log.d("----ddd----","업로드 실패");
-                Toast.makeText(ImageUploadActivity.this, "업로드를 실패하였습니다.", Toast.LENGTH_SHORT).show();
-                // 실패!
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                name = mname.getText().toString();
-                price = mprice.getText().toString();
-                width = mwidth.getText().toString();
-                height = mheight.getText().toString();
-                depth = mdepth.getText().toString();
-                stock = mstock.getText().toString();
-                keyword = mkeyword.getText().toString();
-                Material material = new Material(name, price, width, height, depth, stock, keyword);
-                myRef.child(count+"").setValue(material);
 
-                //부자재 정보를 판매자, 카테고리 디비에 고유 아이디 값만 업데이트함
-                UpdateSellerMaterialinfo();
-                UpdateCategoryMaterialinfo();
-                Log.d("----ddd----","업로드 성공");
-                Toast.makeText(ImageUploadActivity.this, "업로드를 완료하였습니다.", Toast.LENGTH_LONG).show();
-                dialog.dismiss();
-                // Alternatively way to get download URL
-                StorageReference pathReference = storageRef.child(count+"");
-                //Url을 다운받기
-                pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        //
-                        Add_URL_Info(uri);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), "다운로드 실패", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                // 성공!
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-            }
-        });
+        name = mname.getText().toString();
+        price = mprice.getText().toString();
+        width = mwidth.getText().toString();
+        height = mheight.getText().toString();
+        depth = mdepth.getText().toString();
+        stock = mstock.getText().toString();
+        keyword = mkeyword.getText().toString();
+        Material material = new Material(name, price, width, height, depth, stock, keyword);
+        myRef.child(count+"").setValue(material);
+
+        //부자재 정보를 판매자, 카테고리 디비에 고유 아이디 값만 업데이트함
+        UpdateSellerMaterialinfo();
+        UpdateCategoryMaterialinfo();
+        Log.d("----ddd----","업로드 성공");
+        Toast.makeText(ImageUploadActivity.this, "업로드를 완료하였습니다.", Toast.LENGTH_LONG).show();
+
+
+        final int target = (int) count;
+        mFirebaseUser = firebaseAuth.getCurrentUser();
+        StringTokenizer st = new StringTokenizer(mFirebaseUser.getEmail(), "@");
+        final String id = st.nextToken();
+        for(int i = 0; i < data_arr.size(); i++){
+            final int fi = i;
+            Log.d("ddd"+data_arr.size(),i+"번");
+
+            mountainImagesRef = storageRef.child( id + "-" + target + "-"+ i +"");
+            uploadTask = mountainImagesRef.putBytes(data_arr.get(i));
+            // Handle unsuccessful uploads
+            uploadTask.addOnFailureListener( new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.d("----ddd----","업로드 실패");
+                    Toast.makeText(ImageUploadActivity.this, "업로드를 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                    // 실패!
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                    // Alternatively way to get download URL
+                    Log.d("1번",count+"");
+                    //Url을 다운받기
+
+                        mountainImagesRef = storageRef.child( id + "-" + target + "-"+ fi +"");
+                        mountainImagesRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                Add_URL_Info(uri, target, false, (int) (target + fi));
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getApplicationContext(), "다운로드 실패", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    // 성공!
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                }
+            });
+        }
+        for(int i = 0; i < rm_data_arr.size(); i++){
+            final int fi = i;
+            Log.d("ddd","1번");
+
+            mountainImagesRef2 = storageRef.child(id + "-" + target + "-"+ (data_arr.size() + fi) +"");
+            uploadTask = mountainImagesRef2.putBytes(rm_data_arr.get(i));
+            // Handle unsuccessful uploads
+            uploadTask.addOnFailureListener( new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.d("----ddd----","업로드 실패");
+                    Toast.makeText(ImageUploadActivity.this, "업로드를 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                    // 실패!
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Log.d("2번",count+"");
+                    // Alternatively way to get download URL
+                    //Url을 다운받기
+                        mountainImagesRef2 = storageRef.child(id + "-" + target + "-"+ (data_arr.size()+ fi) +"");
+                        mountainImagesRef2.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+
+                                Add_URL_Info(uri, target, true, (int) (target + data_arr.size()  + fi));
+
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getApplicationContext(), "다운로드 실패", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    // 성공!
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                }
+            });
+        }
+        try{
+            Thread.sleep(3000);
+            hideProgress();
+            finish();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
+
+    // 프로그레스 다이얼로그 보이기
+    public void showProgress(String msg) {
+        if( pd == null ) { // 객체를 1회만 생성한다
+            pd = new ProgressDialog(ImageUploadActivity.this); // 생성한다.
+            pd.setCancelable(false); // 백키로 닫는 기능을 제거한다.
+            pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        } pd.setMessage(msg); // 원하는 메시지를 세팅한다.
+        pd.show(); // 화면에 띠워라//
+    }
+    public void hideProgress(){
+        if( pd != null && pd.isShowing() ){
+            pd.dismiss();
+        }
+    }
+
 
     //부자재의 child 개수 가져오기
     private void getMyChildrenCount(){
@@ -582,13 +676,16 @@ public class ImageUploadActivity extends AppCompatActivity {
     }
 
     //디비에 부자재 URL 넣기
-    private void Add_URL_Info(final Uri uri) {
+    private void Add_URL_Info(final Uri uri, final int target, final boolean check, final int number) {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for( DataSnapshot ds : dataSnapshot.getChildren()){
-                    if(ds.getKey().equals(count+"")){
-                        myRef.child(count+"").child("image_url").setValue(uri+"");
+                    if(ds.getKey().equals(target+"")){
+                        if(check)
+                            myRef.child(target+"").child("image_RB_url").child(number+"").setValue(uri+"");
+                        else
+                            myRef.child(target+"").child("image_url").child(number+"").setValue(uri+"");
                     }
                 }
             }

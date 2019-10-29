@@ -23,7 +23,7 @@ public class Tab4_Simulation extends Fragment {
      private LinearLayout simul_menu_layout;
      private LinearLayout blur;
      private View view;
-    Animation animation;
+     Animation animation;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_tab4_simulation, container, false);

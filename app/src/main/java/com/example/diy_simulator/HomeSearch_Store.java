@@ -98,7 +98,7 @@ public class HomeSearch_Store extends Fragment {
                     if(material_each[i].equals(ds.getKey())){
                         String name = ds.child("material_name").getValue().toString();
                         String price = ds.child("price").getValue().toString();
-                        String url = ds.child("image_url").getValue().toString();
+                        String url = ds.child("image_url").child(ds.getKey()).getValue().toString();
                         addItemToRecyclerView(name, price, url);
                         i++;
                     }
