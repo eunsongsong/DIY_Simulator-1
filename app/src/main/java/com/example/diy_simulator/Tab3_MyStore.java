@@ -33,6 +33,7 @@ public class Tab3_MyStore extends Fragment {
     DatabaseReference myRef2 = database.getReference("부자재");
 
     String material = "";
+    TextView mystore_title;
 
     public RecyclerView mystore_recyclerview;
     private final List<Tab3_MyStore_Info> mystore_item = new ArrayList<>();
@@ -42,7 +43,7 @@ public class Tab3_MyStore extends Fragment {
         final ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_tab3_my_store, container, false);
 
         Button upload_btn = rootview.findViewById(R.id.image_upload_btn_tab3);
-        final TextView mystore_title = rootview.findViewById(R.id.mystore_toolbar_title);
+        mystore_title = rootview.findViewById(R.id.mystore_toolbar_title);
         firebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = firebaseAuth.getCurrentUser();
 
@@ -54,7 +55,19 @@ public class Tab3_MyStore extends Fragment {
         mystore_recyclerview.setLayoutManager(layoutManager);
         mystore_recyclerview.setAdapter(mystoreAdapter);
 
-        //판매자 아이디(이메일)를 통해 판매자가 올린 부자재 정보 가져오기
+        upload_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //이미지 업로드 액티비티로 전환
+                Intent mainIntent = new Intent(getContext(), ImageUploadActivity.class);
+                startActivity(mainIntent);
+            }
+        });
+        return rootview;
+    }
+
+    //판매자 아이디(이메일)를 통해 판매자가 올린 부자재 정보 가져오기
+    public void findSellerOwnMaterial(){
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -75,16 +88,6 @@ public class Tab3_MyStore extends Fragment {
             }
         });
 
-
-        upload_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //이미지 업로드 액티비티로 전환
-                Intent mainIntent = new Intent(getContext(), ImageUploadActivity.class);
-                startActivity(mainIntent);
-            }
-        });
-        return rootview;
     }
 
     //부자재 번호로 부자재 정보 찾기
@@ -120,5 +123,10 @@ public class Tab3_MyStore extends Fragment {
         mystoreAdapter.notifyDataSetChanged();
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        //이미지 업로드를 완료하고 다시 MyStore 프래그먼트로 돌아오면 다시 판매자 부자재 검색
+        findSellerOwnMaterial();
+    }
 }
