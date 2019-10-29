@@ -490,8 +490,9 @@ public class ImageUploadActivity extends AppCompatActivity {
             });
         }
         try{
-            Thread.sleep(3000);
+            Thread.sleep(4000);
             hideProgress();
+            PreferenceUtil.getInstance(getApplicationContext()).putBooleanExtra("금지", true);
             finish();
         } catch (InterruptedException e) {
             e.printStackTrace();

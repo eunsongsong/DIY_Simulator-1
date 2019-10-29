@@ -2,6 +2,8 @@ package com.example.diy_simulator;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,6 +95,9 @@ public class Tab3_MyStore extends Fragment {
     //부자재 번호로 부자재 정보 찾기
     public void findMaterialInfo(final String material) {
         final String[] material_each = material.split("#");
+
+        mystore_item.clear();
+
         myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -126,7 +131,24 @@ public class Tab3_MyStore extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if ( PreferenceUtil.getInstance(getContext()).getBooleanExtra("금지" )) {
+            Log.d("아니","모야");
+            Handler delayHandler = new Handler();
+            delayHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    // TODO
+                    findSellerOwnMaterial();
+                    PreferenceUtil.getInstance(getContext()).removePreference("금지" );
+                }
+            }, 3000);
+        }
+        else {
+            Log.d("아니","모야213123");
+            findSellerOwnMaterial();
+        }
+
         //이미지 업로드를 완료하고 다시 MyStore 프래그먼트로 돌아오면 다시 판매자 부자재 검색
-        findSellerOwnMaterial();
+
     }
 }
