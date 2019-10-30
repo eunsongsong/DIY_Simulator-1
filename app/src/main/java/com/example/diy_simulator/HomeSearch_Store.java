@@ -95,6 +95,8 @@ public class HomeSearch_Store extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 int i = 0;
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    if ( i == material_each.length)
+                        break;
                     if(material_each[i].equals(ds.getKey())){
                         String name = ds.child("material_name").getValue().toString();
                         String price = ds.child("price").getValue().toString();
