@@ -10,6 +10,7 @@ public class Customer {
     public String username = "";
     public String phonenumber = "";
     public String address = "";
+    public String cart = "";
 
     //구매자 생성자
     public Customer(String email, String username, String phonenumber, String address) {

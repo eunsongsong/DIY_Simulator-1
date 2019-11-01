@@ -3,11 +3,15 @@ package com.example.diy_simulator;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -41,6 +45,12 @@ public class HomeSearch_Store extends Fragment {
         final ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_home_search_store, container, false);
 
         TextView toolbar_name = rootview.findViewById(R.id.search_store_toolbar_title);
+        //툴바 설정
+        Toolbar tb = rootview.findViewById(R.id.search_store_toolbar) ;
+        ((AppCompatActivity) getActivity()).setSupportActionBar(tb) ;
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
 
         //그리드 레이아웃으로 한줄에 2개씩 제품 보여주기
         search_store_recyclerview = rootview.findViewById(R.id.search_store_recyclerView);
@@ -133,4 +143,5 @@ public class HomeSearch_Store extends Fragment {
         fragmentTransaction.remove(HomeSearch_Store.this).commit();
         fm.popBackStack();
     }
+
 }

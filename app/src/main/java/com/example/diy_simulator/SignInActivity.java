@@ -1,7 +1,6 @@
 package com.example.diy_simulator;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,13 +9,16 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -38,8 +40,7 @@ public class SignInActivity extends AppCompatActivity {
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^[a-zA-Z0-9!@.#$%^&*?_~]{4,16}$");
     private String email = "";
     private String password = "";
-    //private String[] customers = {};  //안필요
-    private String[] sellers = {};
+    private String[] sellers = {}; //모든 판매자 이메일
     boolean isSeller = false;
     ProgressDialog dialog;
     private EditText email_login;
@@ -59,7 +60,12 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        ActionBar actionBar = getActionBar();
+        //툴바 설정
+        Toolbar tb = findViewById(R.id.sign_in_toolbar) ;
+        setSupportActionBar(tb) ;
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
 
         email_login = (EditText) findViewById(R.id.signin_email);
         pwd_login = (EditText) findViewById(R.id.signin_pwd);
@@ -86,26 +92,6 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
-        /*
-        //구매자 정보 비교 - 필요없음
-        //구매자 이메일 전부 가져와서 스트링 배열 customers에 저장
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                customers = new String[(int)dataSnapshot.getChildrenCount()];
-                int i = 0;
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    String tmp = ds.child("email").getValue().toString();
-                    setCustomers(tmp, i);
-                    i++;
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-        */
 
         //판매자 이메일 전부 가져와서 스트링 배열 sellers에 저장
         myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -233,6 +219,17 @@ public class SignInActivity extends AppCompatActivity {
         } else {
             return true;
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:{ //toolbar의 back키 눌렀을 때 동작
+                finish();
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
 

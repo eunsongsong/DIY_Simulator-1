@@ -6,14 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".SignInActivity">
 
-    <android.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/sign_in_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#EEEEEE"
-        android:minHeight="?attr/actionBarSize"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:minHeight="?attr/actionBarSize">
 
         <TextView
             android:id="@+id/signin_toolbar_title"
@@ -24,7 +22,7 @@
             android:textColor="#777777"
             android:textSize="20sp"
             android:textStyle="bold" />
-    </android.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
 
     <EditText
