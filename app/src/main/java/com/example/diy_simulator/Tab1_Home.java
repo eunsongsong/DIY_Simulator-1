@@ -48,7 +48,12 @@ public class Tab1_Home extends Fragment implements View.OnClickListener {
         storename_recyclerview.setAdapter(storenameAdapter);
 
         ImageButton category_keyring_Btn = rootview.findViewById(R.id.back_img_1);
+        ImageButton category_phone_Btn = rootview.findViewById(R.id.back_img_2);
+        ImageButton category_acc_Btn = rootview.findViewById(R.id.back_img_3);
+        ImageButton category_etc_Btn = rootview.findViewById(R.id.back_img_4);
 
+        //카테고리 버튼 누르면 카테고리 스트링 보내면서 프래그먼트 교체
+        //카테고리 - 키링
         category_keyring_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,6 +62,60 @@ public class Tab1_Home extends Fragment implements View.OnClickListener {
                 //번들에 카테고리 담아서 카테고리 검색 프래그먼트로 보내기
                 Bundle bundle = new Bundle();
                 bundle.putString("category", "키링");
+                tab1.setArguments(bundle);
+
+                //프래그먼트 tab1 -> search category 로 교체
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.replace(R.id.tab1_layout, tab1).commit();
+            }
+        });
+        //카테고리 - 폰케이스
+        category_phone_Btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment tab1 = new HomeSearch_Category();
+
+                //번들에 카테고리 담아서 카테고리 검색 프래그먼트로 보내기
+                Bundle bundle = new Bundle();
+                bundle.putString("category", "폰케이스");
+                tab1.setArguments(bundle);
+
+                //프래그먼트 tab1 -> search category 로 교체
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.replace(R.id.tab1_layout, tab1).commit();
+            }
+        });
+        //카테고리 - 액세서리
+        category_acc_Btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment tab1 = new HomeSearch_Category();
+
+                //번들에 카테고리 담아서 카테고리 검색 프래그먼트로 보내기
+                Bundle bundle = new Bundle();
+                bundle.putString("category", "액세서리");
+                tab1.setArguments(bundle);
+
+                //프래그먼트 tab1 -> search category 로 교체
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.replace(R.id.tab1_layout, tab1).commit();
+            }
+        });
+        //카테고리 - 기타
+        category_etc_Btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment tab1 = new HomeSearch_Category();
+
+                //번들에 카테고리 담아서 카테고리 검색 프래그먼트로 보내기
+                Bundle bundle = new Bundle();
+                bundle.putString("category", "기타");
                 tab1.setArguments(bundle);
 
                 //프래그먼트 tab1 -> search category 로 교체
