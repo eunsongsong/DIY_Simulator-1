@@ -185,10 +185,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <FrameLayout
+            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -202,10 +205,35 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="350dp"
                 android:background="@drawable/menu"/>
         </FrameLayout>
 
+        <RelativeLayout
+            android:id="@+id/relative"
+            android:layout_weight="10"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <Button
+                android:id="@+id/add_btn"
+                android:layout_marginTop="200dp"
+                android:onClick=""
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="눌러봣"/>
+            <!--
+            <ImageView
+                android:id="@+id/test"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/plus"
+                android:layout_centerInParent="true"/>
+                -->
+        </RelativeLayout>
+        <!--
         <ImageButton
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -218,6 +246,9 @@
             android:layout_marginTop="15dp"
             android:layout_marginLeft="20dp"
             android:background="@drawable/zoom_out"/>
+
+-->
+
 
     </LinearLayout>
 
