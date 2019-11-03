@@ -43,7 +43,9 @@
                 android:id="@+id/detail_store_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
+                android:textStyle="bold"
+                android:textSize="17sp"
                 android:paddingLeft="20dp"
                 android:layout_below="@+id/detail_represent_image"/>
 
@@ -53,7 +55,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:paddingLeft="20dp"
-                android:textSize="18sp"
+                android:textSize="19sp"
+                android:textColor="#000000"
                 android:textStyle="bold"
                 android:layout_below="@+id/detail_store_name"/>
 

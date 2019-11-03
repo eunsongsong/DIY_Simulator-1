@@ -3,24 +3,20 @@ package com.example.diy_simulator;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -33,11 +29,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.FileProvider;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -65,11 +58,8 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -88,6 +78,7 @@ public class ImageUploadActivity extends AppCompatActivity {
 
     FirebaseAuth firebaseAuth;
     FirebaseUser mFirebaseUser;
+    String storename;
 
     private ImageView imageView;
     private Button choose_btn;
@@ -418,6 +409,9 @@ public class ImageUploadActivity extends AppCompatActivity {
     //파이어베이스에 이미지 업로드
     private void UploadFile(){
 
+        firebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = firebaseAuth.getCurrentUser();
+
         name = mname.getText().toString();
         price = mprice.getText().toString();
         width = mwidth.getText().toString();
@@ -425,8 +419,26 @@ public class ImageUploadActivity extends AppCompatActivity {
         depth = mdepth.getText().toString();
         stock = mstock.getText().toString();
         keyword = mkeyword.getText().toString();
-        Material material = new Material(name, price, width, height, depth, stock, keyword);
-        myRef.child(count+"").setValue(material);
+        //판매자 가게 이름 가져오기
+        myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                    String u = mFirebaseUser.getEmail();
+                    if(u.equals(ds.child("email").getValue().toString())){
+                        storename = ds.child("storename").getValue().toString();
+                        Material material = new Material(name, price, width, height, depth, stock, keyword, storename);
+                        myRef.child(count+"").setValue(material);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         //부자재 정보를 판매자, 카테고리 디비에 고유 아이디 값만 업데이트함
         UpdateSellerMaterialinfo();

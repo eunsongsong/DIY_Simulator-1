@@ -16,7 +16,7 @@ public class Material {
     public String keyword = "";
     public String storename = "";
 
-    public Material(String material_name, String price, String size_width, String size_height, String size_depth, String stock, String keyword) {
+    public Material(String material_name, String price, String size_width, String size_height, String size_depth, String stock, String keyword, String storename) {
         this.material_name = material_name;
         this.price = price;
         this.size_width = size_width;
@@ -24,6 +24,7 @@ public class Material {
         this.size_depth = size_depth;
         this.stock = stock;
         this.keyword = keyword;
+        this.storename = storename;
     }
 
     public String getMaterial_name() {
@@ -96,5 +97,13 @@ public class Material {
 
     public void setKeyword(String keyword) {
         this.keyword = keyword;
+    }
+
+    public String getStorename() {
+        return storename;
+    }
+
+    public void setStorename(String storename) {
+        this.storename = storename;
     }
 }

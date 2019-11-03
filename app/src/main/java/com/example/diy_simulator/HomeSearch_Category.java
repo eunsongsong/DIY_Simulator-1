@@ -1,5 +1,6 @@
 package com.example.diy_simulator;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -113,6 +114,42 @@ public class HomeSearch_Category extends Fragment {
                 movetoProductDetail(position);
             }
         });
+
+        //세부 카테고리 버튼 클릭시 해당 카테고리의 아이템만 보이기
+        sub1.setOnClickListener(new View.OnClickListener() { //버튼1
+            @Override
+            public void onClick(View v) {
+                category_item.clear();
+                sub1.setTextColor(Color.parseColor("#3DC1AB"));
+                sub2.setTextColor(Color.parseColor("#777777"));
+                sub3.setTextColor(Color.parseColor("#777777"));
+                if(!material[0].isEmpty()) findMaterialInfo(material[0]);
+                else categoryAdapter.notifyDataSetChanged();
+            }
+        });
+        sub2.setOnClickListener(new View.OnClickListener() { //버튼2
+            @Override
+            public void onClick(View v) {
+                category_item.clear();
+                sub1.setTextColor(Color.parseColor("#777777"));
+                sub2.setTextColor(Color.parseColor("#3DC1AB"));
+                sub3.setTextColor(Color.parseColor("#777777"));
+                if(!material[1].isEmpty()) findMaterialInfo(material[1]);
+                else categoryAdapter.notifyDataSetChanged();
+            }
+        });
+        sub3.setOnClickListener(new View.OnClickListener() { //버튼3
+            @Override
+            public void onClick(View v) {
+                category_item.clear();
+                sub1.setTextColor(Color.parseColor("#777777"));
+                sub2.setTextColor(Color.parseColor("#777777"));
+                sub3.setTextColor(Color.parseColor("#3DC1AB"));
+                if(!material[2].isEmpty()) findMaterialInfo(material[2]);
+                else categoryAdapter.notifyDataSetChanged();
+            }
+        });
+
         return rootview;
     }
 
@@ -134,6 +171,7 @@ public class HomeSearch_Category extends Fragment {
                         String depth = ds.child("size_depth").getValue().toString();
                         String stock = ds.child("stock").getValue().toString();
                         String keyword = ds.child("keyword").getValue().toString();
+                        String storename = ds.child("storename").getValue().toString();
                         //이미지 url 가져오기
                         String[] url = new String[(int)ds.child("image_url").getChildrenCount()];
                         int k = 0 ;
@@ -144,7 +182,7 @@ public class HomeSearch_Category extends Fragment {
                         //이미지 url의 0번이 상품 대표 이미지
                         String preview = url[0];
                         //리사이클러뷰에 아이템 add
-                        addItemToRecyclerView(name, price, preview, url, width, height, depth, keyword, stock, "테스트", ds.getKey());
+                        addItemToRecyclerView(name, price, preview, url, width, height, depth, keyword, stock, storename, ds.getKey());
                         i++;
                     }
                 }

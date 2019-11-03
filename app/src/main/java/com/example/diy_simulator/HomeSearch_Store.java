@@ -122,6 +122,7 @@ public class HomeSearch_Store extends Fragment {
                         String depth = ds.child("size_depth").getValue().toString();
                         String stock = ds.child("stock").getValue().toString();
                         String keyword = ds.child("keyword").getValue().toString();
+                        String storename = ds.child("storename").getValue().toString();
                         //이미지 url 가져오기
                         String[] url = new String[(int)ds.child("image_url").getChildrenCount()];
                         int k = 0 ;
@@ -132,7 +133,7 @@ public class HomeSearch_Store extends Fragment {
                         //이미지 url의 0번이 상품 대표 이미지
                         String preview = url[0];
                         //리사이클러뷰에 아이템 add
-                        addItemToRecyclerView(name, price, preview, url, width, height, depth, keyword, stock, "테스트", ds.getKey());
+                        addItemToRecyclerView(name, price, preview, url, width, height, depth, keyword, stock, storename, ds.getKey());
                         i++;
                     }
                 }
