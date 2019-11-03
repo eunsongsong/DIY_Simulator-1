@@ -8,11 +8,16 @@
     tools:context=".MainTabActivity"
     android:orientation="vertical">
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/mainViewPager"
+    <FrameLayout
+        android:id="@+id/main_tab_view"
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"/>
+        android:layout_height="match_parent">
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/mainViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/mainTabLayout"
@@ -22,6 +27,7 @@
         android:background="#FFFFFF"
         app:tabIndicatorColor="#3DC1AB"
         app:tabIndicatorGravity="top"
+        android:layout_gravity="bottom"
         app:tabGravity="fill"
         app:tabMode="fixed" />
 

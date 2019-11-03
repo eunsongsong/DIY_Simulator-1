@@ -7,9 +7,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,7 +30,7 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
     @NonNull
     @Override
     public com.example.diy_simulator.Tab4_Simulation_Adatper.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_tab4_simulation, null);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.simulation_menu_item, null);
         return new com.example.diy_simulator.Tab4_Simulation_Adatper.ViewHolder(v);
     }
 

@@ -26,6 +26,18 @@ public class HomeSearch_Store_Adapter extends  RecyclerView.Adapter<com.example.
         this.item_layout = item_layout;
     }
 
+    public interface OnItemClickListener {
+        void onItemClick(View v, int position);
+    }
+
+    // 리스너 객체 참조를 저장하는 변수
+    private HomeSearch_Store_Adapter.OnItemClickListener mListener = null ;
+
+    // OnItemClickListener 리스너 객체 참조를 어댑터에 전달하는 메서드
+    public void setOnItemClickListener(HomeSearch_Store_Adapter.OnItemClickListener listener) {
+        this.mListener = listener ;
+    }
+
     @NonNull
     @Override
     public HomeSearch_Store_Adapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -40,13 +52,19 @@ public class HomeSearch_Store_Adapter extends  RecyclerView.Adapter<com.example.
             //제품 이름, 가격 텍스트 나타내기
             holder.name.setText(item.getName());
             holder.price.setText(item.getPrice());
-            if (!TextUtils.isEmpty(item.getImg_url())) {
+            if (!TextUtils.isEmpty(item.getPreview_img_url())) {
                 //제품 이미지 url로 나타내기
                 Glide.with(holder.itemView.getContext())
-                        .load(item.getImg_url())
+                        .load(item.getPreview_img_url())
                         .into(holder.img);
-
         }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) mListener.onItemClick(v, position);
+            }
+        });
     }
 
     @Override

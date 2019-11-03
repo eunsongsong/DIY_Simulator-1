@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -86,7 +85,7 @@ public class MainTabActivity extends AppCompatActivity {
                     public void onTabSelected(TabLayout.Tab tab) {
                         mViewPager.setCurrentItem(tab.getPosition(),true);
 
-                        if(tab.getPosition() != 0) {
+                        if(tab.getPosition() == 1 || tab.getPosition() == 2) {
                             firebaseAuth = FirebaseAuth.getInstance();
                             mFirebaseUser = firebaseAuth.getCurrentUser();
                             //로그인 되어있지 않으면 로그인 요청
@@ -100,7 +99,10 @@ public class MainTabActivity extends AppCompatActivity {
 
                     @Override
                     public void onTabUnselected(TabLayout.Tab tab) {
-
+                        FragmentManager fm = getSupportFragmentManager();
+                        for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+                            fm.popBackStack();
+                        }
                     }
 
                     @Override

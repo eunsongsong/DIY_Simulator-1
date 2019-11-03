@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/search_store_layout"
-    android:background="#FFFFFF"
+    android:id="@+id/search_category_layout"
     tools:context=".HomeSearch_Store">
 
     <LinearLayout

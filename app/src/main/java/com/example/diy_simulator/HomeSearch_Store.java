@@ -1,9 +1,7 @@
 package com.example.diy_simulator;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -14,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,7 +42,8 @@ public class HomeSearch_Store extends Fragment {
         final ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_home_search_store, container, false);
 
         TextView toolbar_name = rootview.findViewById(R.id.search_store_toolbar_title);
-        //툴바 설정
+
+        //툴바 뒤로가기 버튼 설정
         Toolbar tb = rootview.findViewById(R.id.search_store_toolbar) ;
         ((AppCompatActivity) getActivity()).setSupportActionBar(tb) ;
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
@@ -59,6 +57,8 @@ public class HomeSearch_Store extends Fragment {
         search_store_recyclerview.setHasFixedSize(true);
         search_store_recyclerview.setLayoutManager(layoutManager);
         search_store_recyclerview.setAdapter(storeAdapter);
+
+        store_item.clear();
 
         name = rootview.findViewById(R.id.search_seller_name);
         phone = rootview.findViewById(R.id.search_seller_phone);
@@ -85,12 +85,19 @@ public class HomeSearch_Store extends Fragment {
                  phone.setText("전화번호 : " + seller_phone);
                  addr.setText("가게 주소 : " + seller_addr);
                  findMaterialInfo(material);
-                 Log.d("나와", material + "/" +seller_name +"/"+seller_phone +"/"+seller_addr);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+
+        //아이템 클릭시 상품 상세 페이지로 이동
+        storeAdapter.setOnItemClickListener(new HomeSearch_Store_Adapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                movetoProductDetail(position);
             }
         });
 
@@ -110,8 +117,22 @@ public class HomeSearch_Store extends Fragment {
                     if(material_each[i].equals(ds.getKey())){
                         String name = ds.child("material_name").getValue().toString();
                         String price = ds.child("price").getValue().toString();
-                        String url = ds.child("image_url").child(ds.getKey()).getValue().toString();
-                        addItemToRecyclerView(name, price, url);
+                        String width = ds.child("size_width").getValue().toString();
+                        String height = ds.child("size_height").getValue().toString();
+                        String depth = ds.child("size_depth").getValue().toString();
+                        String stock = ds.child("stock").getValue().toString();
+                        String keyword = ds.child("keyword").getValue().toString();
+                        //이미지 url 가져오기
+                        String[] url = new String[(int)ds.child("image_url").getChildrenCount()];
+                        int k = 0 ;
+                        for(DataSnapshot ds2 : ds.child("image_url").getChildren()){
+                            url[k] = ds2.getValue().toString();
+                            k++;
+                        }
+                        //이미지 url의 0번이 상품 대표 이미지
+                        String preview = url[0];
+                        //리사이클러뷰에 아이템 add
+                        addItemToRecyclerView(name, price, preview, url, width, height, depth, keyword, stock, "테스트", ds.getKey());
                         i++;
                     }
                 }
@@ -126,22 +147,50 @@ public class HomeSearch_Store extends Fragment {
     }
 
     //리사이클러뷰에 제품 이름, 가격, 이미지 url으로 아이템 나타내기
-    public void addItemToRecyclerView(String name, String price, String url){
-        HomeSearch_Store_Info[] item = new HomeSearch_Store_Info[1];
-        item[0] = new HomeSearch_Store_Info(name, price+"원", url);
-        store_item.add(item[0]);
-
+    public void addItemToRecyclerView(String name, String price, String preview, String[] url,
+                                      String width, String height, String depth, String keyword, String stock, String storename, String unique){
+        HomeSearch_Store_Info item = new HomeSearch_Store_Info(name, price+" 원", preview, url, width, height, depth, keyword, stock, storename, unique);
+        store_item.add(item);
         storeAdapter.notifyDataSetChanged();
     }
 
-    //다른 탭으로 이동시 프래그먼트 destroy
-    @Override
-    public void onPause(){
-        super.onPause();
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.remove(HomeSearch_Store.this).commit();
-        fm.popBackStack();
-    }
+    //부자재 정보 번들에 담아서 상품 상세 페이지로 이동
+    public void movetoProductDetail(int position){
+        //상품 상세 페이지 정보 가져오기
+        String name = store_item.get(position).getName();
+        String price = store_item.get(position).getPrice();
+        String[] url = store_item.get(position).getImg_url();
+        String width = store_item.get(position).getWidth();
+        String height = store_item.get(position).getHeight();
+        String depth = store_item.get(position).getDepth();
+        String keyword = store_item.get(position).getKeyword();
+        String stock = store_item.get(position).getStock();
+        String storename = store_item.get(position).getStorename();
+        String unique_num = store_item.get(position).getUnique_number();
 
+        Fragment tab1 = new Product_Detail_Fragment();
+
+        //번들에 부자재 상세정보 담아서 가게 상세 페이지 프래그먼트로 보내기
+        Bundle bundle = new Bundle();
+        bundle.putString("name", name);
+        bundle.putString("price", price);
+        bundle.putStringArray("url", url);
+        bundle.putString("width", width);
+        bundle.putString("height", height);
+        bundle.putString("depth", depth);
+        bundle.putString("keyword", keyword);
+        bundle.putString("stock", stock);
+        bundle.putString("storename", storename);
+        bundle.putString("unique_number", unique_num);
+        tab1.setArguments(bundle);
+
+        //프래그먼트 카테고리 검색 -> 제품 상세 페이지로 교체
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        fm.beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right)
+                .replace(R.id.main_tab_view, tab1)
+                .hide(HomeSearch_Store.this)
+                .addToBackStack(null)
+                .commit();
+    }
 }

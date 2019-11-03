@@ -11,7 +11,6 @@ import android.widget.ImageButton;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,6 +39,8 @@ public class Tab1_Home extends Fragment implements View.OnClickListener {
         //names를 초성별로 나누기
         Initial_Categorizing_Names(names);
         Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12, btn13, btn14, btn15;
+
+        //리사이클러뷰 레이아웃 매니저 설정
         storename_recyclerview = rootview.findViewById(R.id.home_storename_recyclerView);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -65,10 +66,7 @@ public class Tab1_Home extends Fragment implements View.OnClickListener {
                 tab1.setArguments(bundle);
 
                 //프래그먼트 tab1 -> search category 로 교체
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.replace(R.id.tab1_layout, tab1).commit();
+                changeFragment(tab1);
             }
         });
         //카테고리 - 폰케이스
@@ -83,10 +81,7 @@ public class Tab1_Home extends Fragment implements View.OnClickListener {
                 tab1.setArguments(bundle);
 
                 //프래그먼트 tab1 -> search category 로 교체
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.replace(R.id.tab1_layout, tab1).commit();
+                changeFragment(tab1);
             }
         });
         //카테고리 - 액세서리
@@ -101,10 +96,7 @@ public class Tab1_Home extends Fragment implements View.OnClickListener {
                 tab1.setArguments(bundle);
 
                 //프래그먼트 tab1 -> search category 로 교체
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.replace(R.id.tab1_layout, tab1).commit();
+                changeFragment(tab1);
             }
         });
         //카테고리 - 기타
@@ -119,10 +111,7 @@ public class Tab1_Home extends Fragment implements View.OnClickListener {
                 tab1.setArguments(bundle);
 
                 //프래그먼트 tab1 -> search category 로 교체
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.replace(R.id.tab1_layout, tab1).commit();
+                changeFragment(tab1);
             }
         });
 
@@ -138,10 +127,7 @@ public class Tab1_Home extends Fragment implements View.OnClickListener {
                 tab1.setArguments(bundle);
 
                 //프래그먼트 tab1 -> search store 로 교체
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.replace(R.id.tab1_layout, tab1).commit();
+                changeFragment(tab1);
             }
         });
 
@@ -402,6 +388,14 @@ public class Tab1_Home extends Fragment implements View.OnClickListener {
         storenameAdapter.notifyDataSetChanged();
     }
 
-
+    //프래그먼트 교체
+    public void changeFragment(Fragment fragment){
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        fm.beginTransaction()
+                .replace(R.id.main_tab_view, fragment)
+                .hide(Tab1_Home.this)
+                .addToBackStack(null)
+                .commit();
+    }
 }
 

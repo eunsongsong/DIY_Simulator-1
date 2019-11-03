@@ -14,6 +14,7 @@ public class Material {
     public String image_RB_url = "";
     public String stock = "";
     public String keyword = "";
+    public String storename = "";
 
     public Material(String material_name, String price, String size_width, String size_height, String size_depth, String stock, String keyword) {
         this.material_name = material_name;

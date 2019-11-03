@@ -66,8 +66,6 @@ public class Tab4_Simulation extends Fragment {
 
     private String cart;
 
-
-
     private View.OnTouchListener touchListener = new View.OnTouchListener() {
         @SuppressLint("ClickableViewAccessibility")
         @Override
