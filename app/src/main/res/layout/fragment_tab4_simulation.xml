@@ -220,7 +220,6 @@
             <Button
                 android:id="@+id/add_btn"
                 android:layout_marginTop="200dp"
-                android:onClick=""
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="눌러봣"/>

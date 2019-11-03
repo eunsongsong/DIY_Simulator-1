@@ -20,6 +20,7 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -322,18 +323,46 @@ public class ImageUploadActivity extends AppCompatActivity {
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
             //((ImageView) findViewById(R.id.quick_start_cropped_image)).setImageURI(result.getUri());
+
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             try {
                 // 이미지 표시
                 //사진의 주소를 가져와 EXIF에서 회전 값을 읽어와 회전된 상태만큼 다시 회전시켜 원상복구 시킨다.
                 //* EXIF : 사진의 크기, 화소, 회전, 노출정도 등의 메타데이터.
                 //imageView = (ImageView) findViewById(R.id.preview);
+
+
+
+
                 imagePath = getRealPathFromURI(result.getUri());
                 int degree = getExifOrientation(imagePath);
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), result.getUri());
                 bitmap = getRotatedBitmap(bitmap, degree);
+                Log.d("넓이",bitmap.getWidth()+"");
+                Log.d("높이",bitmap.getHeight()+"");
                 //여기까지 회전된 이미지 복구
 
+                int width = 500; // 축소시킬 너비
+                int height = 500; // 축소시킬 높이
+                float bmpWidth = bitmap.getWidth();
+                float bmpHeight = bitmap.getHeight();
+                if (bmpWidth > width) {
+                    // 원하는 너비보다 클 경우의 설정
+                    float mWidth = bmpWidth / 100;
+                    float scale = width/ mWidth;
+                    bmpWidth *= (scale / 100);
+                    //bmpHeight *= (scale / 100);
+                }
+                if (bmpHeight > height) {
+                    // 원하는 높이보다 클 경우의 설정
+                    float mHeight = bmpHeight / 100;
+                    float scale = height/ mHeight;
+                    //bmpWidth *= (scale / 100);
+                    bmpHeight *= (scale / 100);
+                }
+                bitmap = Bitmap.createScaledBitmap(bitmap, (int) bmpWidth, (int) bmpHeight, true);
+                Log.d("넓이",bitmap.getWidth()+"");
+                Log.d("높이",bitmap.getHeight()+"");
                 if(checkedTextView.isChecked()) {
                     bitmap = removeBackground(bitmap);
                     baos = new ByteArrayOutputStream();

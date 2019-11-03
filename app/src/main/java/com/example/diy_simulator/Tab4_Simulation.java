@@ -18,7 +18,22 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 public class Tab4_Simulation extends Fragment {
 
@@ -37,6 +52,21 @@ public class Tab4_Simulation extends Fragment {
     private Button button;
     boolean check = false;
     ViewTreeObserver.OnGlobalLayoutListener mOnGlobalLayoutListener;
+
+    //그리드 리싸이클러뷰
+    public RecyclerView simul_recyclerview;
+    private final List<Tab4_Simulation_Item> simulation_items = new ArrayList<>();
+    private final Tab4_Simulation_Adatper simulationAdatper = new Tab4_Simulation_Adatper(getContext(), simulation_items, R.layout.fragment_tab4_simulation);
+
+    FirebaseAuth firebaseAuth;
+    FirebaseUser mFirebaseUser;
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference myRef = database.getReference("구매자");
+    private DatabaseReference myRef2 = database.getReference("부자재");
+
+    private String cart;
+
+
 
     private View.OnTouchListener touchListener = new View.OnTouchListener() {
         @SuppressLint("ClickableViewAccessibility")
@@ -84,6 +114,25 @@ public class Tab4_Simulation extends Fragment {
         final ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_tab4_simulation, container, false);
 
         relativeLayout = (RelativeLayout) rootview.findViewById(R.id.relative);
+        firebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = firebaseAuth.getCurrentUser();
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Log.d("우람", "dd");
+                    if ("rnjsdnfka7@gmail.com".equals(ds.child("email").getValue().toString())) {
+                        cart = ds.child("cart").getValue().toString();
+                        Log.d("dd", cart);
+                        break;
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         ImageButton menubtn = rootview.findViewById(R.id.simulation_menu_button);
         ImageButton x_btn = rootview.findViewById(R.id.x_button);
@@ -92,6 +141,16 @@ public class Tab4_Simulation extends Fragment {
         blur = rootview.findViewById(R.id.blur);
 
         button = (Button) rootview.findViewById(R.id.add_btn);
+
+        //그리드 레이아웃으로 한줄에 2개씩 제품 보여주기
+        simul_recyclerview = rootview.findViewById(R.id.simulation_menu_recycler);
+        final GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
+        layoutManager.setOrientation(RecyclerView.VERTICAL);
+        simul_recyclerview.setHasFixedSize(true);
+        simul_recyclerview.setLayoutManager(layoutManager);
+        simul_recyclerview.setAdapter(simulationAdatper);
+
+        simulation_items.clear();
 
         ViewTreeObserver viewTreeObserver = relativeLayout.getViewTreeObserver();
         mOnGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -138,7 +197,7 @@ public class Tab4_Simulation extends Fragment {
             @Override
             public void onClick(View v) {
                 DisplayMetrics dm = getContext().getResources().getDisplayMetrics();
-
+                Log.d("촉",cart);
                 int width = dm.widthPixels;
                 int f_width = width - (int) (width * 0.8);
 
@@ -157,6 +216,38 @@ public class Tab4_Simulation extends Fragment {
                 }, 75);
 
                 blur.setVisibility(View.GONE);
+
+                StringTokenizer st = new StringTokenizer(cart, "#");
+
+                final String[] arr = new String[st.countTokens()];
+                for(int i = 0; i < arr.length; i++){
+                    arr[i] = st.nextToken();
+                }
+                myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Log.d("제발잠좀","자게해줘"+dataSnapshot.getValue().toString());
+                        //String url = dataSnapshot.child("image_RB_url").child(d.getKey()).getValue().toString();
+                        int i = 0;
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            if ( i == arr.length)
+                                break;
+                            if(arr[i].equals(ds.getKey())){
+
+                                Log.d("궁금 " + ds.getKey(),ds.child("image_url").getChildrenCount()+"");
+                                String url = ds.child("image_RB_url").child(Integer.parseInt(ds.getKey()) + (int) ds.child("image_url").getChildrenCount()+"").getValue().toString();
+                                addItemToRecyclerView(url);
+                                i++;
+                                continue;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
 
@@ -177,7 +268,16 @@ public class Tab4_Simulation extends Fragment {
             }
         });
 
+
+
         return rootview;
     }
 
+
+    public void addItemToRecyclerView(String url){
+        Tab4_Simulation_Item item = new Tab4_Simulation_Item(url);
+        simulation_items.add(item);
+
+        simulationAdatper.notifyDataSetChanged();
+    }
 }
