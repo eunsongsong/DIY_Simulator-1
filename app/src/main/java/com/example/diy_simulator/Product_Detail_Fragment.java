@@ -1,5 +1,7 @@
 package com.example.diy_simulator;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -29,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Product_Detail_Fragment extends Fragment {
@@ -115,9 +119,13 @@ public class Product_Detail_Fragment extends Fragment {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                 if(mFirebaseUser.getEmail().equals(ds.child("email").getValue().toString())){
-                                    String tmp = ds.child("cart").getValue().toString();
-                                    if(TextUtils.isEmpty(tmp)) myRef.child(ds.getKey()).child("cart").setValue(uni_num);
-                                    else myRef.child(ds.getKey()).child("cart").setValue(tmp+"#"+uni_num);
+                                    //현재 유저의 장바구니 값 받아오기
+                                    String cart_num = ds.child("cart").getValue().toString();
+                                    //장바구니 숫자 정렬
+                                    if(TextUtils.isEmpty(cart_num)) cart_num =  sortMaterialNumber(uni_num);
+                                    else cart_num = sortMaterialNumber(cart_num+"#"+uni_num);
+                                    //디비에 정렬된 장바구니 값 저장
+                                    myRef.child(ds.getKey()).child("cart").setValue(cart_num);
                                     Toast.makeText(getContext(), "장바구니에 담겼습니다.", Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -131,15 +139,41 @@ public class Product_Detail_Fragment extends Fragment {
                 }
                 //로그인 하지 않은 경우
                 else{
-                    Toast.makeText(getContext(), "로그인이 필요합니다.", Toast.LENGTH_SHORT).show();
-                    /*
-                    Intent intent = new Intent(getContext(), SignInActivity.class);
-                    startActivity(intent);
-                    */
+                    //다이얼로그를 띄워 로그인 의사 묻기
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("로그인이 필요한 서비스입니다.").setMessage("로그인하시겠습니까?");
+                    builder.setPositiveButton("네", new DialogInterface.OnClickListener(){
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent intent = new Intent(getContext(), SignInActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+
+                    builder.setNegativeButton("아니오", new DialogInterface.OnClickListener(){
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+
+                        }
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
                 }
             }
         });
 
         return rootview;
+    }
+
+    //장바구니에 담겨있던 숫자 오름차순 정렬하는 함수
+    public String sortMaterialNumber(String number){
+        String result = "";
+        String[] num = number.split("#");
+        Arrays.sort(num);
+        for(int i=0; i<num.length; i++){
+            if(i == num.length-1) result = result + num[i];
+            else result = result + num[i] + "#";
+        }
+        return  result;
     }
 }
