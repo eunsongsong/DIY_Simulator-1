@@ -33,6 +33,9 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp">
+
+
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/image_recyclerview"
             android:layout_marginTop="20dp"
@@ -40,6 +43,18 @@
             android:src="@drawable/photo_outline"
             android:layout_width="match_parent"
             android:layout_height="300dp"/>
+
+        <ImageButton
+            android:id="@+id/light_button"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="310dp"
+            android:background="@drawable/question" />
+
+
+
+
 <!--
         <ImageView
             android:id="@+id/preview"

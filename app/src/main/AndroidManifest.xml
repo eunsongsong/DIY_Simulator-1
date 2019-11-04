@@ -43,6 +43,7 @@
         <activity android:name=".SignUpActivity" />
         <activity android:name=".SignInActivity" />
         <activity android:name=".ImageUploadActivity" />
+        <activity android:name=".PopupActivity" android:theme="@style/popupTheme" android:screenOrientation="portrait"/>
         <activity
             android:name=".RemovebackgroundActivity"
             android:configChanges="keyboardHidden|orientation"

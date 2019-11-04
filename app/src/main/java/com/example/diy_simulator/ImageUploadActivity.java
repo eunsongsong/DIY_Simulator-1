@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -66,6 +67,7 @@ import java.util.StringTokenizer;
 
 public class ImageUploadActivity extends AppCompatActivity {
 
+    ImageButton light_button;
     private ProgressDialog pd;
     FirebaseStorage storage = FirebaseStorage.getInstance("gs://diy-simulator-607c9.appspot.com");
     // Create a storage reference from our app
@@ -223,6 +225,26 @@ public class ImageUploadActivity extends AppCompatActivity {
 
             }
         });
+
+        // 안내 팝업 버튼
+        ImageButton.OnClickListener light_btnListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()){
+                    case R.id.light_button:
+
+                        Intent intent = new Intent(ImageUploadActivity.this, PopupActivity.class);
+                        startActivityForResult(intent, 1);
+
+                        break;
+
+                }
+            }
+        };
+
+        light_button = (ImageButton) findViewById(R.id.light_button);
+        light_button.setOnClickListener(light_btnListener);
+
 
         checkedTextView.setOnClickListener(new View.OnClickListener() {
             @Override
