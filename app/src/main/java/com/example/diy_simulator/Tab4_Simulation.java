@@ -20,9 +20,11 @@ import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -198,7 +200,7 @@ public class Tab4_Simulation extends Fragment {
                 Log.d("촉",cart);
                 int width = dm.widthPixels;
                 int f_width = width - (int) (width * 0.8);
-
+                simulation_items.clear();
                 animation = new TranslateAnimation(width, f_width, 0, 0);
                 animation.setDuration(100);
                 simul_menu_layout.setVisibility(View.VISIBLE);
@@ -234,7 +236,9 @@ public class Tab4_Simulation extends Fragment {
 
                                 Log.d("궁금 " + ds.getKey(),ds.child("image_url").getChildrenCount()+"");
                                 String url = ds.child("image_RB_url").child(Integer.parseInt(ds.getKey()) + (int) ds.child("image_url").getChildrenCount()+"").getValue().toString();
-                                addItemToRecyclerView(url);
+                                int width = Integer.parseInt(ds.child("size_width").getValue().toString());
+                                int height = Integer.parseInt(ds.child("size_height").getValue().toString());
+                                addItemToRecyclerView(url, width, height);
                                 i++;
                                 continue;
                             }
@@ -267,13 +271,87 @@ public class Tab4_Simulation extends Fragment {
         });
 
 
+        //아이템 클릭시 상품 상세 페이지로 이동
+        simulationAdatper.setOnItemClickListener(new Tab4_Simulation_Adatper.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                inflate(position);
+            }
+        });
 
         return rootview;
+
     }
+    //부자재 정보 번들에 담아서 상품 상세 페이지로 이동
+    @SuppressLint("ClickableViewAccessibility")
+    public void inflate(int position) {
+        //상품 상세 페이지 정보 가져오기
+        double width = simulation_items.get(position).getWidth() / 10;
+        double height = simulation_items.get(position).getHeight() / 10;
+        String url = simulation_items.get(position).getUrl();
+        ImageView iv = new ImageView(getContext());  // 새로 추가할 imageView 생성
+
+        double randomValue = Math.random();
+        int intValue = (int) (randomValue * 5) + 2;
+        iv.setX( intValue * parentWidth / 9 );
+        randomValue = Math.random();
+        intValue = (int) (randomValue * 11) + 2;
+        iv.setY( intValue * parentHeight / 16 );
+        Glide.with(getContext())
+                .load(url)
+                .into(iv);
+        //iv.setImageResource(R.drawable.wooram);  // imageView에 내용 추가
+        Log.d("짜이", parentHeight + "");
+        Log.d("우람", parentWidth + "");
 
 
-    public void addItemToRecyclerView(String url){
-        Tab4_Simulation_Item item = new Tab4_Simulation_Item(url);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams( (int) width* parentWidth / 9,(int) height* parentHeight / 16);
+
+        iv.setLayoutParams(layoutParams);  // imageView layout 설정
+        iv.setOnTouchListener(touchListener);
+
+        relativeLayout.addView(iv); // 기존 linearLayout에 imageView 추가
+
+/*        String name = category_item.get(position).getName();
+        String price = category_item.get(position).getPrice();
+        String[] url = category_item.get(position).getImg_url();
+        String width = category_item.get(position).getWidth();
+        String height = category_item.get(position).getHeight();
+        String depth = category_item.get(position).getDepth();
+        String keyword = category_item.get(position).getKeyword();
+        String stock = category_item.get(position).getStock();
+        String storename = category_item.get(position).getStorename();
+        String unique_num = category_item.get(position).getUnique_number();
+
+        Fragment tab1 = new Product_Detail_Fragment();
+
+        //번들에 부자재 상세정보 담아서 가게 상세 페이지 프래그먼트로 보내기
+        Bundle bundle = new Bundle();
+        bundle.putString("name", name);
+        bundle.putString("price", price);
+        bundle.putStringArray("url", url);
+        bundle.putString("width", width);
+        bundle.putString("height", height);
+        bundle.putString("depth", depth);
+        bundle.putString("keyword", keyword);
+        bundle.putString("stock", stock);
+        bundle.putString("storename", storename);
+        bundle.putString("unique_number", unique_num);
+        tab1.setArguments(bundle);
+
+        //프래그먼트 카테고리 검색 -> 제품 상세 페이지로 교체
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        fm.beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right)
+                .replace(R.id.main_tab_view, tab1)
+                .hide(HomeSearch_Category.this)
+                .addToBackStack(null)
+                .commit();
+
+ */
+    }
+    public void addItemToRecyclerView(String url, int width, int height){
+        Tab4_Simulation_Item item = new Tab4_Simulation_Item(url, width, height);
         simulation_items.add(item);
 
         simulationAdatper.notifyDataSetChanged();

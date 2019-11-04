@@ -27,6 +27,19 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
         this.item_layout = item_layout;
     }
 
+    public interface OnItemClickListener {
+        void onItemClick(View v, int position);
+    }
+
+    // 리스너 객체 참조를 저장하는 변수
+    private Tab4_Simulation_Adatper.OnItemClickListener mListener = null ;
+
+    // OnItemClickListener 리스너 객체 참조를 어댑터에 전달하는 메서드
+    public void setOnItemClickListener(Tab4_Simulation_Adatper.OnItemClickListener listener) {
+        this.mListener = listener ;
+    }
+
+
     @NonNull
     @Override
     public com.example.diy_simulator.Tab4_Simulation_Adatper.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -51,6 +64,12 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
                     .into(holder.imageView);
 
         }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) mListener.onItemClick(v, position);
+            }
+        });
     }
 
     @Override
