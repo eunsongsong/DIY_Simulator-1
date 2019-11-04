@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -37,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public class Tab4_Simulation extends Fragment {
+public class Tab4_Simulation extends Fragment  {
 
     private LinearLayout simul_menu_layout;
     private LinearLayout blur;
@@ -67,6 +68,10 @@ public class Tab4_Simulation extends Fragment {
     private DatabaseReference myRef2 = database.getReference("부자재");
 
     private String cart;
+    private ImageView trashView;
+    private int trash_width;
+    private int trash_height;
+
 
     private View.OnTouchListener touchListener = new View.OnTouchListener() {
         @SuppressLint("ClickableViewAccessibility")
@@ -74,8 +79,7 @@ public class Tab4_Simulation extends Fragment {
         public boolean onTouch(View v, MotionEvent event) {
             int parentWidth = ((ViewGroup) v.getParent()).getWidth();    // 부모 View 의 Width
             int parentHeight = ((ViewGroup) v.getParent()).getHeight();    // 부모 View 의 Height
-            Log.d("짜1이", parentHeight + "");
-            Log.d("우1람", parentWidth + "");
+
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 // 뷰 누름
                 oldXvalue = event.getX();
@@ -92,7 +96,13 @@ public class Tab4_Simulation extends Fragment {
 
             } else if (event.getAction() == MotionEvent.ACTION_UP) {
                 // 뷰에서 손을 뗌
+                Log.d("현재위치",v.getX() +"x " + v.getY());
+                Log.d("타겟",trash_width +"x " + trash_height);
+                int a =(int) v.getX();
+                int b = (int) v.getY();
 
+                if( Math.abs((int) a - trash_width) <= 100 &&  Math.abs((int) b + 200 - trash_height) <= 150)
+                    v.setVisibility(View.GONE);
                 if (v.getX() < 0) {
                     v.setX(0);
                 } else if ((v.getX() + v.getWidth()) > parentWidth) {
@@ -116,6 +126,8 @@ public class Tab4_Simulation extends Fragment {
         relativeLayout = (RelativeLayout) rootview.findViewById(R.id.relative);
         firebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = firebaseAuth.getCurrentUser();
+        trashView = (ImageView) rootview.findViewById(R.id.trash);
+
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -160,6 +172,9 @@ public class Tab4_Simulation extends Fragment {
                 if(check) {
                     parentWidth = relativeLayout.getWidth();    // 부모 View 의 Width
                     parentHeight = relativeLayout.getHeight();    // 부모 View 의 Height
+                    trash_width = (int) trashView.getX();
+                    trash_height =(int) trashView.getY();
+
                     check = false;
                     Log.d("ㅇㅇ","가까운");
                 }
@@ -295,7 +310,7 @@ public class Tab4_Simulation extends Fragment {
         int intValue = (int) (randomValue * 5) + 2;
         iv.setX( intValue * parentWidth / 9 );
         randomValue = Math.random();
-        intValue = (int) (randomValue * 11) + 2;
+        intValue = (int) (randomValue * 8) + 2;
         iv.setY( intValue * parentHeight / 16 );
         Glide.with(getContext())
                 .load(url)
@@ -356,4 +371,6 @@ public class Tab4_Simulation extends Fragment {
 
         simulationAdatper.notifyDataSetChanged();
     }
+
+
 }

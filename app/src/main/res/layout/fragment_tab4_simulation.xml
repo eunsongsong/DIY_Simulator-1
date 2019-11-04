@@ -208,6 +208,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="350dp"
                 android:background="@drawable/menu"/>
+
         </FrameLayout>
 
         <RelativeLayout
@@ -224,6 +225,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="눌러봣"/>
+            <ImageView
+                android:id="@+id/trash"
+                android:layout_width="120dp"
+                android:layout_height="70dp"
+                android:background="@drawable/trash"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="30dp"/>
             <!--
             <ImageView
                 android:id="@+id/test"
