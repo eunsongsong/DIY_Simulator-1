@@ -366,7 +366,7 @@ public class ImageUploadActivity extends AppCompatActivity {
                 if(checkedTextView.isChecked()) {
                     bitmap = removeBackground(bitmap);
                     baos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
                     rm_data_arr.add(baos.toByteArray());
                     Preview_Image_Info item;
                     item = new Preview_Image_Info(bitmap,rm_data_arr.get(rm_data_arr.size() - 1));
