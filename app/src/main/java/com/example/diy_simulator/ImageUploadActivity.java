@@ -186,6 +186,7 @@ public class ImageUploadActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(final AdapterView<?> parent, View view, final int position, long id) {
                 keyspin = parent.getItemAtPosition(position).toString();
+                Log.d("키링 스피너", keyspin+" 이다");
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -197,6 +198,7 @@ public class ImageUploadActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 casespin = parent.getItemAtPosition(position).toString();
+                Log.d("폰케 스피너", casespin+" 이다");
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -208,6 +210,7 @@ public class ImageUploadActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 earspin = parent.getItemAtPosition(position).toString();
+                Log.d("귀걸이 스피너", earspin+" 이다");
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -219,6 +222,7 @@ public class ImageUploadActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 bracespin = parent.getItemAtPosition(position).toString();
+                Log.d("팔찌 스피너", bracespin+" 이다");
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -230,6 +234,7 @@ public class ImageUploadActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 etcspin = parent.getItemAtPosition(position).toString();
+                Log.d("기타 스피너", etcspin+" 이다");
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -281,7 +286,6 @@ public class ImageUploadActivity extends AppCompatActivity {
                 preview_image_adapter.setOnItemClickListener(new Preview_Image_Adapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(View v, int position) {
-                        ClearMaterialinfo(); //업로드 후에 이미지 선택을 또 하면 입력 칸 비움
                         onSelectImageClick();
                     }
                 });
@@ -318,7 +322,6 @@ public class ImageUploadActivity extends AppCompatActivity {
             preview_image_adapter.setOnItemClickListener(new Preview_Image_Adapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View v, int position) {
-                    ClearMaterialinfo(); //업로드 후에 이미지 선택을 또 하면 입력 칸 비움
                     onSelectImageClick();
                 }
             });
@@ -478,7 +481,6 @@ public class ImageUploadActivity extends AppCompatActivity {
         UpdateCategoryMaterialinfo();
         Log.d("----ddd----","업로드 성공");
         Toast.makeText(ImageUploadActivity.this, "업로드를 완료하였습니다.", Toast.LENGTH_LONG).show();
-
 
         final int target = (int) count;
         mFirebaseUser = firebaseAuth.getCurrentUser();
@@ -642,6 +644,7 @@ public class ImageUploadActivity extends AppCompatActivity {
                             String tmp = ds.child(keyspin).getValue().toString();
                             if(TextUtils.isEmpty(tmp)) myRef3.child("키링").child(keyspin).setValue(count);
                             else myRef3.child("키링").child(keyspin).setValue(tmp+"#"+count);
+                            break;
                         }
                     }
                 }
@@ -661,6 +664,7 @@ public class ImageUploadActivity extends AppCompatActivity {
                             String tmp = ds.child(casespin).getValue().toString();
                             if(TextUtils.isEmpty(tmp)) myRef3.child("폰케이스").child(casespin).setValue(count);
                             else myRef3.child("폰케이스").child(casespin).setValue(tmp+"#"+count);
+                            break;
                         }
                     }
                 }
@@ -680,6 +684,7 @@ public class ImageUploadActivity extends AppCompatActivity {
                             String tmp = ds.child("귀걸이").child(earspin).getValue().toString();
                             if(TextUtils.isEmpty(tmp)) myRef3.child("액세서리").child("귀걸이").child(earspin).setValue(count);
                             else myRef3.child("액세서리").child("귀걸이").child(earspin).setValue(tmp+"#"+count);
+                            break;
                         }
                     }
                 }
@@ -699,6 +704,7 @@ public class ImageUploadActivity extends AppCompatActivity {
                             String tmp = ds.child("팔찌").child(bracespin).getValue().toString();
                             if(TextUtils.isEmpty(tmp)) myRef3.child("액세서리").child("팔찌").child(bracespin).setValue(count);
                             else myRef3.child("액세서리").child("팔찌").child(bracespin).setValue(tmp+"#"+count);
+                            break;
                         }
                     }
                 }
@@ -718,6 +724,7 @@ public class ImageUploadActivity extends AppCompatActivity {
                             String tmp = ds.child(etcspin).getValue().toString();
                             if(TextUtils.isEmpty(tmp)) myRef3.child("기타").child(etcspin).setValue(count);
                             else myRef3.child("기타").child(etcspin).setValue(tmp+"#"+count);
+                            break;
                         }
                     }
                 }
@@ -728,7 +735,7 @@ public class ImageUploadActivity extends AppCompatActivity {
             });
         }
     }
-
+/*
     //입력 칸 비우기
     private void ClearMaterialinfo(){
         mname.setText(null);
@@ -749,7 +756,7 @@ public class ImageUploadActivity extends AppCompatActivity {
         bracespinner.setSelection(0);
         etcspinner.setSelection(0);
     }
-
+*/
     //디비에 부자재 URL 넣기
     private void Add_URL_Info(final Uri uri, final int target, final boolean check, final int number) {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
