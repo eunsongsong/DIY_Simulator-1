@@ -17,16 +17,25 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseUser = firebaseAuth.getCurrentUser();
-        //로그인 되어있는 경우 로그아웃
-        if (mFirebaseUser != null)
-            FirebaseAuth.getInstance().signOut();
+        try {
+            firebaseAuth = FirebaseAuth.getInstance();
+            mFirebaseUser = firebaseAuth.getCurrentUser();
+            //로그인 되어있는 경우 로그아웃
+            if (mFirebaseUser != null)
+                FirebaseAuth.getInstance().signOut();
 
-        //홈액티비티로 전환
-        Intent mainIntent = new Intent(getApplicationContext(), MainTabActivity.class);
-        startActivity(mainIntent);
-        finish();
+            //스플래시 화면 1.5초 보여주기
+            Thread.sleep(1500);
+
+            //홈액티비티로 전환
+            Intent mainIntent = new Intent(getApplicationContext(), MainTabActivity.class);
+            startActivity(mainIntent);
+            finish();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 }
 

@@ -2,6 +2,7 @@ package com.example.diy_simulator;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,19 +82,19 @@ public class HomeSearch_Category extends Fragment {
                     if(i==0) {
                         material[0] = ds.getValue().toString();
                         sub1.setText(ds.getKey());
-                        findMaterialInfo(material[0]);
+                        if(!TextUtils.isEmpty(material[0])) findMaterialInfo(material[0]);
                         i++;
                     }
                     else if(i==1){
                         material[1] = ds.getValue().toString();
                         sub2.setText(ds.getKey());
-                        findMaterialInfo(material[1]);
+                        if(!TextUtils.isEmpty(material[1])) findMaterialInfo(material[1]);
                         i++;
                     }
                     else{
                         material[2] = ds.getValue().toString();
                         sub3.setText(ds.getKey());
-                        findMaterialInfo(material[2]);
+                        if(!TextUtils.isEmpty(material[2])) findMaterialInfo(material[2]);
                         i++;
                     }
                 }
@@ -121,9 +122,9 @@ public class HomeSearch_Category extends Fragment {
             public void onClick(View v) {
                 category_item.clear();
                 sub1.setTextColor(Color.parseColor("#3DC1AB"));
-                sub2.setTextColor(Color.parseColor("#777777"));
-                sub3.setTextColor(Color.parseColor("#777777"));
-                if(!material[0].isEmpty()) findMaterialInfo(material[0]);
+                sub2.setTextColor(Color.parseColor("#181818"));
+                sub3.setTextColor(Color.parseColor("#181818"));
+                if(!TextUtils.isEmpty(material[0])) findMaterialInfo(material[0]);
                 else categoryAdapter.notifyDataSetChanged();
             }
         });
@@ -131,10 +132,10 @@ public class HomeSearch_Category extends Fragment {
             @Override
             public void onClick(View v) {
                 category_item.clear();
-                sub1.setTextColor(Color.parseColor("#777777"));
+                sub1.setTextColor(Color.parseColor("#181818"));
                 sub2.setTextColor(Color.parseColor("#3DC1AB"));
-                sub3.setTextColor(Color.parseColor("#777777"));
-                if(!material[1].isEmpty()) findMaterialInfo(material[1]);
+                sub3.setTextColor(Color.parseColor("#181818"));
+                if(!TextUtils.isEmpty(material[1])) findMaterialInfo(material[1]);
                 else categoryAdapter.notifyDataSetChanged();
             }
         });
@@ -142,10 +143,10 @@ public class HomeSearch_Category extends Fragment {
             @Override
             public void onClick(View v) {
                 category_item.clear();
-                sub1.setTextColor(Color.parseColor("#777777"));
-                sub2.setTextColor(Color.parseColor("#777777"));
+                sub1.setTextColor(Color.parseColor("#181818"));
+                sub2.setTextColor(Color.parseColor("#181818"));
                 sub3.setTextColor(Color.parseColor("#3DC1AB"));
-                if(!material[2].isEmpty()) findMaterialInfo(material[2]);
+                if(!TextUtils.isEmpty(material[2])) findMaterialInfo(material[2]);
                 else categoryAdapter.notifyDataSetChanged();
             }
         });

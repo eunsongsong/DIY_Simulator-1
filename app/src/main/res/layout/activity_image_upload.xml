@@ -9,14 +9,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <android.widget.Toolbar
-        android:id="@+id/sign_in_toolbar"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/image_upload_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#EEEEEE"
-        android:minHeight="?attr/actionBarSize"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:minHeight="?attr/actionBarSize">
         <TextView
             android:id="@+id/image_upload_toolbar_title"
             android:layout_width="wrap_content"
@@ -26,15 +24,13 @@
             android:textColor="#777777"
             android:textSize="20sp"
             android:textStyle="bold" />
-    </android.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp">
-
-
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/image_recyclerview"
@@ -52,27 +48,6 @@
             android:layout_marginLeft="310dp"
             android:background="@drawable/question" />
 
-
-
-
-<!--
-        <ImageView
-            android:id="@+id/preview"
-            android:layout_marginTop="20dp"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/photo_outline"
-            android:layout_width="300dp"
-            android:layout_height="300dp"/>
-
-        <Button
-            android:id="@+id/choose_btn"
-            android:text="사진 선택"
-            android:layout_below="@+id/image_recyclerview"
-            android:layout_marginTop="20dp"
-            android:layout_centerHorizontal="true"
-            android:background="#AA3DC1AB"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"/> -->
         <CheckedTextView
             android:id="@+id/check_remove"
             android:text="배경 제거하기"

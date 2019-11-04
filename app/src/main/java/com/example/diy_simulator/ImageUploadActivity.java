@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -30,7 +31,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -159,13 +162,21 @@ public class ImageUploadActivity extends AppCompatActivity {
         ArrayAdapter Adapter5 = ArrayAdapter.createFromResource(this, R.array.etc, android.R.layout.simple_spinner_dropdown_item);
         etcspinner.setAdapter(Adapter5);
 
+        //툴바 뒤로가기 버튼 설정
+        Toolbar tb = findViewById(R.id.image_upload_toolbar) ;
+        setSupportActionBar(tb) ;
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
+
+        //리사이클러뷰 레이아웃 매니저 설정
         preview_recycler_view = findViewById(R.id.image_recyclerview);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         layoutManager.setOrientation(RecyclerView.HORIZONTAL);
         preview_recycler_view.setHasFixedSize(true);
         preview_recycler_view.setLayoutManager(layoutManager);
         preview_recycler_view.setAdapter(preview_image_adapter);
-        Log.d("먀!","ㅇㅇㅇ");
+
         Preview_Image_Info item = new Preview_Image_Info();
         preview_image_infos.add(item);
         preview_image_adapter.notifyDataSetChanged();
@@ -872,5 +883,16 @@ public class ImageUploadActivity extends AppCompatActivity {
     public void onSelectImageClick() {
         CropImage.activity(null).setGuidelines(CropImageView.Guidelines.ON).start(ImageUploadActivity.this);
         Log.d("언제이","ㅇㅇㅇ");
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:{ //toolbar의 back키 눌렀을 때 동작
+                finish();
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

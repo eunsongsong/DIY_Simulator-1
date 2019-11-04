@@ -1,6 +1,7 @@
 package com.example.diy_simulator;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,7 +85,7 @@ public class HomeSearch_Store extends Fragment {
                  name.setText("판매자 : " + seller_name);
                  phone.setText("전화번호 : " + seller_phone);
                  addr.setText("가게 주소 : " + seller_addr);
-                 findMaterialInfo(material);
+                 if(!TextUtils.isEmpty(material)) findMaterialInfo(material);
             }
 
             @Override
