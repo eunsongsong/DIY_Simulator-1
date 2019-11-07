@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,7 +60,7 @@ public class Product_Detail_Fragment extends Fragment {
         detail_recyclerview.setAdapter(detailAdapter);
 
         //툴바 뒤로가기 버튼 설정
-        Toolbar tb = rootview.findViewById(R.id.product_detail_toolbar) ;
+        final Toolbar tb = rootview.findViewById(R.id.product_detail_toolbar) ;
         ((AppCompatActivity) getActivity()).setSupportActionBar(tb) ;
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -110,7 +111,7 @@ public class Product_Detail_Fragment extends Fragment {
         //장바구니 버튼을 눌렀을 때
         cart_btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 //로그인한 경우
                 if (mFirebaseUser != null) {
                     //장바구니에 담으면 구매자 DB에 부자재 번호 추가
@@ -122,11 +123,17 @@ public class Product_Detail_Fragment extends Fragment {
                                     //현재 유저의 장바구니 값 받아오기
                                     String cart_num = ds.child("cart").getValue().toString();
                                     //장바구니 숫자 정렬
-                                    if(TextUtils.isEmpty(cart_num)) cart_num =  sortMaterialNumber(uni_num);
+                                    if(TextUtils.isEmpty(cart_num)) cart_num = uni_num;
                                     else cart_num = sortMaterialNumber(cart_num+"#"+uni_num);
+                                    //토스트 메세지 설정
+                                    View view = View.inflate(getContext(), R.layout.custom_cart_add_toast_message, null);
+                                    Toast toast = new Toast(getContext());
+                                    toast.setView(view);
+                                    toast.setGravity(Gravity.CENTER,0,0);
+                                    toast.setDuration(Toast.LENGTH_SHORT);
                                     //디비에 정렬된 장바구니 값 저장
                                     myRef.child(ds.getKey()).child("cart").setValue(cart_num);
-                                    Toast.makeText(getContext(), "장바구니에 담겼습니다.", Toast.LENGTH_SHORT).show();
+                                    toast.show();
                                 }
                             }
                         }
@@ -168,11 +175,19 @@ public class Product_Detail_Fragment extends Fragment {
     //장바구니에 담겨있던 숫자 오름차순 정렬하는 함수
     public String sortMaterialNumber(String number){
         String result = "";
-        String[] num = number.split("#");
-        Arrays.sort(num);
-        for(int i=0; i<num.length; i++){
-            if(i == num.length-1) result = result + num[i];
-            else result = result + num[i] + "#";
+        // 0#6#2#10 ... 로 되어있는 스트링을 배열로 쪼갠다
+        String[] s_num = number.split("#");
+        // 쪼갠 스트링 배열만큼 인티저 배열을 생성한다
+        int[] i_num = new int[s_num.length];
+        // 스트링을 인티저 배열로 옮긴 후 정렬한다
+        for(int i=0; i<s_num.length; i++){
+            i_num[i] = Integer.parseInt(s_num[i]);
+        }
+        Arrays.sort(i_num);
+        // 정렬된 배열에 #을 붙여서 다시 스트링으로 리턴한다
+        for(int i=0; i<i_num.length; i++){
+            if(i == i_num.length-1) result = result + i_num[i];
+            else result = result + i_num[i] + "#";
         }
         return  result;
     }

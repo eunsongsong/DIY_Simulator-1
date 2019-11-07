@@ -231,6 +231,7 @@ public class SignUpActivity extends AppCompatActivity {
                                                 });
                                             }
                                             startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
+                                            finish();
                                         } else {                                             //메일 보내기 실패
                                             Toast.makeText(SignUpActivity.this,
                                                     "Failed to send verification email.",

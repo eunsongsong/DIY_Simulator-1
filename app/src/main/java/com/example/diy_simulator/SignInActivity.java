@@ -168,18 +168,22 @@ public class SignInActivity extends AppCompatActivity {
                                         Toast.makeText(SignInActivity.this, "이메일 인증을 해주세요", Toast.LENGTH_LONG).show();
                                         return;
                                     } else { //인증되면
+
+                                        //다이얼로그 로딩화면
+                                        dialog = new ProgressDialog(SignInActivity.this, R.style.NewDialog);
+                                        dialog.show();
+
                                         email_login.setText(null);
                                         pwd_login.setText(null);
 
-                                        //다이얼로그 로딩화면
-                                        dialog = ProgressDialog.show(SignInActivity.this, "로그인중입니다."
-                                                , "잠시만 기다려주세요.");
-                                        mHandler.sendEmptyMessageDelayed(TIME_OUT, 2000);
                                         Log.d("판매자인지?", isSeller+"");
                                         Intent intent = new Intent(getApplicationContext(), MainTabActivity.class);
                                         intent.putExtra("whoIs", isSeller);
+                                        //로그인 이전 액티비티 스택을 비운다
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         startActivity(intent);
-                                        //finish();
+                                        dialog.dismiss();
+                                        finish();
                                     }
                                 }
                             } else {
