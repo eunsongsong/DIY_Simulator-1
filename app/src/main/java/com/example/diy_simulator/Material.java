@@ -10,8 +10,8 @@ public class Material {
     public String size_width = "";
     public String size_height = "";
     public String size_depth = "";
-    public String image_url = "";
-    public String image_RB_url = "";
+    public String image_data = "";
+    public String image_RB_data = "";
     public String stock = "";
     public String keyword = "";
     public String storename = "";
@@ -67,20 +67,20 @@ public class Material {
         this.size_depth = size_depth;
     }
 
-    public String getImage_url() {
-        return image_url;
+    public String getImage_data() {
+        return image_data;
     }
 
-    public void setImage_url(String image_url) {
-        this.image_url = image_url;
+    public void setImage_data(String image_data) {
+        this.image_data = image_data;
     }
 
-    public String getImage_RB_url() {
-        return image_RB_url;
+    public String getImage_RB_data() {
+        return image_RB_data;
     }
 
-    public void setImage_RB_url(String image_RB_url) {
-        this.image_RB_url = image_RB_url;
+    public void setImage_RB_data(String image_RB_data) {
+        this.image_RB_data = image_RB_data;
     }
 
     public String getStock() {

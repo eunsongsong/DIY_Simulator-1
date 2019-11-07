@@ -1,6 +1,9 @@
 package com.example.diy_simulator;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,9 +39,12 @@ public class Product_Detail_Adapter extends RecyclerView.Adapter<Product_Detail_
         final Product_Detail_Info item = items.get(position);
 
         //제품 이미지 url로 나타내기
-        Glide.with(holder.itemView.getContext())
-                .load(item.getImg_url())
-                .into(holder.image);
+
+        byte[] decodedByteArray = Base64.decode(item.getImg_data(), Base64.NO_WRAP);
+        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+        holder.image.setImageBitmap(decodedBitmap);
+        holder.image.setDrawingCacheEnabled(true);
+        holder.image.buildDrawingCache();
 
     }
 

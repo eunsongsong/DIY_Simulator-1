@@ -1,7 +1,10 @@
 package com.example.diy_simulator;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,11 +43,14 @@ public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<com.example.diy_s
         //제품 이름, 가격 텍스트 나타내기
         holder.name.setText(item.getName());
         holder.price.setText(item.getPrice());
-        if (!TextUtils.isEmpty(item.getImg_url())) {
+        if (!TextUtils.isEmpty(item.getImg_data())) {
             //제품 이미지 url로 나타내기
-            Glide.with(holder.itemView.getContext())
-                    .load(item.getImg_url())
-                    .into(holder.img);
+
+            byte[] decodedByteArray = Base64.decode(item.getImg_data(), Base64.NO_WRAP);
+            Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+            holder.img.setImageBitmap(decodedBitmap);
+            holder.img.setDrawingCacheEnabled(true);
+            holder.img.buildDrawingCache();
 
         }
     }

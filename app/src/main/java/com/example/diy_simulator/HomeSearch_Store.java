@@ -125,16 +125,16 @@ public class HomeSearch_Store extends Fragment {
                         String keyword = ds.child("keyword").getValue().toString();
                         String storename = ds.child("storename").getValue().toString();
                         //이미지 url 가져오기
-                        String[] url = new String[(int)ds.child("image_url").getChildrenCount()];
+                        String[] data = new String[(int)ds.child("image_data").getChildrenCount()];
                         int k = 0 ;
-                        for(DataSnapshot ds2 : ds.child("image_url").getChildren()){
-                            url[k] = ds2.getValue().toString();
+                        for(DataSnapshot ds2 : ds.child("image_data").getChildren()){
+                            data[k] = ds2.getValue().toString();
                             k++;
                         }
                         //이미지 url의 0번이 상품 대표 이미지
-                        String preview = url[0];
+                        String preview = data[0];
                         //리사이클러뷰에 아이템 add
-                        addItemToRecyclerView(name, price, preview, url, width, height, depth, keyword, stock, storename, ds.getKey());
+                        addItemToRecyclerView(name, price, preview, data, width, height, depth, keyword, stock, storename, ds.getKey());
                         i++;
                     }
                 }
@@ -149,9 +149,9 @@ public class HomeSearch_Store extends Fragment {
     }
 
     //리사이클러뷰에 제품 이름, 가격, 이미지 url으로 아이템 나타내기
-    public void addItemToRecyclerView(String name, String price, String preview, String[] url,
+    public void addItemToRecyclerView(String name, String price, String preview, String[] data,
                                       String width, String height, String depth, String keyword, String stock, String storename, String unique){
-        HomeSearch_Store_Info item = new HomeSearch_Store_Info(name, price+" 원", preview, url, width, height, depth, keyword, stock, storename, unique);
+        HomeSearch_Store_Info item = new HomeSearch_Store_Info(name, price+" 원", preview, data, width, height, depth, keyword, stock, storename, unique);
         store_item.add(item);
         storeAdapter.notifyDataSetChanged();
     }
@@ -161,7 +161,7 @@ public class HomeSearch_Store extends Fragment {
         //상품 상세 페이지 정보 가져오기
         String name = store_item.get(position).getName();
         String price = store_item.get(position).getPrice();
-        String[] url = store_item.get(position).getImg_url();
+        String[] data = store_item.get(position).getImg_data();
         String width = store_item.get(position).getWidth();
         String height = store_item.get(position).getHeight();
         String depth = store_item.get(position).getDepth();
@@ -176,7 +176,7 @@ public class HomeSearch_Store extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putString("name", name);
         bundle.putString("price", price);
-        bundle.putStringArray("url", url);
+        bundle.putStringArray("data", data);
         bundle.putString("width", width);
         bundle.putString("height", height);
         bundle.putString("depth", depth);

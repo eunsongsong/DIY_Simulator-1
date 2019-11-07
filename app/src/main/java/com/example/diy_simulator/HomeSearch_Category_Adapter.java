@@ -1,7 +1,10 @@
 package com.example.diy_simulator;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,11 +56,13 @@ public class HomeSearch_Category_Adapter extends RecyclerView.Adapter<HomeSearch
         holder.name.setText(item.getName());
         holder.price.setText(item.getPrice());
         holder.store_name.setText(item.getStorename());
-        if (!TextUtils.isEmpty(item.getPreview_img_url())) {
-            //제품 이미지 url로 나타내기
-            Glide.with(holder.itemView.getContext())
-                    .load(item.getPreview_img_url())
-                    .into(holder.img);
+        if (!TextUtils.isEmpty(item.getPreview_img_data())) {
+
+            byte[] decodedByteArray = Base64.decode(item.getPreview_img_data(), Base64.NO_WRAP);
+            Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+            holder.img.setImageBitmap(decodedBitmap);
+            holder.img.setDrawingCacheEnabled(true);
+            holder.img.buildDrawingCache();
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

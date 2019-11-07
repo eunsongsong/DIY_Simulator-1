@@ -1,8 +1,11 @@
 package com.example.diy_simulator;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -249,11 +252,11 @@ public class Tab4_Simulation extends Fragment  {
                                 break;
                             if(arr[i].equals(ds.getKey())){
 
-                                Log.d("궁금 " + ds.getKey(),ds.child("image_url").getChildrenCount()+"");
-                                String url = ds.child("image_RB_url").child(Integer.parseInt(ds.getKey()) + (int) ds.child("image_url").getChildrenCount()+"").getValue().toString();
+                                Log.d("궁금 " + ds.getKey(),ds.child("image_data").getChildrenCount()+"");
+                                String data = ds.child("image_RB_data").child(Integer.parseInt(ds.getKey()) + (int) ds.child("image_data").getChildrenCount()+"").getValue().toString();
                                 int width = Integer.parseInt(ds.child("size_width").getValue().toString());
                                 int height = Integer.parseInt(ds.child("size_height").getValue().toString());
-                                addItemToRecyclerView(url, width, height);
+                                addItemToRecyclerView(data, width, height);
                                 i++;
                                 continue;
                             }
@@ -286,7 +289,7 @@ public class Tab4_Simulation extends Fragment  {
         });
 
 
-        //아이템 클릭시 상품 상세 페이지로 이동
+        //아이템 클릭시 상품 상세 페이지로 이동Math
         simulationAdatper.setOnItemClickListener(new Tab4_Simulation_Adatper.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
@@ -303,7 +306,7 @@ public class Tab4_Simulation extends Fragment  {
         //상품 상세 페이지 정보 가져오기
         double width = simulation_items.get(position).getWidth() / 10;
         double height = simulation_items.get(position).getHeight() / 10;
-        String url = simulation_items.get(position).getUrl();
+        String data = simulation_items.get(position).getData();
         ImageView iv = new ImageView(getContext());  // 새로 추가할 imageView 생성
 
         double randomValue = Math.random();
@@ -312,9 +315,13 @@ public class Tab4_Simulation extends Fragment  {
         randomValue = Math.random();
         intValue = (int) (randomValue * 8) + 2;
         iv.setY( intValue * parentHeight / 16 );
-        Glide.with(getContext())
-                .load(url)
-                .into(iv);
+
+
+        byte[] decodedByteArray = Base64.decode(data, Base64.NO_WRAP);
+        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+        iv.setImageBitmap(decodedBitmap);
+        iv.setDrawingCacheEnabled(true);
+        iv.buildDrawingCache();
         //iv.setImageResource(R.drawable.wooram);  // imageView에 내용 추가
         Log.d("짜이", parentHeight + "");
         Log.d("우람", parentWidth + "");
@@ -365,8 +372,8 @@ public class Tab4_Simulation extends Fragment  {
 
  */
     }
-    public void addItemToRecyclerView(String url, int width, int height){
-        Tab4_Simulation_Item item = new Tab4_Simulation_Item(url, width, height);
+    public void addItemToRecyclerView(String data, int width, int height){
+        Tab4_Simulation_Item item = new Tab4_Simulation_Item(data, width, height);
         simulation_items.add(item);
 
         simulationAdatper.notifyDataSetChanged();

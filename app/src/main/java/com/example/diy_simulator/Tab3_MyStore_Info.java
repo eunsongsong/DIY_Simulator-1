@@ -3,12 +3,12 @@ package com.example.diy_simulator;
 public class Tab3_MyStore_Info {
     private String name;
     private String price;
-    private String img_url;
+    private String img_data;
 
-    public Tab3_MyStore_Info(String name, String price, String img_url) {
+    public Tab3_MyStore_Info(String name, String price, String img_data) {
         this.name = name;
         this.price = price;
-        this.img_url = img_url;
+        this.img_data = img_data;
     }
 
     public String getName() {
@@ -27,12 +27,12 @@ public class Tab3_MyStore_Info {
         this.price = price;
     }
 
-    public String getImg_url() {
-        return img_url;
+    public String getImg_data() {
+        return img_data;
     }
 
     public void setImg_url(String img_url) {
-        this.img_url = img_url;
+        this.img_data = img_data;
     }
 }
 

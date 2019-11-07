@@ -108,8 +108,8 @@ public class Tab3_MyStore extends Fragment {
                     if(material_each[i].equals(ds.getKey())){
                         String name = ds.child("material_name").getValue().toString();
                         String price = ds.child("price").getValue().toString();
-                        String url = ds.child("image_url").child(ds.getKey()).getValue().toString();
-                        addItemToRecyclerView(name, price, url);
+                        String data = ds.child("image_data").child(ds.getKey()).getValue().toString();
+                        addItemToRecyclerView(name, price, data);
                         i++;
                     }
                 }
@@ -123,8 +123,8 @@ public class Tab3_MyStore extends Fragment {
     }
 
     //리사이클러뷰에 제품 이름, 가격, 이미지 url으로 아이템 나타내기
-    public void addItemToRecyclerView(String name, String price, String url){
-        Tab3_MyStore_Info item = new Tab3_MyStore_Info(name, price+"원", url);
+    public void addItemToRecyclerView(String name, String price, String data){
+        Tab3_MyStore_Info item = new Tab3_MyStore_Info(name, price+"원", data);
         mystore_item.add(item);
 
         mystoreAdapter.notifyDataSetChanged();
