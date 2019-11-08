@@ -501,6 +501,7 @@ public class ImageUploadActivity extends AppCompatActivity {
         }
 
         hideProgress();
+        PreferenceUtil.getInstance(getApplicationContext()).putBooleanExtra("금지", true);
         finish();
     }
 
