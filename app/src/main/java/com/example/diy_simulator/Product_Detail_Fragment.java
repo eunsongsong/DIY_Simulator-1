@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +25,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -38,6 +36,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class Product_Detail_Fragment extends Fragment {
 
@@ -107,7 +106,6 @@ public class Product_Detail_Fragment extends Fragment {
         Product_Detail_Info[] item = new Product_Detail_Info[data.length-1];
         for(int i=0; i < data.length-1; i++){
             item[i] = new Product_Detail_Info(data[i+1]);
-            Log.d("아이템",data[i+1]+"");
             detail_item.add(item[i]);
         }
         detailAdapter.notifyDataSetChanged();
@@ -126,6 +124,11 @@ public class Product_Detail_Fragment extends Fragment {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                //메인 탭 액티비티 변수 isSeller 가져오기
+                                boolean isSeller = ((MainTabActivity) Objects.requireNonNull(getActivity())).isSeller;
+                                //break; 판매자일 경우 장바구니에 담을 수 없음
+                                if(isSeller) break;
+
                                 if(mFirebaseUser.getEmail().equals(ds.child("email").getValue().toString())){
                                     //현재 유저의 장바구니 값 받아오기
                                     String cart_num = ds.child("cart").getValue().toString();

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,7 +39,7 @@ public class Tab3_MyStore extends Fragment {
     TextView mystore_title;
 
     public RecyclerView mystore_recyclerview;
-    private final List<Tab3_MyStore_Info> mystore_item = new ArrayList<>();
+    private final List<Material_Detail_Info> mystore_item = new ArrayList<>();
     private final Tab3_MyStore_Adater mystoreAdapter = new Tab3_MyStore_Adater(getContext(), mystore_item, R.layout.tab3_my_store_item);
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,6 +66,15 @@ public class Tab3_MyStore extends Fragment {
                 startActivity(mainIntent);
             }
         });
+
+        //아이템 클릭시 상품 상세 페이지로 이동
+        mystoreAdapter.setOnItemClickListener(new Tab3_MyStore_Adater.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                movetoProductDetail(position);
+            }
+        });
+
         return rootview;
     }
 
@@ -77,6 +87,7 @@ public class Tab3_MyStore extends Fragment {
                     if (mFirebaseUser.getEmail().equals(ds.child("email").getValue().toString())){
                         material = ds.child("material").getValue().toString();
                         String name = ds.child("storename").getValue().toString();
+                        //툴바 타이틀을 판매자의 가게 이름으로 설정
                         mystore_title.setText(name);
                         break;
                     }
@@ -103,13 +114,28 @@ public class Tab3_MyStore extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 int i = 0;
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    if ( i == material_each.length)
+                    if (i == material_each.length)
                         break;
-                    if(material_each[i].equals(ds.getKey())){
+                    if (material_each[i].equals(ds.getKey())) {
                         String name = ds.child("material_name").getValue().toString();
                         String price = ds.child("price").getValue().toString();
-                        String data = ds.child("image_data").child(ds.getKey()).getValue().toString();
-                        addItemToRecyclerView(name, price, data);
+                        String width = ds.child("size_width").getValue().toString();
+                        String height = ds.child("size_height").getValue().toString();
+                        String depth = ds.child("size_depth").getValue().toString();
+                        String stock = ds.child("stock").getValue().toString();
+                        String keyword = ds.child("keyword").getValue().toString();
+                        String storename = ds.child("storename").getValue().toString();
+                        //이미지 url 가져오기
+                        String[] data = new String[(int) ds.child("image_data").getChildrenCount()];
+                        int k = 0;
+                        for (DataSnapshot ds2 : ds.child("image_data").getChildren()) {
+                            data[k] = ds2.getValue().toString();
+                            k++;
+                        }
+                        //이미지 url의 0번이 상품 대표 이미지
+                        String preview = data[0];
+                        //리사이클러뷰에 아이템 add
+                        addItemToRecyclerView(name, price, preview, data, width, height, depth, keyword, stock, storename, ds.getKey());
                         i++;
                     }
                 }
@@ -121,13 +147,53 @@ public class Tab3_MyStore extends Fragment {
             }
         });
     }
-
     //리사이클러뷰에 제품 이름, 가격, 이미지 url으로 아이템 나타내기
-    public void addItemToRecyclerView(String name, String price, String data){
-        Tab3_MyStore_Info item = new Tab3_MyStore_Info(name, price+"원", data);
+    public void addItemToRecyclerView(String name, String price, String preview, String[] data,
+                                      String width, String height, String depth, String keyword, String stock, String storename, String unique){
+        Material_Detail_Info item = new Material_Detail_Info(name, price+" 원", preview, data, width, height, depth, keyword, stock, storename, unique);
         mystore_item.add(item);
 
         mystoreAdapter.notifyDataSetChanged();
+    }
+
+    //부자재 정보 번들에 담아서 상품 상세 페이지로 이동
+    public void movetoProductDetail(int position){
+        //상품 상세 페이지 정보 가져오기
+        String name = mystore_item.get(position).getName();
+        String price = mystore_item.get(position).getPrice();
+        String[] data = mystore_item.get(position).getImg_data();
+        String width = mystore_item.get(position).getWidth();
+        String height = mystore_item.get(position).getHeight();
+        String depth = mystore_item.get(position).getDepth();
+        String keyword = mystore_item.get(position).getKeyword();
+        String stock = mystore_item.get(position).getStock();
+        String storename = mystore_item.get(position).getStorename();
+        String unique_num = mystore_item.get(position).getUnique_number();
+
+        Fragment tab3 = new Product_Detail_Fragment();
+
+        //번들에 부자재 상세정보 담아서 가게 상세 페이지 프래그먼트로 보내기
+        Bundle bundle = new Bundle();
+        bundle.putString("name", name);
+        bundle.putString("price", price);
+        bundle.putStringArray("data", data);
+        bundle.putString("width", width);
+        bundle.putString("height", height);
+        bundle.putString("depth", depth);
+        bundle.putString("keyword", keyword);
+        bundle.putString("stock", stock);
+        bundle.putString("storename", storename);
+        bundle.putString("unique_number", unique_num);
+        tab3.setArguments(bundle);
+
+        //프래그먼트 tab3 내 가게 -> 제품 상세 페이지로 교체
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        fm.beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right)
+                .replace(R.id.main_tab_view, tab3)
+                .hide(Tab3_MyStore.this)
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
@@ -149,8 +215,6 @@ public class Tab3_MyStore extends Fragment {
             Log.d("아니","모야213123");
             findSellerOwnMaterial();
         }
-
         //이미지 업로드를 완료하고 다시 MyStore 프래그먼트로 돌아오면 다시 판매자 부자재 검색
-
     }
 }

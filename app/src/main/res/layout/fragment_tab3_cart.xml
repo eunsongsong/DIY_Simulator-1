@@ -2,9 +2,110 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/cart_toolbar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="탭333"/>
+        android:background="#EEEEEE"
+        android:minHeight="?attr/actionBarSize">
+
+        <TextView
+            android:id="@+id/cart_toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="장 바 구 니"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp"/>
+    </androidx.appcompat.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/empty_cart_img"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:src="@drawable/empty_cart"
+            android:layout_gravity="center"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/cart_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="20dp"
+            android:layout_marginTop="10dp"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:text="* 장바구니 이용안내"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="13sp"
+            android:text="- 장바구니에 담은 상품을 이용해 완제품을 가상으로 조합해볼 수 있는 시뮬레이션을 진행할 수 있습니다.
+            \n- 구매시점에서 품절된 상품은 제외하고 주문이 진행됩니다.
+            \n- 각각 다른 가게의 상품을 구매할 경우 가게별로 상이한 배송비가 부과될 수 있습니다."/>
+
+    </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/cart_sum_money"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="viewEnd"
+                android:textColor="#222222"
+                android:textSize="13sp"
+                android:text=" 총 주문 금액 : - 원"/>
+            <TextView
+                android:id="@+id/cart_sum_delivery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="viewEnd"
+                android:layout_marginTop="5dp"
+                android:textColor="#222222"
+                android:textSize="13sp"
+                android:text=" 총 배송비 : - 원"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/cart_pay_button"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:background="#3DC1AB"
+            android:text="구 매 하 기"/>
+    </LinearLayout>
+</LinearLayout>
 </FrameLayout>

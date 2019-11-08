@@ -14,45 +14,61 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-
 import java.util.List;
 
-public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<com.example.diy_simulator.Tab3_MyStore_Adater.ViewHolder> {
+public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adater.ViewHolder> {
     Context context;
-    List<Tab3_MyStore_Info> items;
+    List<Material_Detail_Info> items;
     int item_layout;
 
-    public Tab3_MyStore_Adater(Context context, List<Tab3_MyStore_Info> items, int item_layout) {
+    public Tab3_MyStore_Adater(Context context, List<Material_Detail_Info> items, int item_layout) {
         this.context = context;
         this.items = items;
         this.item_layout = item_layout;
     }
 
+    public interface OnItemClickListener {
+        void onItemClick(View v, int position);
+    }
+
+    // 리스너 객체 참조를 저장하는 변수
+    private Tab3_MyStore_Adater.OnItemClickListener mListener = null ;
+
+    // OnItemClickListener 리스너 객체 참조를 어댑터에 전달하는 메서드
+    public void setOnItemClickListener(Tab3_MyStore_Adater.OnItemClickListener listener) {
+        this.mListener = listener ;
+    }
+
     @NonNull
     @Override
-    public com.example.diy_simulator.Tab3_MyStore_Adater.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public Tab3_MyStore_Adater.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.tab3_my_store_item, null);
         return new com.example.diy_simulator.Tab3_MyStore_Adater.ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final com.example.diy_simulator.Tab3_MyStore_Adater.ViewHolder holder, final int position) {
-        final Tab3_MyStore_Info item = items.get(position);
+    public void onBindViewHolder(@NonNull final Tab3_MyStore_Adater.ViewHolder holder, final int position) {
+        final Material_Detail_Info item = items.get(position);
 
         //제품 이름, 가격 텍스트 나타내기
         holder.name.setText(item.getName());
         holder.price.setText(item.getPrice());
-        if (!TextUtils.isEmpty(item.getImg_data())) {
-            //제품 이미지 url로 나타내기
 
-            byte[] decodedByteArray = Base64.decode(item.getImg_data(), Base64.NO_WRAP);
+        if (!TextUtils.isEmpty(item.getPreview_img_data())) {
+            //제품 이미지 url로 나타내기
+            byte[] decodedByteArray = Base64.decode(item.getPreview_img_data(), Base64.NO_WRAP);
             Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
             holder.img.setImageBitmap(decodedBitmap);
             holder.img.setDrawingCacheEnabled(true);
             holder.img.buildDrawingCache();
-
         }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) mListener.onItemClick(v, position);
+            }
+        });
     }
 
     @Override

@@ -14,16 +14,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-
 import java.util.List;
 
 public class HomeSearch_Category_Adapter extends RecyclerView.Adapter<HomeSearch_Category_Adapter.ViewHolder> {
     Context context;
-    List<HomeSearch_Category_Info> items;
+    List<Material_Detail_Info> items;
     int item_layout;
 
-    public HomeSearch_Category_Adapter(Context context, List<HomeSearch_Category_Info> items, int item_layout) {
+    public HomeSearch_Category_Adapter(Context context, List<Material_Detail_Info> items, int item_layout) {
         this.context = context;
         this.items = items;
         this.item_layout = item_layout;
@@ -50,7 +48,7 @@ public class HomeSearch_Category_Adapter extends RecyclerView.Adapter<HomeSearch
 
     @Override
     public void onBindViewHolder(@NonNull HomeSearch_Category_Adapter.ViewHolder holder, final int position) {
-        final HomeSearch_Category_Info item = items.get(position);
+        final Material_Detail_Info item = items.get(position);
 
         //제품 이름, 가격, 가게 이름 텍스트 나타내기
         holder.name.setText(item.getName());

@@ -33,16 +33,20 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:maxLines="2"
+            android:textColor="#222222"
             android:layout_below="@+id/search_category_store_name"
-            android:text="제품 이름"/>
+            android:text="제품 이름" />
+
         <TextView
             android:id="@+id/search_category_product_price"
             android:layout_width="170dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:maxLines="2"
+            android:textColor="#222222"
+            android:textStyle="bold"
             android:layout_below="@+id/search_category_product_name"
-            android:text="제품 가격"/>
+            android:text="제품 가격" />
 
     </RelativeLayout>
 

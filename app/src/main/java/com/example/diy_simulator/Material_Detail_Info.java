@@ -1,6 +1,6 @@
 package com.example.diy_simulator;
 
-public class HomeSearch_Category_Info {
+public class Material_Detail_Info {
     private String name;
     private String price;
     private String preview_img_data;
@@ -13,9 +13,8 @@ public class HomeSearch_Category_Info {
     private String storename;
     private String unique_number;
 
-
-    public HomeSearch_Category_Info(String name, String price, String preview_img_data, String[] img_data,
-                                    String width, String height, String depth, String keyword, String stock, String storename, String unique_number) {
+    public Material_Detail_Info(String name, String price, String preview_img_data, String[] img_data,
+                                String width, String height, String depth, String keyword, String stock, String storename, String unique_number) {
         this.name = name;
         this.price = price;
         this.preview_img_data = preview_img_data;

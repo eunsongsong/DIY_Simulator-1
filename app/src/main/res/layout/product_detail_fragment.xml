@@ -94,7 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="상품 사이즈 (가로x세로x높이)"
+                android:text="상품 사이즈 (가로x세로x두께)"
                 android:textAlignment="center"
                 android:layout_below="@+id/detail_product_keyword"/>
 

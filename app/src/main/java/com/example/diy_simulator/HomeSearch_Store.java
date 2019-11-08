@@ -36,7 +36,7 @@ public class HomeSearch_Store extends Fragment {
     TextView name, phone, addr;
 
     public RecyclerView search_store_recyclerview;
-    private final List<HomeSearch_Store_Info> store_item = new ArrayList<>();
+    private final List<Material_Detail_Info> store_item = new ArrayList<>();
     private final HomeSearch_Store_Adapter storeAdapter = new HomeSearch_Store_Adapter(getContext(), store_item, R.layout.fragment_home_search_store);
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -151,7 +151,7 @@ public class HomeSearch_Store extends Fragment {
     //리사이클러뷰에 제품 이름, 가격, 이미지 url으로 아이템 나타내기
     public void addItemToRecyclerView(String name, String price, String preview, String[] data,
                                       String width, String height, String depth, String keyword, String stock, String storename, String unique){
-        HomeSearch_Store_Info item = new HomeSearch_Store_Info(name, price+" 원", preview, data, width, height, depth, keyword, stock, storename, unique);
+        Material_Detail_Info item = new Material_Detail_Info(name, price+" 원", preview, data, width, height, depth, keyword, stock, storename, unique);
         store_item.add(item);
         storeAdapter.notifyDataSetChanged();
     }
