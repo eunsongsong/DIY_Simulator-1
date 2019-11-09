@@ -187,17 +187,31 @@ public class Product_Detail_Fragment extends Fragment {
         String result = "";
         // 0#6#2#10 ... 로 되어있는 스트링을 배열로 쪼갠다
         String[] s_num = number.split("#");
-        // 쪼갠 스트링 배열만큼 인티저 배열을 생성한다
-        int[] i_num = new int[s_num.length];
-        // 스트링을 인티저 배열로 옮긴 후 정렬한다
-        for(int i=0; i<s_num.length; i++){
-            i_num[i] = Integer.parseInt(s_num[i]);
+        // 카트에 중복된 아이템인지 확인 - 이미 카트에 담긴 아이템은 중복 담기 없음
+        Boolean exist = false;
+        for(int i=0; i<s_num.length-1; i++){
+            if(s_num[s_num.length-1].equals(s_num[i])){
+                exist = true;
+            }
         }
-        Arrays.sort(i_num);
-        // 정렬된 배열에 #을 붙여서 다시 스트링으로 리턴한다
-        for(int i=0; i<i_num.length; i++){
-            if(i == i_num.length-1) result = result + i_num[i];
-            else result = result + i_num[i] + "#";
+        // 이미 카트에 있던 아이템일 경우 (중복 O)
+        if(exist){
+            result = number.substring(0, number.length()-2);
+        }
+        // 카트에 없던 아이템일 경우 (중복 X)
+        else{
+            // 쪼갠 스트링 배열만큼 인티저 배열을 생성한다
+            int[] i_num = new int[s_num.length];
+            // 스트링을 인티저 배열로 옮긴 후 정렬한다
+            for(int i=0; i<s_num.length; i++){
+                i_num[i] = Integer.parseInt(s_num[i]);
+            }
+            Arrays.sort(i_num);
+            // 정렬된 배열에 #을 붙여서 다시 스트링으로 리턴한다
+            for(int i=0; i<i_num.length; i++){
+                if(i == i_num.length-1) result = result + i_num[i];
+                else result = result + i_num[i] + "#";
+            }
         }
         return  result;
     }

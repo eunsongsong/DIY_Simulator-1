@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,16 +29,28 @@ import java.util.List;
 
 public class Tab3_Cart_Adapter extends  RecyclerView.Adapter<Tab3_Cart_Adapter.ViewHolder> {
     Context context;
-    List<Material_Detail_Info> items;
+    List<Tab3_Cart_Info> items;
     int item_layout;
 
     FirebaseDatabase database= FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("구매자");
 
-    public Tab3_Cart_Adapter(Context context, List<Material_Detail_Info> items, int item_layout) {
+    public Tab3_Cart_Adapter(Context context, List<Tab3_Cart_Info> items, int item_layout) {
         this.context = context;
         this.items = items;
         this.item_layout = item_layout;
+    }
+
+    public interface AmountLister {
+        void amountlisten(View v, int position);
+    }
+
+    // 리스너 객체 참조를 저장하는 변수
+    private Tab3_Cart_Adapter.AmountLister aListener = null ;
+
+    // OnItemClickListener 리스너 객체 참조를 어댑터에 전달하는 메서드
+    public void GetAmountListener(Tab3_Cart_Adapter.AmountLister listener) {
+        this.aListener = listener ;
     }
 
     public interface OnItemClickListener {
@@ -62,16 +73,17 @@ public class Tab3_Cart_Adapter extends  RecyclerView.Adapter<Tab3_Cart_Adapter.V
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        final Material_Detail_Info item = items.get(position);
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
+        final Tab3_Cart_Info item = items.get(position);
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         final FirebaseUser mFirebaseUser = firebaseAuth.getCurrentUser();
 
         //제품 이름, 가격, 가게 이름 텍스트 나타내기
         holder.name.setText(item.getName());
-        holder.price.setText(item.getPrice());
+        holder.price.setText(item.getPrice() + " 원");
         holder.store_name.setText(item.getStorename());
+        holder.amount.setText(String.valueOf(item.getAmount()));
 
         if (!TextUtils.isEmpty(item.getPreview_img_data())) {
             //제품 이미지 url로 나타내기
@@ -146,6 +158,29 @@ public class Tab3_Cart_Adapter extends  RecyclerView.Adapter<Tab3_Cart_Adapter.V
                 if (mListener != null) mListener.onItemClick(v, position);
             }
         });
+
+        // + 버튼 누르면 수량 1 증가
+        holder.plus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.amount.setText(String.valueOf(item.getAmount()+1));
+                item.setAmount(item.getAmount()+1);
+                if (aListener != null) aListener.amountlisten(v, position);
+            }
+        });
+
+        // - 버튼 누르면 수량 1 감소
+        holder.minus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 현재 수량이 1보다 클 경우에만 감소
+                if(item.getAmount()>1){
+                    holder.amount.setText(String.valueOf(item.getAmount()-1));
+                    item.setAmount(item.getAmount()-1);
+                    if (aListener != null) aListener.amountlisten(v, position);
+                }
+            }
+        });
     }
 
     @Override
@@ -154,21 +189,25 @@ public class Tab3_Cart_Adapter extends  RecyclerView.Adapter<Tab3_Cart_Adapter.V
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        CheckBox check;
         Button del;
         ImageView img;
         TextView store_name;
         TextView name;
         TextView price;
+        TextView amount;
+        Button plus;
+        Button minus;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            check = itemView.findViewById(R.id.cart_select_checkbox);
             del = itemView.findViewById(R.id.cart_delete_btn);
             img = itemView.findViewById(R.id.cart_preview_img);
             store_name = itemView.findViewById(R.id.cart_product_store);
             name = itemView.findViewById(R.id.cart_product_name);
             price = itemView.findViewById(R.id.cart_product_price);
+            amount = itemView.findViewById(R.id.cart_product_amount);
+            plus = itemView.findViewById(R.id.cart_plus_btn);
+            minus = itemView.findViewById(R.id.cart_minus_btn);
         }
     }
 }
