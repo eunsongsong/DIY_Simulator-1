@@ -3,6 +3,7 @@ package com.example.diy_simulator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -14,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -24,26 +27,14 @@ public class HomeSearch_Keyword_Adapter extends RecyclerView.Adapter<HomeSearch_
     List<Material_Detail_Info> unFilteredlist;
     List<Material_Detail_Info> filteredList;
     int item_layout;
-    HomeSearch_Keyword search_keyword;
+    HomeSearch_Keyword tab_search;
 
-    public HomeSearch_Keyword_Adapter(Context context, List<Material_Detail_Info> items, int item_layout, HomeSearch_Keyword search_keyword) {
+    public HomeSearch_Keyword_Adapter(Context context, List<Material_Detail_Info> items, int item_layout, HomeSearch_Keyword tab_search) {
         this.context = context;
         this.unFilteredlist = items;
         this.filteredList = items;
         this.item_layout = item_layout;
-        this.search_keyword = search_keyword;
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(View v, int position);
-    }
-
-    // 리스너 객체 참조를 저장하는 변수
-    private HomeSearch_Keyword_Adapter.OnItemClickListener mListener = null ;
-
-    // OnItemClickListener 리스너 객체 참조를 어댑터에 전달하는 메서드
-    public void setOnItemClickListener(HomeSearch_Keyword_Adapter.OnItemClickListener listener) {
-        this.mListener = listener ;
+        this.tab_search = tab_search;
     }
 
     @Override
@@ -66,15 +57,16 @@ public class HomeSearch_Keyword_Adapter extends RecyclerView.Adapter<HomeSearch_
                 }
                 FilterResults filterResults = new FilterResults();
                 filterResults.values = filteredList;
-                //if(getItemCount() == 0) search_keyword.non_result.setVisibility(View.VISIBLE);
-                //else search_keyword.non_result.setVisibility(View.GONE);
                 return filterResults;
             }
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 filteredList = (List<Material_Detail_Info>) results.values;
-                if(filteredList == null)
+                if(getItemCount() == 0) {
+                    tab_search.num_result.setVisibility(View.GONE);
+                    tab_search.non_result.setVisibility(View.VISIBLE);
+                }
                 notifyDataSetChanged();
             }
         };
@@ -91,9 +83,15 @@ public class HomeSearch_Keyword_Adapter extends RecyclerView.Adapter<HomeSearch_
     public void onBindViewHolder(@NonNull HomeSearch_Keyword_Adapter.ViewHolder holder, final int position) {
         final Material_Detail_Info item = filteredList.get(position);
 
-        holder.name.setText(filteredList.get(position).getName());
-        holder.price.setText(filteredList.get(position).getPrice());
-        holder.store_name.setText(filteredList.get(position).getStorename());
+        // 몇개 검색되었는지 보여주는 텍스트뷰 설정
+        tab_search.non_result.setVisibility(View.GONE);
+        tab_search.num_result.setVisibility(View.VISIBLE);
+        String str = "총 "+getItemCount()+"개의 상품이 검색되었습니다.";
+        tab_search.num_result.setText(str);
+
+        holder.name.setText(item.getName());
+        holder.price.setText(item.getPrice());
+        holder.store_name.setText(item.getStorename());
 
         if (!TextUtils.isEmpty(item.getPreview_img_data())) {
             byte[] decodedByteArray = Base64.decode(item.getPreview_img_data(), Base64.NO_WRAP);
@@ -103,10 +101,34 @@ public class HomeSearch_Keyword_Adapter extends RecyclerView.Adapter<HomeSearch_
             holder.img.buildDrawingCache();
         }
 
+        // 아이템 클릭시 상품 상세 페이지로 이동
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mListener != null) mListener.onItemClick(v, position);
+                Fragment tab1 = new Product_Detail_Fragment();
+
+                //번들에 부자재 상세정보 담아서 가게 상세 페이지 프래그먼트로 보내기
+                Bundle bundle = new Bundle();
+                bundle.putString("name", item.getName());
+                bundle.putString("price", item.getPrice());
+                bundle.putStringArray("data", item.getImg_data());
+                bundle.putString("width", item.getWidth());
+                bundle.putString("height", item.getHeight());
+                bundle.putString("depth", item.getDepth());
+                bundle.putString("keyword", item.getKeyword());
+                bundle.putString("stock", item.getStock());
+                bundle.putString("storename", item.getStorename());
+                bundle.putString("unique_number", item.getUnique_number());
+                tab1.setArguments(bundle);
+
+                //프래그먼트 키워드 검색 -> 제품 상세 페이지로 교체
+                FragmentManager fm = tab_search.getActivity().getSupportFragmentManager();
+                fm.beginTransaction()
+                        .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right)
+                        .replace(R.id.main_tab_view, tab1)
+                        .hide(tab_search)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 

@@ -39,29 +39,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
+            android:hint="검색어를 입력해주세요."
             android:inputType="text"
             android:imeOptions="actionSearch"/>
 
     </LinearLayout>
 
     <TextView
-        android:id="@+id/keyword_result_number"
+        android:id="@+id/number_of_keyword_result"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:background="#DDDDDD"
+        android:layout_marginTop="5dp"
+        android:background="#EEEEEE"
         android:text="총 n개의 상품이 검색되었습니다."
+        android:textColor="#222222"
         android:visibility="gone"/>
 
     <TextView
         android:id="@+id/keyword_result_none"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="120dp"
         android:textAlignment="center"
-        android:background="#DDDDDD"
+        android:background="#EEEEEE"
         android:layout_marginTop="10dp"
-        android:paddingTop="35dp"
+        android:paddingTop="30dp"
         android:text="검색 결과가 없습니다."
+        android:textColor="#222222"
         android:visibility="gone"/>
 
     <androidx.recyclerview.widget.RecyclerView

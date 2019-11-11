@@ -1,11 +1,13 @@
 package com.example.diy_simulator;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -14,7 +16,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,7 +31,7 @@ import java.util.List;
 public class HomeSearch_Keyword extends Fragment {
 
     ArrayList<String> items = new ArrayList<>();
-    TextView non_result;
+    TextView non_result, num_result;
     public RecyclerView search_keyword_recyclerview;
     private final List<Material_Detail_Info> keyword_item = new ArrayList<>();
     private final HomeSearch_Keyword_Adapter keywordAdapter = new HomeSearch_Keyword_Adapter(getContext(),
@@ -43,7 +44,8 @@ public class HomeSearch_Keyword extends Fragment {
         final ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_home_search_keyword, container, false);
 
         final EditText editText = rootview.findViewById(R.id.search_keyword_edit_text);
-        non_result = rootview.findViewById(R.id.keyword_result_none);
+        non_result = rootview.findViewById(R.id.keyword_result_none); //검색 결과 없음
+        num_result = rootview.findViewById(R.id.number_of_keyword_result); //검색 결과 몇개이다
 
         //그리드 레이아웃으로 한줄에 2개씩 제품 보여주기
         search_keyword_recyclerview = rootview.findViewById(R.id.search_keyword_recyclerView);
@@ -56,7 +58,7 @@ public class HomeSearch_Keyword extends Fragment {
         //툴바 뒤로가기 버튼 설정
         final Toolbar tb = rootview.findViewById(R.id.keyword_search_toolbar) ;
         ((AppCompatActivity) getActivity()).setSupportActionBar(tb) ;
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowTitleEnabled(false);
 
@@ -100,61 +102,15 @@ public class HomeSearch_Keyword extends Fragment {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     keywordAdapter.getFilter().filter(editText.getText());
+                    //키보드 내리기
+                    InputMethodManager immhide = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    immhide.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                     return true;
                 }
                 return false;
             }
         });
 
-        //아이템 클릭시 상품 상세 페이지로 이동
-        keywordAdapter.setOnItemClickListener(new HomeSearch_Keyword_Adapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View v, int position) {
-                movetoProductDetail(position);
-            }
-        });
-
         return rootview;
     }
-
-    //부자재 정보 번들에 담아서 상품 상세 페이지로 이동
-    public void movetoProductDetail(int position){
-        //상품 상세 페이지 정보 가져오기
-        String name = keyword_item.get(position).getName();
-        String price = keyword_item.get(position).getPrice();
-        String[] data = keyword_item.get(position).getImg_data();
-        String width = keyword_item.get(position).getWidth();
-        String height = keyword_item.get(position).getHeight();
-        String depth = keyword_item.get(position).getDepth();
-        String keyword = keyword_item.get(position).getKeyword();
-        String stock = keyword_item.get(position).getStock();
-        String storename = keyword_item.get(position).getStorename();
-        String unique_num = keyword_item.get(position).getUnique_number();
-
-        Fragment tab1 = new Product_Detail_Fragment();
-
-        //번들에 부자재 상세정보 담아서 가게 상세 페이지 프래그먼트로 보내기
-        Bundle bundle = new Bundle();
-        bundle.putString("name", name);
-        bundle.putString("price", price);
-        bundle.putStringArray("data", data);
-        bundle.putString("width", width);
-        bundle.putString("height", height);
-        bundle.putString("depth", depth);
-        bundle.putString("keyword", keyword);
-        bundle.putString("stock", stock);
-        bundle.putString("storename", storename);
-        bundle.putString("unique_number", unique_num);
-        tab1.setArguments(bundle);
-
-        //프래그먼트 키워드 검색 -> 제품 상세 페이지로 교체
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        fm.beginTransaction()
-                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right)
-                .replace(R.id.main_tab_view, tab1)
-                .hide(HomeSearch_Keyword.this)
-                .addToBackStack(null)
-                .commit();
-    }
-
 }
