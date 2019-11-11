@@ -1,6 +1,7 @@
 package com.example.diy_simulator;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -8,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -19,6 +21,8 @@ import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -40,6 +44,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +77,7 @@ public class Tab4_Simulation extends Fragment {
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference("구매자");
     private DatabaseReference myRef2 = database.getReference("부자재");
+    private DatabaseReference myRef3 = database.getReference("카테고리");
 
     private String cart;
     private ImageView trashView;
@@ -82,7 +89,13 @@ public class Tab4_Simulation extends Fragment {
     private int MOVE = 1;
     private float angle = 5.0f;
 
+    private ArrayList<String[]> category;
+    private String[] category_arr = new String[4];
 
+    private ImageButton keyring_btn;
+    private ImageButton phonecase_btn;
+    private ImageButton acc_btn;
+    private ImageButton etc_btn;
     //싱글 터치
     private View.OnTouchListener touchListener = new View.OnTouchListener() {
         @SuppressLint("ClickableViewAccessibility")
@@ -93,7 +106,6 @@ public class Tab4_Simulation extends Fragment {
                 case 1: // 기본움직임
                     int parentWidth = ((ViewGroup) v.getParent()).getWidth();    // 부모 View 의 Width
                     int parentHeight = ((ViewGroup) v.getParent()).getHeight();    // 부모 View 의 Height
-
 
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
                         // 뷰 누름
@@ -165,6 +177,39 @@ public class Tab4_Simulation extends Fragment {
         mFirebaseUser = firebaseAuth.getCurrentUser();
         trashView = (ImageView) rootview.findViewById(R.id.trash);
 
+        keyring_btn = (ImageButton) rootview.findViewById(R.id.img_but1);
+        phonecase_btn = (ImageButton) rootview.findViewById(R.id.img_but2);
+        acc_btn = (ImageButton) rootview.findViewById(R.id.img_but3);
+        etc_btn = (ImageButton) rootview.findViewById(R.id.img_but4);
+
+        category = new ArrayList<>();
+
+        keyring_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    simulationAdatper.getFilter().filter("키링");
+            }
+        });
+        phonecase_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                simulationAdatper.getFilter().filter("폰케이스");
+            }
+        });
+        acc_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                simulationAdatper.getFilter().filter("액세서리");
+            }
+        });
+        etc_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                simulationAdatper.getFilter().filter("기타");
+                Log.d("허","dkdk");
+            }
+        });
+
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -177,6 +222,41 @@ public class Tab4_Simulation extends Fragment {
                     }
                 }
             }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int i = 0;
+                for (DataSnapshot ds : dataSnapshot.getChildren()){
+                    if( i == 1) {
+                        for (DataSnapshot ds2 : ds.getChildren()) {
+                            for(DataSnapshot ds3 : ds2.getChildren()){
+                                if (!TextUtils.isEmpty(ds3.getValue().toString())) {
+                                    category_arr[i] += ds3.getValue().toString() + "#";
+                                    Log.d("ㅇ",category_arr[i].replace("null",""));
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (DataSnapshot ds2 : ds.getChildren()) {
+                            if (!TextUtils.isEmpty(ds2.getValue().toString())) {
+                                category_arr[i] += ds2.getValue().toString() + "#";
+                                Log.d("ㅇ",category_arr[i].replace("null",""));
+                            }
+
+                        }
+                    }
+                    i++;
+                }
+            }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -261,12 +341,23 @@ public class Tab4_Simulation extends Fragment {
 
                 blur.setVisibility(View.GONE);
 
+
+                for(int i = 0 ; i < 4;i++){
+                    if(!TextUtils.isEmpty(category_arr[i]))
+                        category_arr[i] = category_arr[i].replace("null","");
+                }
                 StringTokenizer st = new StringTokenizer(cart, "#");
 
                 final String[] arr = new String[st.countTokens()];
-                for(int i = 0; i < arr.length; i++){
+
+                for(int i = 0; i < arr.length; i++) {
                     arr[i] = st.nextToken();
+                    if( sortCategory(arr[i].charAt(0)) == null )
+                        category.add(category_arr);
+                    else
+                        category.add(sortCategory(arr[i].charAt(0)));
                 }
+
                 myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -282,7 +373,7 @@ public class Tab4_Simulation extends Fragment {
                                 String data = ds.child("image_RB_data").child(Integer.parseInt(ds.getKey()) + (int) ds.child("image_data").getChildrenCount()+"").getValue().toString();
                                 int width = Integer.parseInt(ds.child("size_width").getValue().toString());
                                 int height = Integer.parseInt(ds.child("size_height").getValue().toString());
-                                addItemToRecyclerView(data, width, height);
+                                addItemToRecyclerView(data, width, height,  category.get(i));
                                 i++;
                                 continue;
                             }
@@ -328,6 +419,7 @@ public class Tab4_Simulation extends Fragment {
                 }
             }
         });
+
         right_rotate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -342,7 +434,6 @@ public class Tab4_Simulation extends Fragment {
                 }
             }
         });
-
 
         //아이템 클릭시 상품 상세 페이지로 이동Math
         simulationAdatper.setOnItemClickListener(new Tab4_Simulation_Adatper.OnItemClickListener() {
@@ -381,7 +472,6 @@ public class Tab4_Simulation extends Fragment {
         //iv.setImageResource(R.drawable.wooram);  // imageView에 내용 추가
         Log.d("짜이", parentHeight + "");
         Log.d("우람", parentWidth + "");
-
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams( (int) width* parentWidth / 9,(int) height* parentHeight / 16);
 
         iv.setLayoutParams(layoutParams);  // imageView layout 설정
@@ -390,11 +480,53 @@ public class Tab4_Simulation extends Fragment {
         relativeLayout.addView(iv); // 기존 linearLayout에 imageView 추가
 
     }
-    public void addItemToRecyclerView(String data, int width, int height){
-        Tab4_Simulation_Item item = new Tab4_Simulation_Item(data, width, height);
+    public void addItemToRecyclerView(String data, int width, int height, String[] category){
+        Tab4_Simulation_Item item = new Tab4_Simulation_Item(data, width, height, category);
         simulation_items.add(item);
         simulationAdatper.notifyDataSetChanged();
     }
 
+    private String[] sortCategory(char cart) {
+        String[] strings = new String[4];
 
+        for (int i = 0; i < category_arr.length; i++) {
+            if(TextUtils.isEmpty(category_arr[i]))
+                continue;
+            switch (i) {
+                case 0:
+                    for (int k = 0; k < category_arr[i].length(); k += 2) {
+                        if (category_arr[i].charAt(k) == cart) {
+                            strings[i] = "기타";
+                            break;
+                        }
+                    }
+                    break;
+                case 1:
+                    for (int k = 0; k < category_arr[i].length(); k += 2) {
+                        if (category_arr[i].charAt(k) == cart) {
+                            strings[i] = "액세서리";
+                            break;
+                        }
+                    }
+                    break;
+                case 2:
+                    for (int k = 0; k < category_arr[i].length(); k += 2) {
+                        if (category_arr[i].charAt(k) == cart) {
+                            strings[i] = "키링";
+                            break;
+                        }
+                    }
+                    break;
+                case 3:
+                    for (int k = 0; k < category_arr[i].length(); k += 2) {
+                        if (category_arr[i].charAt(k) == cart) {
+                            strings[i] = "폰케이스";
+                            break;
+                        }
+                    }
+                    break;
+            }
+        }
+        return strings;
+    }
 }

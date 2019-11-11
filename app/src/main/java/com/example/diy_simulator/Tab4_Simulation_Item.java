@@ -6,11 +6,21 @@ public class Tab4_Simulation_Item {
     private String data;
     private int width;
     private int height;
+    private String[] category;
 
-    public Tab4_Simulation_Item(String data, int width, int height) {
+    public Tab4_Simulation_Item(String data, int width, int height, String[] category) {
         this.data = data;
         this.width = width;
         this.height = height;
+        this.category = category;
+    }
+
+    public String[] getCategory() {
+        return category;
+    }
+
+    public void setCategory(String[] category) {
+        this.category = category;
     }
 
     public String getData() {

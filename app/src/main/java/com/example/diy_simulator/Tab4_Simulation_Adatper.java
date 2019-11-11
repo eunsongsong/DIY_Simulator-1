@@ -10,23 +10,27 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-
+import java.util.ArrayList;
 import java.util.List;
 
-public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.diy_simulator.Tab4_Simulation_Adatper.ViewHolder> {
+public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.diy_simulator.Tab4_Simulation_Adatper.ViewHolder>  implements Filterable {
     Context context;
-    List<Tab4_Simulation_Item> items;
+    List<Tab4_Simulation_Item> unFilteredlist;
+    List<Tab4_Simulation_Item> filteredList;
     int item_layout;
 
-    public Tab4_Simulation_Adatper(Context context, List<Tab4_Simulation_Item> items, int item_layout) {
+    public Tab4_Simulation_Adatper(Context context, List<Tab4_Simulation_Item> items ,int item_layout) {
         this.context = context;
-        this.items = items;
+        this.unFilteredlist = items;
+        this.filteredList = items;
         this.item_layout = item_layout;
     }
 
@@ -41,7 +45,38 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
     public void setOnItemClickListener(Tab4_Simulation_Adatper.OnItemClickListener listener) {
         this.mListener = listener ;
     }
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String charString = constraint.toString();
+                if (charString.isEmpty()) {
+                    filteredList = unFilteredlist;
+                } else {
+                    ArrayList<Tab4_Simulation_Item> filteringList = new ArrayList<>() ;
+                    for (Tab4_Simulation_Item item : unFilteredlist) {
+                        for(int i = 0; i < 4; i++){
+                            if(!TextUtils.isEmpty(item.getCategory()[i]))
+                                if (item.getCategory()[i].equals(charString)) {
+                                    filteringList.add(item);
+                                }
+                        }
+                    }
+                    filteredList = filteringList;
+                }
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filteredList;
+                return filterResults;
+            }
 
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                filteredList = (List<Tab4_Simulation_Item>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
 
     @NonNull
     @Override
@@ -53,7 +88,7 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
 
     @Override
     public void onBindViewHolder(@NonNull final com.example.diy_simulator.Tab4_Simulation_Adatper.ViewHolder holder, final int position) {
-        final Tab4_Simulation_Item item = items.get(position);
+        final Tab4_Simulation_Item item = filteredList.get(position);
 /*
         //제품 이름, 가격 텍스트 나타내기
         holder.name.setText(item.getName());
@@ -69,7 +104,7 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
             holder.imageView.buildDrawingCache();
 
         }
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mListener != null) mListener.onItemClick(v, position);
@@ -79,7 +114,7 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return filteredList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
