@@ -38,12 +38,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".ModifySellerActivity"></activity>
+        <activity android:name=".ModifyInfoActivity" />
         <activity android:name=".MainTabActivity" />
         <activity android:name=".ImageActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".SignInActivity" />
         <activity android:name=".ImageUploadActivity" />
-        <activity android:name=".PopupActivity" android:theme="@style/popupTheme" android:screenOrientation="portrait"/>
+        <activity
+            android:name=".PopupActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/popupTheme" />
         <activity
             android:name=".RemovebackgroundActivity"
             android:configChanges="keyboardHidden|orientation"

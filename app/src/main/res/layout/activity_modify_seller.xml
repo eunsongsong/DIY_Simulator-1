@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ModifySellerActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/modify_seller_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#EEEEEE"
+        android:minHeight="?attr/actionBarSize">
+
+        <TextView
+            android:id="@+id/modify_seller_toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="회원정보 수정"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp"/>
+    </androidx.appcompat.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/explainText2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="변경사항 없을시 미입력"
+        android:textAlignment="center"
+        android:layout_marginTop="40dp"
+        android:layout_below="@+id/modify_seller_toolbar" />
+
+    <EditText
+        android:id="@+id/modify_seller_name"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/explainText2"
+        android:layout_centerHorizontal="true"
+        android:hint="이름" />
+    <EditText
+        android:id="@+id/modify_storename"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/modify_seller_name"
+        android:layout_centerHorizontal="true"
+        android:hint="상호명" />
+    <EditText
+        android:id="@+id/modify_seller_phonenumber"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:layout_below="@+id/modify_storename"
+        android:layout_centerHorizontal="true"
+        android:hint="전화번호" />
+    <EditText
+        android:id="@+id/modify_seller_address"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/modify_seller_phonenumber"
+        android:layout_centerHorizontal="true"
+        android:hint="주소" />
+
+    <Button
+        android:id="@+id/modify_seller_button"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/modify_seller_address"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:background="#3DC1AB"
+        android:text="수정 완료"/>
+
+
+</RelativeLayout>

@@ -1,12 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/sign_out_btn"
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/mypage_customer_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Log out" />
+        android:background="#EEEEEE"
+        android:minHeight="?attr/actionBarSize">
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/mypage_customer_toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="마 이 페 이 지"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp"/>
+    </androidx.appcompat.widget.Toolbar>
+
+    <TextView
+        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="40dp"
+        android:textSize="18dp"
+        android:text="이름"
+        android:layout_below = "@id/mypage_customer_toolbar"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="40dp"
+        android:textSize="18dp"
+        android:text="이메일"
+        android:layout_below="@+id/mypage_customerId"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="40dp"
+        android:textSize="18dp"
+        android:text="전화번호"
+        android:layout_below="@+id/mypage_customerEmail"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="40dp"
+        android:textSize="18dp"
+        android:text="주소"
+        android:layout_below="@+id/mypage_customerPhonenumber"/>
+
+    <TextView
+        android:id="@+id/mypage_customerId"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/mypage_customer_toolbar"
+        android:layout_marginLeft="120dp"
+        android:layout_marginTop="30dp"
+        android:textSize="18dp" />
+
+    <TextView
+        android:id="@+id/mypage_customerEmail"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="120dp"
+        android:textSize="18dp"
+        android:layout_below="@+id/mypage_customerId"/>
+
+    <TextView
+        android:id="@+id/mypage_customerPhonenumber"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="120dp"
+        android:textSize="18dp"
+        android:layout_below="@+id/mypage_customerEmail"/>
+
+    <TextView
+        android:id="@+id/mypage_customerAddress"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="120dp"
+        android:textSize="18dp"
+        android:layout_below="@+id/mypage_customerPhonenumber"/>
+
+    <Button
+        android:id="@+id/mypage_customer_modify"
+        android:layout_marginTop="10dp"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/mypage_customerAddress"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="20dp"
+        android:background="#EEEEEE"
+        android:text="회원정보 수정"
+        android:textColor="#008577"/>
+
+    <Button
+        android:id="@+id/mypage_customer_signout"
+        android:layout_marginTop="10dp"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/mypage_customerAddress"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/mypage_customer_modify"
+        android:background="#EEEEEE"
+        android:text="로그아웃"
+        android:textColor="#777777" />
+
+    <Button
+    android:id="@+id/mypage_orderInfo"
+    android:layout_width="330dp"
+    android:layout_centerHorizontal="true"
+    android:background="#3DC1AB"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/mypage_customer_modify"
+    android:layout_marginTop="15dp"
+    android:layout_marginBottom="20dp"
+    android:text="주문/배송 조회" />
+
+
+
+
+</RelativeLayout>

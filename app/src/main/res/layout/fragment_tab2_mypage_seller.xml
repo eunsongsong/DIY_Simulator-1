@@ -1,11 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/mypage_seller_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="seller mypage !!" />
-</FrameLayout>
+        android:background="#EEEEEE"
+        android:minHeight="?attr/actionBarSize">
+
+        <TextView
+            android:id="@+id/mypage_seller_toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="마 이 페 이 지"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp"/>
+    </androidx.appcompat.widget.Toolbar>
+
+    <TextView
+        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="40dp"
+        android:textSize="18dp"
+        android:text="이름"
+        android:layout_below = "@id/mypage_seller_toolbar"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="40dp"
+        android:textSize="18dp"
+        android:text="상호명"
+        android:layout_below="@+id/mypage_sellerId"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="40dp"
+        android:textSize="18dp"
+        android:text="이메일"
+        android:layout_below="@+id/mypage_sellerStorename"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="40dp"
+        android:textSize="18dp"
+        android:text="전화번호"
+        android:layout_below="@+id/mypage_sellerEmail"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="40dp"
+        android:textSize="18dp"
+        android:text="주소"
+        android:layout_below="@+id/mypage_sellerPhonenumber"/>
+
+    <TextView
+        android:id="@+id/mypage_sellerId"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/mypage_seller_toolbar"
+        android:layout_marginLeft="120dp"
+        android:layout_marginTop="30dp"
+        android:textSize="18dp" />
+
+    <TextView
+        android:id="@+id/mypage_sellerStorename"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/mypage_sellerId"
+        android:layout_marginLeft="120dp"
+        android:textSize="18dp" />
+
+    <TextView
+        android:id="@+id/mypage_sellerEmail"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="120dp"
+        android:textSize="18dp"
+        android:layout_below="@+id/mypage_sellerStorename"/>
+
+    <TextView
+        android:id="@+id/mypage_sellerPhonenumber"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="120dp"
+        android:textSize="18dp"
+        android:layout_below="@+id/mypage_sellerEmail"/>
+
+    <TextView
+        android:id="@+id/mypage_sellerAddress"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="120dp"
+        android:textSize="18dp"
+        android:layout_below="@+id/mypage_sellerPhonenumber"/>
+
+    <Button
+        android:id="@+id/mypage_seller_modify"
+        android:layout_marginTop="10dp"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/mypage_sellerAddress"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="20dp"
+        android:background="#EEEEEE"
+        android:text="회원정보 수정"
+        android:textColor="#008577"/>
+
+    <Button
+        android:id="@+id/mypage_seller_signout"
+        android:layout_marginTop="10dp"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/mypage_sellerAddress"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/mypage_seller_modify"
+        android:background="#EEEEEE"
+        android:text="로그아웃"
+        android:textColor="#777777" />
+
+</RelativeLayout>
