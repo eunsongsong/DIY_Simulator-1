@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -31,38 +32,16 @@ public class Tab3_Cart_Adapter extends  RecyclerView.Adapter<Tab3_Cart_Adapter.V
     Context context;
     List<Tab3_Cart_Info> items;
     int item_layout;
+    Tab3_Cart tab3;
 
     FirebaseDatabase database= FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("구매자");
 
-    public Tab3_Cart_Adapter(Context context, List<Tab3_Cart_Info> items, int item_layout) {
+    public Tab3_Cart_Adapter(Context context, List<Tab3_Cart_Info> items, int item_layout, Tab3_Cart tab3) {
         this.context = context;
         this.items = items;
         this.item_layout = item_layout;
-    }
-
-    public interface AmountLister {
-        void amountlisten(View v, int position);
-    }
-
-    // 리스너 객체 참조를 저장하는 변수
-    private Tab3_Cart_Adapter.AmountLister aListener = null ;
-
-    // OnItemClickListener 리스너 객체 참조를 어댑터에 전달하는 메서드
-    public void GetAmountListener(Tab3_Cart_Adapter.AmountLister listener) {
-        this.aListener = listener ;
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(View v, int position);
-    }
-
-    // 리스너 객체 참조를 저장하는 변수
-    private Tab3_Cart_Adapter.OnItemClickListener mListener = null ;
-
-    // OnItemClickListener 리스너 객체 참조를 어댑터에 전달하는 메서드
-    public void setOnItemClickListener(Tab3_Cart_Adapter.OnItemClickListener listener) {
-        this.mListener = listener ;
+        this.tab3 = tab3;
     }
 
     @NonNull
@@ -84,6 +63,7 @@ public class Tab3_Cart_Adapter extends  RecyclerView.Adapter<Tab3_Cart_Adapter.V
         holder.price.setText(item.getPrice() + " 원");
         holder.store_name.setText(item.getStorename());
         holder.amount.setText(String.valueOf(item.getAmount()));
+
 
         if (!TextUtils.isEmpty(item.getPreview_img_data())) {
             //제품 이미지 url로 나타내기
@@ -108,6 +88,8 @@ public class Tab3_Cart_Adapter extends  RecyclerView.Adapter<Tab3_Cart_Adapter.V
                         // 아이템 리스트에서 제거
                         items.remove(position);
                         notifyDataSetChanged();
+
+                        if(items.size() == 0) tab3.isEmptyCart();
 
                         // 구매자 DB - cart 에서 해당 번호 삭제
                         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -155,7 +137,7 @@ public class Tab3_Cart_Adapter extends  RecyclerView.Adapter<Tab3_Cart_Adapter.V
         holder.img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mListener != null) mListener.onItemClick(v, position);
+                tab3.movetoProductDetail(position);
             }
         });
 
@@ -163,9 +145,20 @@ public class Tab3_Cart_Adapter extends  RecyclerView.Adapter<Tab3_Cart_Adapter.V
         holder.plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.amount.setText(String.valueOf(item.getAmount()+1));
-                item.setAmount(item.getAmount()+1);
-                if (aListener != null) aListener.amountlisten(v, position);
+                int stock = Integer.parseInt(item.getStock());
+                int amount = item.getAmount();
+                // 현재 담은 수량이 재고보다 작을 경우 1 증가
+                if(stock > amount){
+                    holder.amount.setText(String.valueOf(item.getAmount()+1));
+                    item.setAmount(item.getAmount()+1);
+                    // 해당 수량에 맞게 가격 재설정
+                    tab3.setSum_of_money();
+                }
+                // 현재 담은 수량이 재고와 같으면 +1 불가능
+                else{
+                    Toast.makeText(v.getContext(), "장바구니에 담으려는 수량이 주문 가능 수량보다 많습니다.",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -177,7 +170,8 @@ public class Tab3_Cart_Adapter extends  RecyclerView.Adapter<Tab3_Cart_Adapter.V
                 if(item.getAmount()>1){
                     holder.amount.setText(String.valueOf(item.getAmount()-1));
                     item.setAmount(item.getAmount()-1);
-                    if (aListener != null) aListener.amountlisten(v, position);
+                    // 해당 수량에 맞게 가격 재설정
+                    tab3.setSum_of_money();
                 }
             }
         });

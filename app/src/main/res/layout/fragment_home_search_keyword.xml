@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".HomeSearch_Keyword">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/keyword_search_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#EEEEEE"
+        android:minHeight="?attr/actionBarSize">
+
+        <TextView
+            android:id="@+id/search_category_toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="검 색"
+            android:textColor="#222222"
+            android:textSize="18sp" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_margin="7dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/search"/>
+        <EditText
+            android:id="@+id/search_keyword_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:inputType="text"
+            android:imeOptions="actionSearch"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/keyword_result_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="#DDDDDD"
+        android:text="총 n개의 상품이 검색되었습니다."
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/keyword_result_none"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:textAlignment="center"
+        android:background="#DDDDDD"
+        android:layout_marginTop="10dp"
+        android:paddingTop="35dp"
+        android:text="검색 결과가 없습니다."
+        android:visibility="gone"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/search_keyword_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

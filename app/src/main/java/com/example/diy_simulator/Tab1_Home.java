@@ -52,6 +52,23 @@ public class Tab1_Home extends Fragment implements View.OnClickListener {
         ImageButton category_phone_Btn = rootview.findViewById(R.id.back_img_2);
         ImageButton category_acc_Btn = rootview.findViewById(R.id.back_img_3);
         ImageButton category_etc_Btn = rootview.findViewById(R.id.back_img_4);
+        ImageButton keyword = rootview.findViewById(R.id.home_keyword_search_btn);
+
+        // 돋보기 버튼을 누르면 키워드 검색으로 프래그먼트 교체
+        keyword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment tab1 = new HomeSearch_Keyword();
+                //프래그먼트 tab1 -> search keyword 로 교체
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                fm.beginTransaction()
+                        .setCustomAnimations(R.anim.enter_from_right,R.anim.exit_to_right)
+                        .replace(R.id.main_tab_view, tab1)
+                        .hide(Tab1_Home.this)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
 
         //카테고리 버튼 누르면 카테고리 스트링 보내면서 프래그먼트 교체
         //카테고리 - 키링

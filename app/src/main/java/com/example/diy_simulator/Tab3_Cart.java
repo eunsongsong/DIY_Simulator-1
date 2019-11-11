@@ -40,7 +40,7 @@ public class Tab3_Cart extends Fragment {
 
     public RecyclerView cart_recyclerview;
     private final List<Tab3_Cart_Info> cart_item = new ArrayList<>();
-    private final Tab3_Cart_Adapter cartAdapter = new Tab3_Cart_Adapter(getContext(), cart_item, R.layout.tab3_cart_item);
+    private final Tab3_Cart_Adapter cartAdapter = new Tab3_Cart_Adapter(getContext(), cart_item, R.layout.tab3_cart_item, Tab3_Cart.this);
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_tab3_cart, container, false);
@@ -63,21 +63,6 @@ public class Tab3_Cart extends Fragment {
         if(mFirebaseUser != null) getCartInfo();
 
 
-        // +/- 버튼 누를시 주문 금액 총합 재설정
-        cartAdapter.GetAmountListener(new Tab3_Cart_Adapter.AmountLister() {
-            @Override
-            public void amountlisten(View v, int position) {
-                setSum_of_money();
-            }
-        });
-
-        //아이템 클릭시 상품 상세 페이지로 이동
-        cartAdapter.setOnItemClickListener(new Tab3_Cart_Adapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View v, int position) {
-                movetoProductDetail(position);
-            }
-        });
         return rootview;
     }
 
@@ -192,7 +177,7 @@ public class Tab3_Cart extends Fragment {
         //번들에 부자재 상세정보 담아서 가게 상세 페이지 프래그먼트로 보내기
         Bundle bundle = new Bundle();
         bundle.putString("name", name);
-        bundle.putString("price", price);
+        bundle.putString("price", price + " 원");
         bundle.putStringArray("data", data);
         bundle.putString("width", width);
         bundle.putString("height", height);
@@ -211,6 +196,11 @@ public class Tab3_Cart extends Fragment {
                 .hide(Tab3_Cart.this)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    // 고객이 장바구니에 담긴 물건 모두 삭제했을 때 빈 이미지 띄워줌
+    public void isEmptyCart(){
+        empty.setVisibility(View.VISIBLE);
     }
 
 }
