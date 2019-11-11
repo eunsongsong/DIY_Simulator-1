@@ -3,6 +3,9 @@ package com.example.diy_simulator;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Base64;
@@ -14,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -41,7 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public class Tab4_Simulation extends Fragment  {
+public class Tab4_Simulation extends Fragment {
 
     private LinearLayout simul_menu_layout;
     private LinearLayout blur;
@@ -50,12 +54,10 @@ public class Tab4_Simulation extends Fragment  {
 
     float oldXvalue;
     float oldYvalue;
-    ImageView imageView;
     RelativeLayout relativeLayout;
     int parentWidth;
     int parentHeight;
 
-    private Button button;
     boolean check = false;
     ViewTreeObserver.OnGlobalLayoutListener mOnGlobalLayoutListener;
 
@@ -75,57 +77,89 @@ public class Tab4_Simulation extends Fragment  {
     private int trash_width;
     private int trash_height;
 
+    private ImageButton left_rotate;
+    private ImageButton right_rotate;
+    private int MOVE = 1;
+    private float angle = 5.0f;
 
+
+    //싱글 터치
     private View.OnTouchListener touchListener = new View.OnTouchListener() {
         @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            int parentWidth = ((ViewGroup) v.getParent()).getWidth();    // 부모 View 의 Width
-            int parentHeight = ((ViewGroup) v.getParent()).getHeight();    // 부모 View 의 Height
+            switch (MOVE) {
 
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                // 뷰 누름
-                oldXvalue = event.getX();
-                oldYvalue = event.getY();
-                Log.d("viewTest", "oldXvalue : " + oldXvalue + " oldYvalue : " + oldYvalue);    // View 내부에서 터치한 지점의 상대 좌표값.
-                Log.d("viewTest", "v.getX() : " + v.getX());    // View 의 좌측 상단이 되는 지점의 절대 좌표값.
-                Log.d("viewTest", "RawX : " + event.getRawX() + " RawY : " + event.getRawY());    // View 를 터치한 지점의 절대 좌표값.
-                Log.d("viewTest", "v.getHeight : " + v.getHeight() + " v.getWidth : " + v.getWidth());    // View 의 Width, Height
+                case 1: // 기본움직임
+                    int parentWidth = ((ViewGroup) v.getParent()).getWidth();    // 부모 View 의 Width
+                    int parentHeight = ((ViewGroup) v.getParent()).getHeight();    // 부모 View 의 Height
 
-            } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                // 뷰 이동 중
-                v.setX(v.getX() + (event.getX()) - (v.getWidth() / 2));
-                v.setY(v.getY() + (event.getY()) - (v.getHeight() / 2));
 
-            } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                // 뷰에서 손을 뗌
-                Log.d("현재위치",v.getX() +"x " + v.getY());
-                Log.d("타겟",trash_width +"x " + trash_height);
-                int a =(int) v.getX();
-                int b = (int) v.getY();
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        // 뷰 누름
+                        oldXvalue = event.getX();
+                        oldYvalue = event.getY();
+                        Log.d("viewTest", "oldXvalue : " + oldXvalue + " oldYvalue : " + oldYvalue);    // View 내부에서 터치한 지점의 상대 좌표값.
+                        Log.d("viewTest", "v.getX() : " + v.getX());    // View 의 좌측 상단이 되는 지점의 절대 좌표값.
+                        Log.d("viewTest", "RawX : " + event.getRawX() + " RawY : " + event.getRawY());    // View 를 터치한 지점의 절대 좌표값.
+                        Log.d("viewTest", "v.getHeight : " + v.getHeight() + " v.getWidth : " + v.getWidth());    // View 의 Width, Height
 
-                if( Math.abs((int) a - trash_width) <= 100 &&  Math.abs((int) b + 200 - trash_height) <= 150)
-                    v.setVisibility(View.GONE);
-                if (v.getX() < 0) {
-                    v.setX(0);
-                } else if ((v.getX() + v.getWidth()) > parentWidth) {
-                    v.setX(parentWidth - v.getWidth());
-                }
+                    } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                        // 뷰 이동 중
+                        v.setX(event.getRawX() - oldXvalue);
+                        v.setY(event.getRawY() - oldYvalue - 250);
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        // 뷰에서 손을 뗌
+                        Log.d("현재위치", v.getX() + "x " + v.getY());
+                        Log.d("타겟", trash_width + "x " + trash_height);
+                        int a = (int) v.getX();
+                        int b = (int) v.getY();
 
-                if (v.getY() < 0) {
-                    v.setY(0);
-                } else if ((v.getY() + v.getHeight()) > parentHeight) {
-                    v.setY(parentHeight - v.getHeight());
-                }
+                        if ((Math.abs((int) a - trash_width) <= 100 && Math.abs((int) b + 200 - trash_height) <= 150)
+                                || (Math.abs((int) a - trash_width) <= 500 && Math.abs((int) b + v.getHeight()) > parentHeight))
+                            v.setVisibility(View.GONE);
+                        if (v.getX() < 0) {
+                            v.setX(0);
+                        } else if ((v.getX() + v.getWidth()) > parentWidth) {
+                            v.setX(parentWidth - v.getWidth());
+                        }
+
+                        if (v.getY() < 0) {
+                            v.setY(0);
+                        } else if ((v.getY() + v.getHeight()) > parentHeight) {
+                            v.setY(parentHeight - v.getHeight());
+                        }
+                    }
+                    break;
+                case 2:
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+
+                    } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        v.setRotation(v.getRotation() - angle);
+                    }
+                    break;
+                case 3:
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+
+                    } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        v.setRotation(v.getRotation() + angle);
+                    }
+                    break;
             }
-            return true;
-        }
+                return true;
+            }
     };
 
     @SuppressLint("ClickableViewAccessibility")
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_tab4_simulation, container, false);
 
+        left_rotate = (ImageButton) rootview.findViewById(R.id.left_rotate);
+        right_rotate = (ImageButton) rootview.findViewById(R.id.right_rotate);
         relativeLayout = (RelativeLayout) rootview.findViewById(R.id.relative);
         firebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = firebaseAuth.getCurrentUser();
@@ -152,10 +186,9 @@ public class Tab4_Simulation extends Fragment  {
         ImageButton menubtn = rootview.findViewById(R.id.simulation_menu_button);
         ImageButton x_btn = rootview.findViewById(R.id.x_button);
         simul_menu_layout = rootview.findViewById(R.id.simul_menu_layout);
-        view = rootview.findViewById(R.id.temp);
+        view = rootview.findViewById(R.id.side_btn);
         blur = rootview.findViewById(R.id.blur);
 
-        button = (Button) rootview.findViewById(R.id.add_btn);
 
         //그리드 레이아웃으로 한줄에 2개씩 제품 보여주기
         simul_recyclerview = rootview.findViewById(R.id.simulation_menu_recycler);
@@ -187,35 +220,28 @@ public class Tab4_Simulation extends Fragment  {
         viewTreeObserver.addOnGlobalLayoutListener(mOnGlobalLayoutListener);
 
          check = true;
-        button.setOnClickListener(new View.OnClickListener() {
+
+        view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("넌 되니", "ㅇㅇ");
+                DisplayMetrics dm = getContext().getResources().getDisplayMetrics();
 
-                ImageView iv = new ImageView(getContext());  // 새로 추가할 imageView 생성
+                int width = dm.widthPixels;
 
-                iv.setImageResource(R.drawable.wooram);  // imageView에 내용 추가
-                Log.d("짜이", parentHeight + "");
-                Log.d("우람", parentWidth + "");
-
-                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams( (int)3.3 * parentWidth / 9,(int) 3.3 * parentHeight / 16);
-
-                iv.setLayoutParams(layoutParams);  // imageView layout 설정
-                iv.setOnTouchListener(touchListener);
-
-                relativeLayout.addView(iv); // 기존 linearLayout에 imageView 추가
-
-                }
+                animation = new TranslateAnimation(0, width, 0, 0);
+                animation.setDuration(100);
+                view.setVisibility(View.GONE);
+                simul_menu_layout.setVisibility(View.GONE);
+                simul_menu_layout.setAnimation(animation);
+                blur.setVisibility(View.VISIBLE);
+            }
         });
-        // imageView = (ImageView) rootview.findViewById(R.id.test);
-
-        //  imageView.setOnTouchListener(this);
 
         menubtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DisplayMetrics dm = getContext().getResources().getDisplayMetrics();
-                Log.d("촉",cart);
+            //    Log.d("촉",cart);
                 int width = dm.widthPixels;
                 int f_width = width - (int) (width * 0.8);
                 simulation_items.clear();
@@ -246,12 +272,12 @@ public class Tab4_Simulation extends Fragment  {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         Log.d("제발잠좀","자게해줘"+dataSnapshot.getValue().toString());
                         //String url = dataSnapshot.child("image_RB_url").child(d.getKey()).getValue().toString();
+                        simulation_items.clear();
                         int i = 0;
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
                             if ( i == arr.length)
                                 break;
                             if(arr[i].equals(ds.getKey())){
-
                                 Log.d("궁금 " + ds.getKey(),ds.child("image_data").getChildrenCount()+"");
                                 String data = ds.child("image_RB_data").child(Integer.parseInt(ds.getKey()) + (int) ds.child("image_data").getChildrenCount()+"").getValue().toString();
                                 int width = Integer.parseInt(ds.child("size_width").getValue().toString());
@@ -288,6 +314,35 @@ public class Tab4_Simulation extends Fragment  {
             }
         });
 
+        left_rotate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(MOVE != 2) {
+                    MOVE = 2;
+                    left_rotate.setBackground(getResources().getDrawable(R.drawable.left_mint));
+                    right_rotate.setBackground(getResources().getDrawable(R.drawable.right_black));
+                }
+                else {
+                    MOVE = 1;
+                    left_rotate.setBackground(getResources().getDrawable(R.drawable.left_black));
+                }
+            }
+        });
+        right_rotate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(MOVE != 3) {
+                    MOVE = 3;
+                    right_rotate.setBackground(getResources().getDrawable(R.drawable.right_mint));
+                    left_rotate.setBackground(getResources().getDrawable(R.drawable.left_black));
+                }
+                else {
+                    MOVE = 1;
+                    right_rotate.setBackground(getResources().getDrawable(R.drawable.right_black));
+                }
+            }
+        });
+
 
         //아이템 클릭시 상품 상세 페이지로 이동Math
         simulationAdatper.setOnItemClickListener(new Tab4_Simulation_Adatper.OnItemClickListener() {
@@ -316,66 +371,28 @@ public class Tab4_Simulation extends Fragment  {
         intValue = (int) (randomValue * 8) + 2;
         iv.setY( intValue * parentHeight / 16 );
 
-
         byte[] decodedByteArray = Base64.decode(data, Base64.NO_WRAP);
         Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
         iv.setImageBitmap(decodedBitmap);
         iv.setDrawingCacheEnabled(true);
+        iv.setOnTouchListener(touchListener);
         iv.buildDrawingCache();
+       // iv.setOnTouchListener(touchListener);
         //iv.setImageResource(R.drawable.wooram);  // imageView에 내용 추가
         Log.d("짜이", parentHeight + "");
         Log.d("우람", parentWidth + "");
 
-
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams( (int) width* parentWidth / 9,(int) height* parentHeight / 16);
 
         iv.setLayoutParams(layoutParams);  // imageView layout 설정
-        iv.setOnTouchListener(touchListener);
+        //iv.setOnTouchListener(touchListener);
 
         relativeLayout.addView(iv); // 기존 linearLayout에 imageView 추가
 
-/*        String name = category_item.get(position).getName();
-        String price = category_item.get(position).getPrice();
-        String[] url = category_item.get(position).getImg_url();
-        String width = category_item.get(position).getWidth();
-        String height = category_item.get(position).getHeight();
-        String depth = category_item.get(position).getDepth();
-        String keyword = category_item.get(position).getKeyword();
-        String stock = category_item.get(position).getStock();
-        String storename = category_item.get(position).getStorename();
-        String unique_num = category_item.get(position).getUnique_number();
-
-        Fragment tab1 = new Product_Detail_Fragment();
-
-        //번들에 부자재 상세정보 담아서 가게 상세 페이지 프래그먼트로 보내기
-        Bundle bundle = new Bundle();
-        bundle.putString("name", name);
-        bundle.putString("price", price);
-        bundle.putStringArray("url", url);
-        bundle.putString("width", width);
-        bundle.putString("height", height);
-        bundle.putString("depth", depth);
-        bundle.putString("keyword", keyword);
-        bundle.putString("stock", stock);
-        bundle.putString("storename", storename);
-        bundle.putString("unique_number", unique_num);
-        tab1.setArguments(bundle);
-
-        //프래그먼트 카테고리 검색 -> 제품 상세 페이지로 교체
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        fm.beginTransaction()
-                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right)
-                .replace(R.id.main_tab_view, tab1)
-                .hide(HomeSearch_Category.this)
-                .addToBackStack(null)
-                .commit();
-
- */
     }
     public void addItemToRecyclerView(String data, int width, int height){
         Tab4_Simulation_Item item = new Tab4_Simulation_Item(data, width, height);
         simulation_items.add(item);
-
         simulationAdatper.notifyDataSetChanged();
     }
 

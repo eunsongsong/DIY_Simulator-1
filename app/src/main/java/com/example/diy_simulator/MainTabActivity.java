@@ -54,7 +54,7 @@ public class MainTabActivity extends AppCompatActivity {
         Drawable drawable3_sell = getResources().getDrawable(R.drawable.tab3_seller_cart_selector);
         Drawable drawable4 = getResources().getDrawable(R.drawable.tab4_simulation_selector);
 
-         isSeller = getIntent().getBooleanExtra("whoIs",false);
+        isSeller = getIntent().getBooleanExtra("whoIs",false);
 
         mTabLayout.addTab(mTabLayout.newTab().setIcon(drawable1));
         mTabLayout.addTab(mTabLayout.newTab().setIcon(drawable2));
@@ -95,7 +95,7 @@ public class MainTabActivity extends AppCompatActivity {
                             else Log.d("현재 유저", mFirebaseUser.getEmail());
                         }
                     }
-
+                    //선택된 프레임을 제외하고 다 제거
                     @Override
                     public void onTabUnselected(TabLayout.Tab tab) {
                         FragmentManager fm = getSupportFragmentManager();
