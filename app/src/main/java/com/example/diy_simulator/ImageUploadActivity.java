@@ -366,26 +366,23 @@ public class ImageUploadActivity extends AppCompatActivity {
                 Bitmap temp = bitmap;
                 //사이즈 500:500 만듬
 
-                if ( bitmap.getWidth() >= bitmap.getHeight() && bitmap.getWidth() > 600)
-                {
-                    float width = 600.0f; // 축소시킬 너비
-                    float ratio = (float) bitmap.getWidth() / 600.0f;
-                    float height = (float) bitmap.getHeight() / ratio ; // 축소시킬 높이
-                    bitmap = Bitmap.createScaledBitmap(bitmap, (int) width, (int) height, true);
-                }
-                else if (bitmap.getWidth() < bitmap.getHeight() && bitmap.getHeight() > 600 )
-                {
-                    float height = 600.0f; // 축소시킬
-                    float ratio = (float) bitmap.getHeight() / 600.0f;
-                    float width = (float) bitmap.getWidth() / ratio ; // 축소시킬 높이
-                    bitmap = Bitmap.createScaledBitmap(bitmap, (int) width, (int) height, true);
-                }
-
-
-
-                Log.d("넓이",bitmap.getWidth()+"");
-                Log.d("높이",bitmap.getHeight()+"");
-                if(checkedTextView.isChecked()) { // 전경추출하려면 500정도 사이즈 필요
+                float new_width = 0.0f;
+                float new_ratio = 0.0f;
+                float new_height = 0.0f;
+                if(checkedTextView.isChecked()) {
+                    if (bitmap.getWidth() >= bitmap.getHeight() && bitmap.getWidth() > 600) {
+                        new_width = 600.0f; // 축소시킬 너비
+                        new_ratio = (float) bitmap.getWidth() / 600.0f;
+                        new_height = (float) bitmap.getHeight() / new_ratio; // 축소시킬 높이
+                        bitmap = Bitmap.createScaledBitmap(bitmap, (int) new_width, (int) new_height, true);
+                    } else if (bitmap.getWidth() < bitmap.getHeight() && bitmap.getHeight() > 600) {
+                        new_height = 600.0f; // 축소시킬
+                        new_ratio = (float) bitmap.getHeight() / 600.0f;
+                        new_width = (float) bitmap.getWidth() / new_ratio; // 축소시킬 높이
+                        bitmap = Bitmap.createScaledBitmap(bitmap, (int) new_width, (int) new_height, true);
+                    }
+                    Log.d("넓이",new_width+"");
+                    Log.d("높이",new_height+"");
                     bitmap = removeBackground(bitmap);
                     //여기서 500대 500이됨
                     baos = new ByteArrayOutputStream();
@@ -399,11 +396,12 @@ public class ImageUploadActivity extends AppCompatActivity {
                         preview_image_infos.add(preview_image_infos.size() - 1, item);
                     Log.d("ddd", preview_image_infos.size()+"");
                     checkedTextView.setChecked(false);
-
                 }
                 else{ //여기가 기본사진
                     baos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    Log.d("보자",temp.getWidth()+"");
+                    Log.d("보자33",temp.getHeight()+"");
+                    temp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                     data_arr.add(Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP));
                     Preview_Image_Info item;
                     item = new Preview_Image_Info(temp,data_arr.get(data_arr.size() - 1));
