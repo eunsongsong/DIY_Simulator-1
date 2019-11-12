@@ -37,6 +37,8 @@ public class HomeSearch_Keyword extends Fragment {
     private final HomeSearch_Keyword_Adapter keywordAdapter = new HomeSearch_Keyword_Adapter(getContext(),
             keyword_item, R.layout.fragment_home_search_keyword, HomeSearch_Keyword.this);
 
+    InputMethodManager immhide;
+
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("부자재");
 
@@ -46,6 +48,12 @@ public class HomeSearch_Keyword extends Fragment {
         final EditText editText = rootview.findViewById(R.id.search_keyword_edit_text);
         non_result = rootview.findViewById(R.id.keyword_result_none); //검색 결과 없음
         num_result = rootview.findViewById(R.id.number_of_keyword_result); //검색 결과 몇개이다
+
+        immhide = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        // 검색창 editText 에 포커스 주고 키보드 올리기
+        editText.setFocusableInTouchMode(true);
+        editText.requestFocus();
+        immhide.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
 
         //그리드 레이아웃으로 한줄에 2개씩 제품 보여주기
         search_keyword_recyclerview = rootview.findViewById(R.id.search_keyword_recyclerView);
@@ -106,7 +114,6 @@ public class HomeSearch_Keyword extends Fragment {
                     keywordAdapter.getFilter().filter(editText.getText());
                     search_keyword_recyclerview.setVisibility(View.VISIBLE);
                     //키보드 내리기
-                    InputMethodManager immhide = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
                     immhide.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                     return true;
                 }
