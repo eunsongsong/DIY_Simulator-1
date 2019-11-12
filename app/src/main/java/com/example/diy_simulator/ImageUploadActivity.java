@@ -356,10 +356,6 @@ public class ImageUploadActivity extends AppCompatActivity {
                 //사진의 주소를 가져와 EXIF에서 회전 값을 읽어와 회전된 상태만큼 다시 회전시켜 원상복구 시킨다.
                 //* EXIF : 사진의 크기, 화소, 회전, 노출정도 등의 메타데이터.
                 //imageView = (ImageView) findViewById(R.id.preview);
-
-
-
-
                 imagePath = getRealPathFromURI(result.getUri());
                 int degree = getExifOrientation(imagePath);
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), result.getUri());
@@ -367,33 +363,33 @@ public class ImageUploadActivity extends AppCompatActivity {
                 Log.d("넓이",bitmap.getWidth()+"");
                 Log.d("높이",bitmap.getHeight()+"");
                 //여기까지 회전된 이미지 복구
+                Bitmap temp = bitmap;
+                //사이즈 500:500 만듬
 
-                int width = 500; // 축소시킬 너비
-                int height = 500; // 축소시킬 높이
-                float bmpWidth = bitmap.getWidth();
-                float bmpHeight = bitmap.getHeight();
-                if (bmpWidth > width) {
-                    // 원하는 너비보다 클 경우의 설정
-                    float mWidth = bmpWidth / 100;
-                    float scale = width/ mWidth;
-                    bmpWidth *= (scale / 100);
-                    //bmpHeight *= (scale / 100);
+                if ( bitmap.getWidth() >= bitmap.getHeight() && bitmap.getWidth() > 600)
+                {
+                    float width = 600.0f; // 축소시킬 너비
+                    float ratio = (float) bitmap.getWidth() / 600.0f;
+                    float height = (float) bitmap.getHeight() / ratio ; // 축소시킬 높이
+                    bitmap = Bitmap.createScaledBitmap(bitmap, (int) width, (int) height, true);
                 }
-                if (bmpHeight > height) {
-                    // 원하는 높이보다 클 경우의 설정
-                    float mHeight = bmpHeight / 100;
-                    float scale = height/ mHeight;
-                    //bmpWidth *= (scale / 100);
-                    bmpHeight *= (scale / 100);
+                else if (bitmap.getWidth() < bitmap.getHeight() && bitmap.getHeight() > 600 )
+                {
+                    float height = 600.0f; // 축소시킬
+                    float ratio = (float) bitmap.getHeight() / 600.0f;
+                    float width = (float) bitmap.getWidth() / ratio ; // 축소시킬 높이
+                    bitmap = Bitmap.createScaledBitmap(bitmap, (int) width, (int) height, true);
                 }
-                bitmap = Bitmap.createScaledBitmap(bitmap, (int) bmpWidth, (int) bmpHeight, true);
+
+
+
                 Log.d("넓이",bitmap.getWidth()+"");
                 Log.d("높이",bitmap.getHeight()+"");
-                if(checkedTextView.isChecked()) {
+                if(checkedTextView.isChecked()) { // 전경추출하려면 500정도 사이즈 필요
                     bitmap = removeBackground(bitmap);
+                    //여기서 500대 500이됨
                     baos = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-
                     rm_data_arr.add(Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP));
                     Preview_Image_Info item;
                     item = new Preview_Image_Info(bitmap,rm_data_arr.get(rm_data_arr.size() - 1));
@@ -405,12 +401,12 @@ public class ImageUploadActivity extends AppCompatActivity {
                     checkedTextView.setChecked(false);
 
                 }
-                else{
+                else{ //여기가 기본사진
                     baos = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                     data_arr.add(Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP));
                     Preview_Image_Info item;
-                    item = new Preview_Image_Info(bitmap,data_arr.get(data_arr.size() - 1));
+                    item = new Preview_Image_Info(temp,data_arr.get(data_arr.size() - 1));
                     if( preview_image_infos.size() == 1)
                         preview_image_infos.add(0,item);
                     else

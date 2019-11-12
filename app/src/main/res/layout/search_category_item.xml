@@ -15,7 +15,8 @@
             android:id="@+id/search_category_product_img"
             android:layout_width="170dp"
             android:layout_height="170dp"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
             android:src="@drawable/photo_outline"/>
         <TextView
             android:id="@+id/search_category_store_name"

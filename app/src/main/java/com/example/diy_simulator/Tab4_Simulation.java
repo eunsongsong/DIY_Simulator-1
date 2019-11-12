@@ -455,8 +455,7 @@ public class Tab4_Simulation extends Fragment {
         iv.setDrawingCacheEnabled(true);
         iv.setOnTouchListener(touchListener);
         iv.buildDrawingCache();
-       // iv.setOnTouchListener(touchListener);
-        //iv.setImageResource(R.drawable.wooram);  // imageView에 내용 추가
+
         double ratio = (double)parentHeight/parentWidth * 9;
 
         Log.d("짜이", parentHeight + "");
@@ -465,7 +464,6 @@ public class Tab4_Simulation extends Fragment {
 
         iv.setLayoutParams(layoutParams);  // imageView layout 설정
         iv.setScaleType(ImageView.ScaleType.FIT_XY);
-        //iv.setOnTouchListener(touchListener);
 
         relativeLayout.addView(iv); // 기존 linearLayout에 imageView 추가
 

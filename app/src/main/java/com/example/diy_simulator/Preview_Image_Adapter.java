@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -72,6 +73,8 @@ public class Preview_Image_Adapter extends  RecyclerView.Adapter<com.example.diy
             holder.imageView.setVisibility(View.VISIBLE);
             holder.imageView.setImageBitmap(item.getBitmap());
             holder.imageView.setDrawingCacheEnabled(true);
+            Log.d("넓이입니당 괄호",holder.imageView.getWidth()+"");
+            Log.d("넓이입니당",holder.imageView.getHeight()+"");
             holder.imageView.buildDrawingCache();
             holder.button.setVisibility(View.INVISIBLE);
         }

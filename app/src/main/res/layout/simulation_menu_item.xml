@@ -10,6 +10,8 @@
 
         <ImageView
             android:id="@+id/simulation_menu_product_img"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
             android:layout_width="170dp"
             android:layout_height="170dp"/>
         <!--   android:src="@drawable/photo_outline"
