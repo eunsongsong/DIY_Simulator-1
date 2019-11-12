@@ -64,8 +64,16 @@ public class HomeSearch_Keyword_Adapter extends RecyclerView.Adapter<HomeSearch_
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 filteredList = (List<Material_Detail_Info>) results.values;
                 if(getItemCount() == 0) {
+                    // 검색 결과가 없습니다. 보여주기
                     tab_search.num_result.setVisibility(View.GONE);
                     tab_search.non_result.setVisibility(View.VISIBLE);
+                }
+                else{
+                    // 몇개 검색되었는지 보여주는 텍스트뷰 설정
+                    tab_search.non_result.setVisibility(View.GONE);
+                    tab_search.num_result.setVisibility(View.VISIBLE);
+                    String str = "총 "+getItemCount()+"개의 상품이 검색되었습니다.";
+                    tab_search.num_result.setText(str);
                 }
                 notifyDataSetChanged();
             }
@@ -82,12 +90,6 @@ public class HomeSearch_Keyword_Adapter extends RecyclerView.Adapter<HomeSearch_
     @Override
     public void onBindViewHolder(@NonNull HomeSearch_Keyword_Adapter.ViewHolder holder, final int position) {
         final Material_Detail_Info item = filteredList.get(position);
-
-        // 몇개 검색되었는지 보여주는 텍스트뷰 설정
-        tab_search.non_result.setVisibility(View.GONE);
-        tab_search.num_result.setVisibility(View.VISIBLE);
-        String str = "총 "+getItemCount()+"개의 상품이 검색되었습니다.";
-        tab_search.num_result.setText(str);
 
         holder.name.setText(item.getName());
         holder.price.setText(item.getPrice());

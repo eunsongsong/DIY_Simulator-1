@@ -14,6 +14,6 @@
         android:radius="50px" />
 
     <stroke
-        android:width="5dp"
+        android:width="4dp"
         android:color="#AA3DC1AB" />
 </shape>

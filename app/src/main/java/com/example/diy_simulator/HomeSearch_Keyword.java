@@ -89,6 +89,8 @@ public class HomeSearch_Keyword extends Fragment {
                             preview, data, width, height, depth, keyword, stock, storename, ds.getKey());
                     keyword_item.add(item);
                 }
+                num_result.setVisibility(View.GONE);
+                search_keyword_recyclerview.setVisibility(View.GONE);
             }
 
             @Override
@@ -102,6 +104,7 @@ public class HomeSearch_Keyword extends Fragment {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     keywordAdapter.getFilter().filter(editText.getText());
+                    search_keyword_recyclerview.setVisibility(View.VISIBLE);
                     //키보드 내리기
                     InputMethodManager immhide = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
                     immhide.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);

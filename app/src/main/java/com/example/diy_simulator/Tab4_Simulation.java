@@ -1,12 +1,8 @@
 package com.example.diy_simulator;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -19,24 +15,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -44,8 +33,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -450,8 +437,8 @@ public class Tab4_Simulation extends Fragment {
     @SuppressLint("ClickableViewAccessibility")
     public void inflate(int position) {
         //상품 상세 페이지 정보 가져오기
-        double width = simulation_items.get(position).getWidth() / 10;
-        double height = simulation_items.get(position).getHeight() / 10;
+        double width = simulation_items.get(position).getWidth();
+        double height = simulation_items.get(position).getHeight();
         String data = simulation_items.get(position).getData();
         ImageView iv = new ImageView(getContext());  // 새로 추가할 imageView 생성
 
@@ -470,11 +457,14 @@ public class Tab4_Simulation extends Fragment {
         iv.buildDrawingCache();
        // iv.setOnTouchListener(touchListener);
         //iv.setImageResource(R.drawable.wooram);  // imageView에 내용 추가
+        double ratio = (double)parentHeight/parentWidth * 9;
+
         Log.d("짜이", parentHeight + "");
         Log.d("우람", parentWidth + "");
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams( (int) width* parentWidth / 9,(int) height* parentHeight / 16);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams( (int)  width* parentWidth / 90,(int) (height* parentHeight / (ratio*10) ));
 
         iv.setLayoutParams(layoutParams);  // imageView layout 설정
+        iv.setScaleType(ImageView.ScaleType.FIT_XY);
         //iv.setOnTouchListener(touchListener);
 
         relativeLayout.addView(iv); // 기존 linearLayout에 imageView 추가
