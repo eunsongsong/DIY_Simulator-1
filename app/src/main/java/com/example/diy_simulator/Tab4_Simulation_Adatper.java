@@ -18,6 +18,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,13 +97,11 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
         holder.price.setText(item.getPrice());
 
  */
-        if (!TextUtils.isEmpty(item.getData())) {
+        if (!TextUtils.isEmpty(item.getUrl())) {
             //제품 이미지 url로 나타내기
-            byte[] decodedByteArray = Base64.decode(item.getData(), Base64.NO_WRAP);
-            Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
-            holder.imageView.setImageBitmap(decodedBitmap);
-            holder.imageView.setDrawingCacheEnabled(true);
-            holder.imageView.buildDrawingCache();
+            Glide.with(holder.itemView.getContext())
+                    .load(item.getUrl())
+                    .into(holder.imageView);
 
         }
         holder.itemView.setOnClickListener( new View.OnClickListener() {

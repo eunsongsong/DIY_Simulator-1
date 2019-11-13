@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -78,7 +80,7 @@ public class Product_Detail_Fragment extends Fragment {
         //부자재 세부 정보 가져오기
         String name = getArguments().getString("name");
         String price = getArguments().getString("price");
-        String[] data = getArguments().getStringArray("data");
+        String[] url = getArguments().getStringArray("url");
         String width = getArguments().getString("width");
         String height = getArguments().getString("height");
         String depth = getArguments().getString("depth");
@@ -88,12 +90,10 @@ public class Product_Detail_Fragment extends Fragment {
         final String uni_num = getArguments().getString("unique_number");
 
         //뷰에 나타내기
+        Glide.with(getContext())
+                .load(url[0])
+                .into(representive);
 
-        byte[] decodedByteArray = Base64.decode(data[0], Base64.NO_WRAP);
-        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
-        representive.setImageBitmap(decodedBitmap);
-        representive.setDrawingCacheEnabled(true);
-        representive.buildDrawingCache();
 
         v_name.setText(name);
         v_price.setText(price);
@@ -103,9 +103,10 @@ public class Product_Detail_Fragment extends Fragment {
         v_size.setText(size);
 
         //대표 이미지 제외 나머지 이미지 리사이클러뷰에 나타내기
-        Product_Detail_Info[] item = new Product_Detail_Info[data.length-1];
-        for(int i=0; i < data.length-1; i++){
-            item[i] = new Product_Detail_Info(data[i+1]);
+        Product_Detail_Info[] item = new Product_Detail_Info[url.length-1];
+        for(int i=0; i < url.length-1; i++){
+            item[i] = new Product_Detail_Info(url[i+1]);
+            Log.d("아이템",url[i+1]+"");
             detail_item.add(item[i]);
         }
         detailAdapter.notifyDataSetChanged();

@@ -84,17 +84,17 @@ public class HomeSearch_Keyword extends Fragment {
                     String keyword = ds.child("keyword").getValue().toString();
                     String storename = ds.child("storename").getValue().toString();
                     //이미지 url 가져오기
-                    String[] data = new String[(int) ds.child("image_data").getChildrenCount()];
+                    String[] url = new String[(int) ds.child("image_url").getChildrenCount()];
                     int k = 0;
-                    for (DataSnapshot ds2 : ds.child("image_data").getChildren()) {
-                        data[k] = ds2.getValue().toString();
+                    for (DataSnapshot ds2 : ds.child("image_url").getChildren()) {
+                        url[k] = ds2.getValue().toString();
                         k++;
                     }
                     //이미지 url의 0번이 상품 대표 이미지
-                    String preview = data[0];
+                    String preview = url[0];
                     //리사이클러뷰에 아이템 add
                     Material_Detail_Info item = new Material_Detail_Info(name, price+" 원",
-                            preview, data, width, height, depth, keyword, stock, storename, ds.getKey());
+                            preview, url, width, height, depth, keyword, stock, storename, ds.getKey());
                     keyword_item.add(item);
                 }
                 num_result.setVisibility(View.GONE);

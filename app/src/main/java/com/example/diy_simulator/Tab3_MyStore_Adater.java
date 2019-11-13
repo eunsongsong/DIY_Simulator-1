@@ -1,5 +1,6 @@
 package com.example.diy_simulator;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,12 +15,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adater.ViewHolder> {
     Context context;
     List<Material_Detail_Info> items;
     int item_layout;
+    ProgressDialog pd;
 
     public Tab3_MyStore_Adater(Context context, List<Material_Detail_Info> items, int item_layout) {
         this.context = context;
@@ -54,13 +58,11 @@ public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adat
         holder.name.setText(item.getName());
         holder.price.setText(item.getPrice());
 
-        if (!TextUtils.isEmpty(item.getPreview_img_data())) {
+        if (!TextUtils.isEmpty(item.getPreview_img_url())) {
             //제품 이미지 url로 나타내기
-            byte[] decodedByteArray = Base64.decode(item.getPreview_img_data(), Base64.NO_WRAP);
-            Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
-            holder.img.setImageBitmap(decodedBitmap);
-            holder.img.setDrawingCacheEnabled(true);
-            holder.img.buildDrawingCache();
+            Glide.with(holder.itemView.getContext())
+                    .load(item.getPreview_img_url())
+                    .into(holder.img);
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

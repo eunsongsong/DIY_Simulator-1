@@ -5,9 +5,9 @@ import android.graphics.Bitmap;
 public class Preview_Image_Info {
 
     private Bitmap bitmap;
-    private String data_arr;
+    private byte[] data_arr;
 
-    public Preview_Image_Info(Bitmap bitmap, String data_arr) {
+    public Preview_Image_Info(Bitmap bitmap, byte[] data_arr) {
         this.bitmap = bitmap;
         this.data_arr = data_arr;
     }
@@ -19,7 +19,7 @@ public class Preview_Image_Info {
         return bitmap;
     }
 
-    public String getData_arr() {
+    public byte[] getData_arr() {
         return data_arr;
     }
 }

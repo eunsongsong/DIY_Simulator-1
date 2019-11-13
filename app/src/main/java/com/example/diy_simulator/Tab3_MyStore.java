@@ -126,16 +126,16 @@ public class Tab3_MyStore extends Fragment {
                         String keyword = ds.child("keyword").getValue().toString();
                         String storename = ds.child("storename").getValue().toString();
                         //이미지 url 가져오기
-                        String[] data = new String[(int) ds.child("image_data").getChildrenCount()];
+                        String[] url = new String[(int) ds.child("image_url").getChildrenCount()];
                         int k = 0;
-                        for (DataSnapshot ds2 : ds.child("image_data").getChildren()) {
-                            data[k] = ds2.getValue().toString();
+                        for (DataSnapshot ds2 : ds.child("image_url").getChildren()) {
+                            url[k] = ds2.getValue().toString();
                             k++;
                         }
                         //이미지 url의 0번이 상품 대표 이미지
-                        String preview = data[0];
+                        String preview = url[0];
                         //리사이클러뷰에 아이템 add
-                        addItemToRecyclerView(name, price, preview, data, width, height, depth, keyword, stock, storename, ds.getKey());
+                        addItemToRecyclerView(name, price, preview, url, width, height, depth, keyword, stock, storename, ds.getKey());
                         i++;
                     }
                 }
@@ -161,7 +161,7 @@ public class Tab3_MyStore extends Fragment {
         //상품 상세 페이지 정보 가져오기
         String name = mystore_item.get(position).getName();
         String price = mystore_item.get(position).getPrice();
-        String[] data = mystore_item.get(position).getImg_data();
+        String[] data = mystore_item.get(position).getImg_url();
         String width = mystore_item.get(position).getWidth();
         String height = mystore_item.get(position).getHeight();
         String depth = mystore_item.get(position).getDepth();
@@ -217,4 +217,5 @@ public class Tab3_MyStore extends Fragment {
         }
         //이미지 업로드를 완료하고 다시 MyStore 프래그먼트로 돌아오면 다시 판매자 부자재 검색
     }
+
 }

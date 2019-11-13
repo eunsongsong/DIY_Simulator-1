@@ -43,6 +43,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -94,8 +95,8 @@ public class ImageUploadActivity extends AppCompatActivity {
     private Spinner keyspinner, casespinner, earspinner, bracespinner, etcspinner;
     private String keyspin, casespin, earspin, bracespin, etcspin;
     private String imagePath;
-    ArrayList<String> data_arr;
-    ArrayList<String> rm_data_arr;
+    ArrayList<byte[]> data_arr;
+    ArrayList<byte[]> rm_data_arr;
     long count;  //DB의 부자재 개수
 
     private CheckedTextView checkedTextView;
@@ -119,11 +120,12 @@ public class ImageUploadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_upload);
         data_arr = new ArrayList<>();
-         rm_data_arr = new ArrayList<>();
+        rm_data_arr = new ArrayList<>();
         if (!OpenCVLoader.initDebug()) {
             // Handle initialization error
             finish();
         }
+        getMyChildrenCount();
         //사진 찍어서 or 갤러리에서 가져온 사진 나타내는 이미지뷰
         checkedTextView = (CheckedTextView) findViewById(R.id.check_remove);
         //imageView = (ImageView) findViewById(R.id.preview);
@@ -297,7 +299,6 @@ public class ImageUploadActivity extends AppCompatActivity {
                             Toast.makeText(ImageUploadActivity.this, "데이터가 없습니다.", Toast.LENGTH_SHORT).show();
                         }
                         else{
-                            showProgress("업로드 중입니다~");
                             UploadFile();
                         }
                     }
@@ -307,6 +308,8 @@ public class ImageUploadActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(ImageUploadActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
             }
         }
+
+
     }
 
     // 권한 요청
@@ -332,7 +335,6 @@ public class ImageUploadActivity extends AppCompatActivity {
                         Toast.makeText(ImageUploadActivity.this, "데이터가 없습니다.", Toast.LENGTH_SHORT).show();
                     }
                     else{
-                        showProgress("업로드 중입니다~");
                         UploadFile();
                     }
                 }
@@ -387,7 +389,7 @@ public class ImageUploadActivity extends AppCompatActivity {
                     //여기서 500대 500이됨
                     baos = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-                    rm_data_arr.add(Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP));
+                    rm_data_arr.add(baos.toByteArray());
                     Preview_Image_Info item;
                     item = new Preview_Image_Info(bitmap,rm_data_arr.get(rm_data_arr.size() - 1));
                     if( preview_image_infos.size() == 1)
@@ -402,7 +404,7 @@ public class ImageUploadActivity extends AppCompatActivity {
                     Log.d("보자",temp.getWidth()+"");
                     Log.d("보자33",temp.getHeight()+"");
                     temp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                    data_arr.add(Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP));
+                    data_arr.add(baos.toByteArray());
                     Preview_Image_Info item;
                     item = new Preview_Image_Info(temp,data_arr.get(data_arr.size() - 1));
                     if( preview_image_infos.size() == 1)
@@ -430,7 +432,7 @@ public class ImageUploadActivity extends AppCompatActivity {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             Toast.makeText(this, "Cropping failed: " + result.getError(), Toast.LENGTH_LONG).show();
         }
-        getMyChildrenCount();  //UploadFile() 함수에서 실행하면 시간차로 이미지 파일명이 '0'이 됨
+          //UploadFile() 함수에서 실행하면 시간차로 이미지 파일명이 '0'이 됨
         //alert.cancel(); 잠시 안씀 사진불러오기 할 때 씀
     }
 
@@ -482,21 +484,87 @@ public class ImageUploadActivity extends AppCompatActivity {
             final int fi = i;
             Log.d("ddd" + data_arr.size(), i + "번");
             Log.d("1번", count + "");
-            //Url을 다운받기
-            Add_Im_data_Info(data_arr.get(i), target, false, (int) (target + fi));
+
+            Log.d("ddd"+data_arr.size(),i+"번");
+
+            mountainImagesRef = storageRef.child( id + "-" + target + "-"+ i +"");
+            uploadTask = mountainImagesRef.putBytes(data_arr.get(i));
+            // Handle unsuccessful uploads
+            uploadTask.addOnFailureListener( new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.d("----ddd----","업로드 실패");
+                    Toast.makeText(ImageUploadActivity.this, "업로드를 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                    // 실패!
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                    // Alternatively way to get download URL
+                    Log.d("1번",count+"");
+                    //Url을 다운받기
+
+                    mountainImagesRef = storageRef.child( id + "-" + target + "-"+ fi +"");
+                    mountainImagesRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Add_URL_Info(uri, target, false, (int) (target + fi));
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getApplicationContext(), "다운로드 실패", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    // 성공!
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                }
+            });
         }
 
-
-        for(int i = 0; i < rm_data_arr.size(); i++) {
+        for(int i = 0; i < rm_data_arr.size(); i++){
             final int fi = i;
-            Log.d("ddd", "1번");
-            Log.d("2번", count + "");
-            Add_Im_data_Info(rm_data_arr.get(i), target, true, (int) (target + data_arr.size() + fi));
-        }
+            Log.d("ddd","1번");
 
-        hideProgress();
+            mountainImagesRef2 = storageRef.child(id + "-" + target + "-"+ (data_arr.size() + fi) +"");
+            uploadTask = mountainImagesRef2.putBytes(rm_data_arr.get(i));
+            // Handle unsuccessful uploads
+            uploadTask.addOnFailureListener( new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.d("----ddd----","업로드 실패");
+                    Toast.makeText(ImageUploadActivity.this, "업로드를 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                    // 실패!
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Log.d("2번",count+"");
+                    // Alternatively way to get download URL
+                    //Url을 다운받기
+                    mountainImagesRef2 = storageRef.child(id + "-" + target + "-"+ (data_arr.size()+ fi) +"");
+                    mountainImagesRef2.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+
+                            Add_URL_Info(uri, target, true, (int) (target + data_arr.size()  + fi));
+
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getApplicationContext(), "다운로드 실패", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    // 성공!
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                }
+            });
+        }
         PreferenceUtil.getInstance(getApplicationContext()).putBooleanExtra("금지", true);
-        finish();
+        checkUploadstate();
     }
 
 
@@ -668,16 +736,16 @@ public class ImageUploadActivity extends AppCompatActivity {
     }
 */
     //디비에 부자재 URL 넣기
-    private void Add_Im_data_Info(final String im_data, final int target, final boolean check, final int number) {
+    private void Add_URL_Info(final Uri uri, final int target, final boolean check, final int number) {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for( DataSnapshot ds : dataSnapshot.getChildren()){
                     if(ds.getKey().equals(target+"")){
                         if(check)
-                            myRef.child(target+"").child("image_RB_data").child(number+"").setValue(im_data+"");
+                            myRef.child(target+"").child("image_RB_url").child(number+"").setValue(uri+"");
                         else
-                            myRef.child(target+"").child("image_data").child(number+"").setValue(im_data+"");
+                            myRef.child(target+"").child("image_url").child(number+"").setValue(uri+"");
                     }
                 }
             }
@@ -812,30 +880,38 @@ public class ImageUploadActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-/*
-    public String getBase64String(Bitmap bitmap)
-    {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-
-        byte[] imageBytes = byteArrayOutputStream.toByteArray();
-
-        return Base64.encodeToString(imageBytes, Base64.NO_WRAP);
-    }
- */
     // 프로그레스 다이얼로그 보이기
-    public void showProgress(String msg) {
+    public void showProgress() {
         if( pd == null ) { // 객체를 1회만 생성한다
-            pd = new ProgressDialog(ImageUploadActivity.this); // 생성한다.
+            pd = new ProgressDialog(ImageUploadActivity.this, R.style.NewDialog); // 생성한다.
             pd.setCancelable(false); // 백키로 닫는 기능을 제거한다.
-            pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        } pd.setMessage(msg); // 원하는 메시지를 세팅한다.
+        }
         pd.show(); // 화면에 띠워라//
     }
-        public void hideProgress(){
-            if( pd != null && pd.isShowing() ){
-                pd.dismiss();
-            }
+    public void hideProgress() {
+        if (pd != null && pd.isShowing()) {
+            pd.dismiss();
         }
+    }
+    private void checkUploadstate(){
+
+        showProgress();
+
+        myRef.child(count+"").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int a  = (int) dataSnapshot.child("image_RB_url").getChildrenCount();
+                if( a  == rm_data_arr.size()) {
+                    hideProgress();
+                    finish();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 }

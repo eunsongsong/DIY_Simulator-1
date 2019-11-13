@@ -263,16 +263,16 @@ public class HomeSearch_Category extends Fragment {
                         String keyword = ds.child("keyword").getValue().toString();
                         String storename = ds.child("storename").getValue().toString();
                         //이미지 url 가져오기
-                        String[] data = new String[(int)ds.child("image_data").getChildrenCount()];
+                        String[] url = new String[(int)ds.child("image_url").getChildrenCount()];
                         int k = 0 ;
-                        for(DataSnapshot ds2 : ds.child("image_data").getChildren()){
-                            data[k] = ds2.getValue().toString();
+                        for(DataSnapshot ds2 : ds.child("image_url").getChildren()){
+                            url[k] = ds2.getValue().toString();
                             k++;
                         }
                         //이미지 url의 0번이 상품 대표 이미지
-                        String preview = data[0];
+                        String preview = url[0];
                         //리사이클러뷰에 아이템 add
-                        addItemToRecyclerView(name, price, preview, data, width, height, depth, keyword, stock, storename, ds.getKey());
+                        addItemToRecyclerView(name, price, preview, url, width, height, depth, keyword, stock, storename, ds.getKey());
                         i++;
                     }
                 }
@@ -287,9 +287,9 @@ public class HomeSearch_Category extends Fragment {
     }
 
     //리사이클러뷰에 제품 이름, 가격, 이미지 url, 가게이름으로 아이템 나타내기
-    public void addItemToRecyclerView(String name, String price, String preview, String[] data,
+    public void addItemToRecyclerView(String name, String price, String preview, String[] url,
                                       String width, String height, String depth, String keyword, String stock, String storename, String unique){
-        Material_Detail_Info item = new Material_Detail_Info(name, price+" 원", preview, data, width, height, depth, keyword, stock, storename, unique);
+        Material_Detail_Info item = new Material_Detail_Info(name, price+" 원", preview, url, width, height, depth, keyword, stock, storename, unique);
         category_item.add(item);
         categoryAdapter.notifyDataSetChanged();
     }
@@ -299,7 +299,7 @@ public class HomeSearch_Category extends Fragment {
         //상품 상세 페이지 정보 가져오기
         String name = category_item.get(position).getName();
         String price = category_item.get(position).getPrice();
-        String[] data = category_item.get(position).getImg_data();
+        String[] url = category_item.get(position).getImg_url();
         String width = category_item.get(position).getWidth();
         String height = category_item.get(position).getHeight();
         String depth = category_item.get(position).getDepth();
@@ -314,7 +314,7 @@ public class HomeSearch_Category extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putString("name", name);
         bundle.putString("price", price);
-        bundle.putStringArray("data", data);
+        bundle.putStringArray("url", url);
         bundle.putString("width", width);
         bundle.putString("height", height);
         bundle.putString("depth", depth);

@@ -3,13 +3,13 @@ package com.example.diy_simulator;
 public class Tab4_Simulation_Item {
 
 
-    private String data;
+    private String url;
     private int width;
     private int height;
     private String[] category;
 
-    public Tab4_Simulation_Item(String data, int width, int height, String[] category) {
-        this.data = data;
+    public Tab4_Simulation_Item(String url, int width, int height, String[] category) {
+        this.url = url;
         this.width = width;
         this.height = height;
         this.category = category;
@@ -23,12 +23,12 @@ public class Tab4_Simulation_Item {
         this.category = category;
     }
 
-    public String getData() {
-        return data;
+    public String getUrl() {
+        return url;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public int getWidth() {

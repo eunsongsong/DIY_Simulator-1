@@ -40,11 +40,9 @@ public class Product_Detail_Adapter extends RecyclerView.Adapter<Product_Detail_
 
         //제품 이미지 url로 나타내기
 
-        byte[] decodedByteArray = Base64.decode(item.getImg_data(), Base64.NO_WRAP);
-        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
-        holder.image.setImageBitmap(decodedBitmap);
-        holder.image.setDrawingCacheEnabled(true);
-        holder.image.buildDrawingCache();
+        Glide.with(holder.itemView.getContext())
+                .load(item.getImg_url())
+                .into(holder.image);
 
     }
 

@@ -14,6 +14,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 public class HomeSearch_Store_Adapter extends  RecyclerView.Adapter<com.example.diy_simulator.HomeSearch_Store_Adapter.ViewHolder>{
@@ -51,15 +53,12 @@ public class HomeSearch_Store_Adapter extends  RecyclerView.Adapter<com.example.
         final Material_Detail_Info item = items.get(position);
 
             //제품 이름, 가격 텍스트 나타내기
-            holder.name.setText(item.getName());
-            holder.price.setText(item.getPrice());
-            if (!TextUtils.isEmpty(item.getPreview_img_data())) {
-                //제품 이미지 url로 나타내기
-                byte[] decodedByteArray = Base64.decode(item.getPreview_img_data(), Base64.NO_WRAP);
-                Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
-                holder.img.setImageBitmap(decodedBitmap);
-                holder.img.setDrawingCacheEnabled(true);
-                holder.img.buildDrawingCache();
+        holder.name.setText(item.getName());
+        holder.price.setText(item.getPrice());
+        if (!TextUtils.isEmpty(item.getPreview_img_url())) {
+            Glide.with(holder.itemView.getContext())
+                    .load(item.getPreview_img_url())
+                    .into(holder.img);
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

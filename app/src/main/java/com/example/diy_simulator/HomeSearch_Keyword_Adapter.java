@@ -19,6 +19,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,12 +97,10 @@ public class HomeSearch_Keyword_Adapter extends RecyclerView.Adapter<HomeSearch_
         holder.price.setText(item.getPrice());
         holder.store_name.setText(item.getStorename());
 
-        if (!TextUtils.isEmpty(item.getPreview_img_data())) {
-            byte[] decodedByteArray = Base64.decode(item.getPreview_img_data(), Base64.NO_WRAP);
-            Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
-            holder.img.setImageBitmap(decodedBitmap);
-            holder.img.setDrawingCacheEnabled(true);
-            holder.img.buildDrawingCache();
+        if (!TextUtils.isEmpty(item.getPreview_img_url())) {
+            Glide.with(holder.itemView.getContext())
+                    .load(item.getPreview_img_url())
+                    .into(holder.img);
         }
 
         // 아이템 클릭시 상품 상세 페이지로 이동
@@ -113,7 +113,7 @@ public class HomeSearch_Keyword_Adapter extends RecyclerView.Adapter<HomeSearch_
                 Bundle bundle = new Bundle();
                 bundle.putString("name", item.getName());
                 bundle.putString("price", item.getPrice());
-                bundle.putStringArray("data", item.getImg_data());
+                bundle.putStringArray("url", item.getImg_url());
                 bundle.putString("width", item.getWidth());
                 bundle.putString("height", item.getHeight());
                 bundle.putString("depth", item.getDepth());

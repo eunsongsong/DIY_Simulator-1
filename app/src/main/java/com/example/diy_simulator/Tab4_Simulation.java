@@ -26,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -348,7 +349,7 @@ public class Tab4_Simulation extends Fragment {
                 myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        Log.d("제발잠좀","자게해줘"+dataSnapshot.getValue().toString());
+                       // Log.d("제발잠좀","자게해줘"+dataSnapshot.getValue().toString());
                         //String url = dataSnapshot.child("image_RB_url").child(d.getKey()).getValue().toString();
                         simulation_items.clear();
                         int i = 0;
@@ -356,11 +357,11 @@ public class Tab4_Simulation extends Fragment {
                             if ( i == arr.length)
                                 break;
                             if(arr[i].equals(ds.getKey())){
-                                Log.d("궁금 " + ds.getKey(),ds.child("image_data").getChildrenCount()+"");
-                                String data = ds.child("image_RB_data").child(Integer.parseInt(ds.getKey()) + (int) ds.child("image_data").getChildrenCount()+"").getValue().toString();
+                                Log.d("궁금 " + ds.getKey(),ds.child("image_url").getChildrenCount()+"");
+                                String url = ds.child("image_RB_url").child(Integer.parseInt(ds.getKey()) + (int) ds.child("image_url").getChildrenCount()+"").getValue().toString();
                                 int width = Integer.parseInt(ds.child("size_width").getValue().toString());
                                 int height = Integer.parseInt(ds.child("size_height").getValue().toString());
-                                addItemToRecyclerView(data, width, height,  category.get(i));
+                                addItemToRecyclerView(url, width, height,  category.get(i));
                                 i++;
                                 continue;
                             }
@@ -439,7 +440,7 @@ public class Tab4_Simulation extends Fragment {
         //상품 상세 페이지 정보 가져오기
         double width = simulation_items.get(position).getWidth();
         double height = simulation_items.get(position).getHeight();
-        String data = simulation_items.get(position).getData();
+        String url = simulation_items.get(position).getUrl();
         ImageView iv = new ImageView(getContext());  // 새로 추가할 imageView 생성
 
         double randomValue = Math.random();
@@ -449,10 +450,9 @@ public class Tab4_Simulation extends Fragment {
         intValue = (int) (randomValue * 8) + 2;
         iv.setY( intValue * parentHeight / 16 );
 
-        byte[] decodedByteArray = Base64.decode(data, Base64.NO_WRAP);
-        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
-        iv.setImageBitmap(decodedBitmap);
-        iv.setDrawingCacheEnabled(true);
+        Glide.with(getContext())
+                .load(url)
+                .into(iv);
         iv.setOnTouchListener(touchListener);
         iv.buildDrawingCache();
 
@@ -468,8 +468,8 @@ public class Tab4_Simulation extends Fragment {
         relativeLayout.addView(iv); // 기존 linearLayout에 imageView 추가
 
     }
-    public void addItemToRecyclerView(String data, int width, int height, String[] category){
-        Tab4_Simulation_Item item = new Tab4_Simulation_Item(data, width, height, category);
+    public void addItemToRecyclerView(String url, int width, int height, String[] category){
+        Tab4_Simulation_Item item = new Tab4_Simulation_Item(url, width, height, category);
         simulation_items.add(item);
         simulationAdatper.notifyDataSetChanged();
     }
