@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.DrawableImageViewTarget;
 
 import java.util.List;
 
@@ -23,7 +25,6 @@ public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adat
     Context context;
     List<Material_Detail_Info> items;
     int item_layout;
-    ProgressDialog pd;
 
     public Tab3_MyStore_Adater(Context context, List<Material_Detail_Info> items, int item_layout) {
         this.context = context;
@@ -58,11 +59,21 @@ public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adat
         holder.name.setText(item.getName());
         holder.price.setText(item.getPrice());
 
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions = requestOptions.placeholder(R.drawable.mungmung);
+
         if (!TextUtils.isEmpty(item.getPreview_img_url())) {
             //제품 이미지 url로 나타내기
+
             Glide.with(holder.itemView.getContext())
-                    .load(item.getPreview_img_url())
-                    .into(holder.img);
+                    .setDefaultRequestOptions(requestOptions)
+                    .load(item.getPreview_img_url()).into(holder.img);
+            /*
+            Glide.with(holder.itemView.getContext())
+                    .load(R.drawable.chu)
+                    .into(holder.drawableImageViewTarget);
+
+             */
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -71,6 +82,7 @@ public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adat
                 if (mListener != null) mListener.onItemClick(v, position);
             }
         });
+
     }
 
     @Override
@@ -82,12 +94,14 @@ public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adat
         TextView name;
         TextView price;
         ImageView img;
+        //DrawableImageViewTarget drawableImageViewTarget;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.mystore_product_name);
             price = itemView.findViewById(R.id.mystore_product_price);
             img = itemView.findViewById(R.id.mystore_product_img);
+            //drawableImageViewTarget = new DrawableImageViewTarget(img);
         }
     }
 }

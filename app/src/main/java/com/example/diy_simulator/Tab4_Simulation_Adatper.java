@@ -5,20 +5,30 @@ package com.example.diy_simulator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.DrawableImageViewTarget;
+import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,10 +107,32 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
         holder.price.setText(item.getPrice());
 
  */
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions = requestOptions.placeholder(R.drawable.mungmung);
+
         if (!TextUtils.isEmpty(item.getUrl())) {
             //제품 이미지 url로 나타내기
+
             Glide.with(holder.itemView.getContext())
+                    .setDefaultRequestOptions(requestOptions)
                     .load(item.getUrl())
+                    /*
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                          //  holder.progressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                          //  holder.progressBar.setVisibility(View.GONE);
+                            holder.imageView2.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
+
+                     */
                     .into(holder.imageView);
 
         }
@@ -120,10 +152,17 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imageView;
+        ImageView imageView2;
+       // ProgressBar progressBar;
+         //DrawableImageViewTarget gifImage;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.simulation_menu_product_img);
+          //  imageView2 = imageView.findViewById(R.id.chuchu);
+           //progressBar = itemView.findViewById(R.id.progress_circular);
+           // gifImage = new DrawableImageViewTarget(imageView2);
         }
     }
 }

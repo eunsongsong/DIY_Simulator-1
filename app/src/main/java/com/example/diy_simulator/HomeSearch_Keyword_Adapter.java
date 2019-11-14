@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,8 +98,12 @@ public class HomeSearch_Keyword_Adapter extends RecyclerView.Adapter<HomeSearch_
         holder.price.setText(item.getPrice());
         holder.store_name.setText(item.getStorename());
 
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions = requestOptions.placeholder(R.drawable.mungmung);
+
         if (!TextUtils.isEmpty(item.getPreview_img_url())) {
             Glide.with(holder.itemView.getContext())
+                    .setDefaultRequestOptions(requestOptions)
                     .load(item.getPreview_img_url())
                     .into(holder.img);
         }

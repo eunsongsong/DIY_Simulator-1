@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
@@ -56,9 +57,14 @@ public class HomeSearch_Category_Adapter extends RecyclerView.Adapter<HomeSearch
         holder.name.setText(item.getName());
         holder.price.setText(item.getPrice());
         holder.store_name.setText(item.getStorename());
+
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions = requestOptions.placeholder(R.drawable.mungmung);
+
         if (!TextUtils.isEmpty(item.getPreview_img_url())) {
             //제품 이미지 url로 나타내기
             Glide.with(holder.itemView.getContext())
+                    .setDefaultRequestOptions(requestOptions)
                     .load(item.getPreview_img_url())
                     .into(holder.img);
         }

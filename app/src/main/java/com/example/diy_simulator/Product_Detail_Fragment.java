@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -90,7 +91,10 @@ public class Product_Detail_Fragment extends Fragment {
         final String uni_num = getArguments().getString("unique_number");
 
         //뷰에 나타내기
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions = requestOptions.placeholder(R.drawable.mungmung);
         Glide.with(getContext())
+                .setDefaultRequestOptions(requestOptions)
                 .load(url[0])
                 .into(representive);
 

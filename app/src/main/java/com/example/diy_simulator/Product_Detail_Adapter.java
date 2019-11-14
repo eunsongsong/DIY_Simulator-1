@@ -3,6 +3,7 @@ package com.example.diy_simulator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
@@ -38,11 +40,17 @@ public class Product_Detail_Adapter extends RecyclerView.Adapter<Product_Detail_
     public void onBindViewHolder(@NonNull Product_Detail_Adapter.ViewHolder holder, int position) {
         final Product_Detail_Info item = items.get(position);
 
-        //제품 이미지 url로 나타내기
 
-        Glide.with(holder.itemView.getContext())
-                .load(item.getImg_url())
-                .into(holder.image);
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions = requestOptions.placeholder(R.drawable.mungmung);
+
+        //제품 이미지 url로 나타내기
+        if (!TextUtils.isEmpty(item.getImg_url())) {
+            Glide.with(holder.itemView.getContext())
+                    .setDefaultRequestOptions(requestOptions)
+                    .load(item.getImg_url())
+                    .into(holder.image);
+        }
 
     }
 

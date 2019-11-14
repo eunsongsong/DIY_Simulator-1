@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
@@ -55,8 +56,13 @@ public class HomeSearch_Store_Adapter extends  RecyclerView.Adapter<com.example.
             //제품 이름, 가격 텍스트 나타내기
         holder.name.setText(item.getName());
         holder.price.setText(item.getPrice());
+
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions = requestOptions.placeholder(R.drawable.mungmung);
+
         if (!TextUtils.isEmpty(item.getPreview_img_url())) {
             Glide.with(holder.itemView.getContext())
+                    .setDefaultRequestOptions(requestOptions)
                     .load(item.getPreview_img_url())
                     .into(holder.img);
         }

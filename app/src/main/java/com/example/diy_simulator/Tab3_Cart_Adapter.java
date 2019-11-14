@@ -18,6 +18,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -65,13 +67,15 @@ public class Tab3_Cart_Adapter extends  RecyclerView.Adapter<Tab3_Cart_Adapter.V
         holder.amount.setText(String.valueOf(item.getAmount()));
 
 
-        if (!TextUtils.isEmpty(item.getPreview_img_data())) {
-            //제품 이미지 url로 나타내기
-            byte[] decodedByteArray = Base64.decode(item.getPreview_img_data(), Base64.NO_WRAP);
-            Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
-            holder.img.setImageBitmap(decodedBitmap);
-            holder.img.setDrawingCacheEnabled(true);
-            holder.img.buildDrawingCache();
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions = requestOptions.placeholder(R.drawable.mungmung);
+
+        //제품 이미지 url로 나타내기
+        if (!TextUtils.isEmpty(item.getPreview_img_url())) {
+            Glide.with(holder.itemView.getContext())
+                    .setDefaultRequestOptions(requestOptions)
+                    .load(item.getPreview_img_url())
+                    .into(holder.img);
         }
 
         // X 버튼 누르면 해당 아이템 삭제

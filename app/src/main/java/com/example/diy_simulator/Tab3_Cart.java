@@ -112,16 +112,16 @@ public class Tab3_Cart extends Fragment {
                         String keyword = ds.child("keyword").getValue().toString();
                         String storename = ds.child("storename").getValue().toString();
                         //이미지 url 가져오기
-                        String[] data = new String[(int) ds.child("image_data").getChildrenCount()];
+                        String[] url = new String[(int) ds.child("image_url").getChildrenCount()];
                         int k = 0;
-                        for (DataSnapshot ds2 : ds.child("image_data").getChildren()) {
-                            data[k] = ds2.getValue().toString();
+                        for (DataSnapshot ds2 : ds.child("image_url").getChildren()) {
+                            url[k] = ds2.getValue().toString();
                             k++;
                         }
                         //이미지 url의 0번이 상품 대표 이미지
-                        String preview = data[0];
+                        String preview = url[0];
                         //리사이클러뷰에 아이템 add
-                        addItemToRecyclerView(name, price, preview, data, width, height, depth, keyword, stock, storename, ds.getKey());
+                        addItemToRecyclerView(name, price, preview, url, width, height, depth, keyword, stock, storename, ds.getKey());
                         i++;
                     }
                 }
@@ -137,9 +137,9 @@ public class Tab3_Cart extends Fragment {
     }
 
     //리사이클러뷰에 제품 이름, 가격, 가게이름, 이미지 url으로 아이템 나타내기
-    public void addItemToRecyclerView(String name, String price, String preview, String[] data,
+    public void addItemToRecyclerView(String name, String price, String preview, String[] url,
                                       String width, String height, String depth, String keyword, String stock, String storename, String unique){
-        Tab3_Cart_Info item = new Tab3_Cart_Info(name, price, preview, data, width, height, depth, keyword, stock, storename, unique, 1);
+        Tab3_Cart_Info item = new Tab3_Cart_Info(name, price, preview, url, width, height, depth, keyword, stock, storename, unique, 1);
         cart_item.add(item);
 
         cartAdapter.notifyDataSetChanged();
@@ -163,7 +163,7 @@ public class Tab3_Cart extends Fragment {
         //상품 상세 페이지 정보 가져오기
         String name = cart_item.get(position).getName();
         String price = cart_item.get(position).getPrice();
-        String[] data = cart_item.get(position).getImg_data();
+        String[] url = cart_item.get(position).getImg_url();
         String width = cart_item.get(position).getWidth();
         String height = cart_item.get(position).getHeight();
         String depth = cart_item.get(position).getDepth();
@@ -178,7 +178,7 @@ public class Tab3_Cart extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putString("name", name);
         bundle.putString("price", price + " 원");
-        bundle.putStringArray("data", data);
+        bundle.putStringArray("url", url);
         bundle.putString("width", width);
         bundle.putString("height", height);
         bundle.putString("depth", depth);

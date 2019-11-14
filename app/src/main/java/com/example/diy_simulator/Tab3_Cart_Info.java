@@ -3,8 +3,8 @@ package com.example.diy_simulator;
 public class Tab3_Cart_Info {
     private String name;
     private String price;
-    private String preview_img_data;
-    private String[] img_data;
+    private String preview_img_url;
+    private String[] img_url;
     private String width;
     private String height;
     private String depth;
@@ -14,12 +14,12 @@ public class Tab3_Cart_Info {
     private String unique_number;
     private int amount;
 
-    public Tab3_Cart_Info(String name, String price, String preview_img_data, String[] img_data,
+    public Tab3_Cart_Info(String name, String price, String preview_img_url, String[] img_url,
                           String width, String height, String depth, String keyword, String stock, String storename, String unique_number, int amount) {
         this.name = name;
         this.price = price;
-        this.preview_img_data = preview_img_data;
-        this.img_data = img_data;
+        this.preview_img_url = preview_img_url;
+        this.img_url = img_url;
         this.width = width;
         this.height = height;
         this.depth = depth;
@@ -46,20 +46,20 @@ public class Tab3_Cart_Info {
         this.price = price;
     }
 
-    public String getPreview_img_data() {
-        return preview_img_data;
+    public String getPreview_img_url() {
+        return preview_img_url;
     }
 
-    public void setPreview_img_data(String preview_img_data) {
-        this.preview_img_data = preview_img_data;
+    public void setPreview_img_url(String preview_img_url) {
+        this.preview_img_url = preview_img_url;
     }
 
-    public String[] getImg_data() {
-        return img_data;
+    public String[] getImg_url() {
+        return img_url;
     }
 
-    public void setImg_data(String[] img_data) {
-        this.img_data = img_data;
+    public void setImg_url(String[] img_url) {
+        this.img_url = img_url;
     }
 
     public String getWidth() {
