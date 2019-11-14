@@ -841,7 +841,7 @@ public class ImageUploadActivity extends AppCompatActivity {
         Mat imgC3 = new Mat();
         Imgproc.cvtColor(img, imgC3, Imgproc.COLOR_RGBA2RGB);
 
-        Imgproc.grabCut(imgC3, mask, rect, bgdModel, fgdModel, 8, Imgproc.
+        Imgproc.grabCut(imgC3, mask, rect, bgdModel, fgdModel, 6, Imgproc.
                 GC_INIT_WITH_RECT);
 
         Mat source = new Mat(1, 1, CvType.CV_8U, new Scalar(3.0));
