@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -38,6 +39,7 @@ public class HomeSearch_Category extends Fragment {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef2 = database.getReference("부자재");
 
+    private ImageView noitem;
     public RecyclerView search_category_recyclerview;
     private final List<Material_Detail_Info> category_item = new ArrayList<>();
     private final HomeSearch_Category_Adapter categoryAdapter = new HomeSearch_Category_Adapter(getContext(),
@@ -51,7 +53,7 @@ public class HomeSearch_Category extends Fragment {
         sub1 = rootview.findViewById(R.id.category_detail_btn1);
         sub2 = rootview.findViewById(R.id.category_detail_btn2);
         sub3 = rootview.findViewById(R.id.category_detail_btn3);
-
+        noitem = rootview.findViewById(R.id.category_product_ready_img);
         //그리드 레이아웃으로 한줄에 2개씩 제품 보여주기
         search_category_recyclerview = rootview.findViewById(R.id.search_category_recyclerView);
         final GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
@@ -99,6 +101,10 @@ public class HomeSearch_Category extends Fragment {
                         }
                         i++;
                     }
+                    if(checkNoItem(material))
+                        noitem.setVisibility(View.VISIBLE);
+                    else
+                        search_category_recyclerview.setVisibility(View.VISIBLE);
                     //액세서리의 child가 2개이므로 3번째 버튼 invisible 설정
                     sub3.setVisibility(View.INVISIBLE);
                 }
@@ -131,6 +137,10 @@ public class HomeSearch_Category extends Fragment {
                         }
                         i++;
                     }
+                    if(checkNoItem(material))
+                        noitem.setVisibility(View.VISIBLE);
+                    else
+                        search_category_recyclerview.setVisibility(View.VISIBLE);
                 }
 
                 @Override
@@ -156,8 +166,7 @@ public class HomeSearch_Category extends Fragment {
                 if (sub1.getText().toString().equals(acc_sub[0])) {
                     sub1.setText(acc_sub_sub[0]);
                     sub2.setText(acc_sub_sub[1]);
-                    showSubCategoryResult(0);
-                    showSubCategoryResult(1);
+                    showSubCategoryResult(0,1);
                     cur_category.setText(category + " > " + acc_sub[0]);
                 }
                 //귀걸이 or 팔찌의 세부 카테고리 클릭
@@ -168,17 +177,17 @@ public class HomeSearch_Category extends Fragment {
                     //카테고리 액세서리
                     //귀걸이의 세부 카테고리 - 귀걸이 침 클릭
                     if (sub1.getText().toString().equals(acc_sub_sub[0])){
-                        showSubCategoryResult(0);
+                        showSubCategoryResult(0,0);
                         cur_category.setText(category + " > " + acc_sub[0] + " > " + acc_sub_sub[0]);
                     }
                     //팔찌의 세부 카테고리 - 파츠 클릭
                     else if (sub1.getText().toString().equals(acc_sub_sub[2])){
-                        showSubCategoryResult(2);
+                        showSubCategoryResult(2,2);
                         cur_category.setText(category + " > " + acc_sub[1] + " > " + acc_sub_sub[2]);
                     }
                     //카테고리가 액세서리가 아닐시
                     else{
-                        showSubCategoryResult(0);
+                        showSubCategoryResult(0,0);
                         cur_category.setText(category + " > " +sub1.getText().toString());
                     }
                 }
@@ -193,9 +202,7 @@ public class HomeSearch_Category extends Fragment {
                     sub2.setText(acc_sub_sub[3]);
                     sub3.setVisibility(View.VISIBLE);
                     sub3.setText(acc_sub_sub[4]);
-                    showSubCategoryResult(2);
-                    showSubCategoryResult(3);
-                    showSubCategoryResult(4);
+                    showSubCategoryResult(2,4);
                     cur_category.setText(category + " > " + acc_sub[1]);
                 }
                 else {
@@ -205,17 +212,17 @@ public class HomeSearch_Category extends Fragment {
                     //카테고리 액세서리
                     //귀걸이의 세부 카테고리 - 팬던트 클릭
                     if(sub2.getText().toString().equals(acc_sub_sub[1])) {
-                        showSubCategoryResult(1);
+                        showSubCategoryResult(1,1);
                         cur_category.setText(category + " > " + acc_sub[0] + " > " + acc_sub_sub[1]);
                     }
                     //팔찌의 세부 카테고리 - 팔찌대 클릭
                     else if(sub2.getText().toString().equals(acc_sub_sub[3])) {
-                        showSubCategoryResult(3);
+                        showSubCategoryResult(3,3);
                         cur_category.setText(category + " > " + acc_sub[1] + " > " + acc_sub_sub[3]);
                     }
                     //카테고리가 액세서리가 아닐시
                     else {
-                        showSubCategoryResult(1);
+                        showSubCategoryResult(1,1);
                         cur_category.setText(category + " > " +sub2.getText().toString());
                     }
                 }
@@ -229,12 +236,12 @@ public class HomeSearch_Category extends Fragment {
                 sub3.setTextColor(Color.parseColor("#3DC1AB"));
                 //팔찌의 세부 카테고리 - 팬던트_참 클릭
                 if(category.equals("액세서리") && sub3.getText().toString().equals(acc_sub_sub[4])){
-                    showSubCategoryResult(4);
+                    showSubCategoryResult(4,4);
                     cur_category.setText(category + " > " + acc_sub[1] + " > " + acc_sub_sub[4]);
                 }
                 else{
                     //카테고리가 액세서리가 아닐시
-                    showSubCategoryResult(2);
+                    showSubCategoryResult(2,2);
                     cur_category.setText(category + " > " +sub3.getText().toString());
                 }
             }
@@ -277,7 +284,6 @@ public class HomeSearch_Category extends Fragment {
                     }
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -335,10 +341,31 @@ public class HomeSearch_Category extends Fragment {
     }
 
     //버튼 눌림에 따라 세부 카테고리로 필터링한 아이템 보여주기
-    public void showSubCategoryResult(int number){
+    public void showSubCategoryResult(int start, int end){
         category_item.clear();
-        if(!TextUtils.isEmpty(material[number])) findMaterialInfo(material[number]);
-        else categoryAdapter.notifyDataSetChanged();
+        boolean check = true;
+        for(int i = start; i <= end ; i++) {
+            if (!TextUtils.isEmpty(material[i])) {
+                noitem.setVisibility(View.GONE);
+                search_category_recyclerview.setVisibility(View.VISIBLE);
+                findMaterialInfo(material[i]);
+                if(check)
+                    check = false;
+            }
+        }
+        if(check) {
+            noitem.setVisibility(View.VISIBLE);
+            search_category_recyclerview.setVisibility(View.GONE);
+            categoryAdapter.notifyDataSetChanged();
+        }
     }
 
+    private boolean checkNoItem(String[] material){
+        for (int i = 0; i < material.length ; i++)
+        {
+            if (!TextUtils.isEmpty(material[i]))
+                return false;
+        }
+        return true;
+    }
 }

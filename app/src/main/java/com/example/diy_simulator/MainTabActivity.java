@@ -91,6 +91,7 @@ public class MainTabActivity extends AppCompatActivity {
                             if (mFirebaseUser == null)  {
                                 Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
                                 startActivity(intent);
+                                finish();
                             }
                             else Log.d("현재 유저", mFirebaseUser.getEmail());
                         }

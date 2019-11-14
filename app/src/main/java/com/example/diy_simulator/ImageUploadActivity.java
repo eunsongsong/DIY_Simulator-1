@@ -563,12 +563,8 @@ public class ImageUploadActivity extends AppCompatActivity {
                 }
             });
         }
-        PreferenceUtil.getInstance(getApplicationContext()).putBooleanExtra("금지", true);
         checkUploadstate();
     }
-
-
-
 
     //부자재의 child 개수 가져오기
     private void getMyChildrenCount(){
@@ -902,7 +898,8 @@ public class ImageUploadActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 int a  = (int) dataSnapshot.child("image_RB_url").getChildrenCount();
-                if( a  == rm_data_arr.size()) {
+                int b  = (int) dataSnapshot.child("image_url").getChildrenCount();
+                if( a + b  == rm_data_arr.size() + data_arr.size()) {
                     hideProgress();
                     finish();
                 }

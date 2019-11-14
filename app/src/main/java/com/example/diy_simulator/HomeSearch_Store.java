@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,6 +36,7 @@ public class HomeSearch_Store extends Fragment {
     String seller_name, seller_phone, seller_addr;
     TextView name, phone, addr;
 
+    private ImageView no_item_img;
     public RecyclerView search_store_recyclerview;
     private final List<Material_Detail_Info> store_item = new ArrayList<>();
     private final HomeSearch_Store_Adapter storeAdapter = new HomeSearch_Store_Adapter(getContext(), store_item, R.layout.fragment_home_search_store);
@@ -53,6 +55,7 @@ public class HomeSearch_Store extends Fragment {
 
         //그리드 레이아웃으로 한줄에 2개씩 제품 보여주기
         search_store_recyclerview = rootview.findViewById(R.id.search_store_recyclerView);
+        no_item_img = rootview.findViewById(R.id.store_product_ready_img);
         final GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         search_store_recyclerview.setHasFixedSize(true);
@@ -85,7 +88,16 @@ public class HomeSearch_Store extends Fragment {
                  name.setText("판매자 : " + seller_name);
                  phone.setText("전화번호 : " + seller_phone);
                  addr.setText("가게 주소 : " + seller_addr);
-                 if(!TextUtils.isEmpty(material)) findMaterialInfo(material);
+                 if(!TextUtils.isEmpty(material)){
+                     search_store_recyclerview.setVisibility(View.VISIBLE);
+                     no_item_img.setVisibility(View.GONE);
+                     findMaterialInfo(material);
+                 }
+                 else
+                 {
+                     no_item_img.setVisibility(View.VISIBLE);
+                     return;
+                 }
             }
 
             @Override
@@ -111,8 +123,14 @@ public class HomeSearch_Store extends Fragment {
         myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+
                 int i = 0;
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    if(ds.child("image_url").getChildrenCount() == 0 )
+                    {
+
+                    }
                     if ( i == material_each.length)
                         break;
                     if(material_each[i].equals(ds.getKey())){

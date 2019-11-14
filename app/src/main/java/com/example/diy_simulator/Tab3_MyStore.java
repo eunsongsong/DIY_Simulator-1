@@ -3,11 +3,13 @@ package com.example.diy_simulator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -38,6 +40,8 @@ public class Tab3_MyStore extends Fragment {
     String material = "";
     TextView mystore_title;
 
+    private ImageView no_item_img;
+
     public RecyclerView mystore_recyclerview;
     private final List<Material_Detail_Info> mystore_item = new ArrayList<>();
     private final Tab3_MyStore_Adater mystoreAdapter = new Tab3_MyStore_Adater(getContext(), mystore_item, R.layout.tab3_my_store_item);
@@ -47,6 +51,7 @@ public class Tab3_MyStore extends Fragment {
 
         Button upload_btn = rootview.findViewById(R.id.image_upload_btn_tab3);
         mystore_title = rootview.findViewById(R.id.mystore_toolbar_title);
+        no_item_img = rootview.findViewById(R.id.mystore_product_ready_img);
         firebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = firebaseAuth.getCurrentUser();
 
@@ -92,7 +97,17 @@ public class Tab3_MyStore extends Fragment {
                         break;
                     }
                 }
-                findMaterialInfo(material);
+                if(!TextUtils.isEmpty(material)) {
+                    mystore_recyclerview.setVisibility(View.VISIBLE);
+                    no_item_img.setVisibility(View.GONE);
+                    findMaterialInfo(material);
+                }
+                else
+                {
+                    no_item_img.setVisibility(View.VISIBLE);
+                    mystore_recyclerview.setVisibility(View.GONE);
+                }
+
             }
 
             @Override
@@ -161,7 +176,7 @@ public class Tab3_MyStore extends Fragment {
         //상품 상세 페이지 정보 가져오기
         String name = mystore_item.get(position).getName();
         String price = mystore_item.get(position).getPrice();
-        String[] data = mystore_item.get(position).getImg_url();
+        String[] url = mystore_item.get(position).getImg_url();
         String width = mystore_item.get(position).getWidth();
         String height = mystore_item.get(position).getHeight();
         String depth = mystore_item.get(position).getDepth();
@@ -176,7 +191,7 @@ public class Tab3_MyStore extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putString("name", name);
         bundle.putString("price", price);
-        bundle.putStringArray("data", data);
+        bundle.putStringArray("url", url);
         bundle.putString("width", width);
         bundle.putString("height", height);
         bundle.putString("depth", depth);
@@ -199,22 +214,8 @@ public class Tab3_MyStore extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if ( PreferenceUtil.getInstance(getContext()).getBooleanExtra("금지" )) {
-            Log.d("아니","모야");
-            Handler delayHandler = new Handler();
-            delayHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    // TODO
-                    findSellerOwnMaterial();
-                    PreferenceUtil.getInstance(getContext()).removePreference("금지" );
-                }
-            }, 3000);
-        }
-        else {
-            Log.d("아니","모야213123");
-            findSellerOwnMaterial();
-        }
+
+        findSellerOwnMaterial();
         //이미지 업로드를 완료하고 다시 MyStore 프래그먼트로 돌아오면 다시 판매자 부자재 검색
     }
 

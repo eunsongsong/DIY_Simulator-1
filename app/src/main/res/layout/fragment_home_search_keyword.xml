@@ -67,10 +67,22 @@
         android:text="검색 결과가 없습니다."
         android:textColor="#222222"
         android:visibility="gone"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/search_keyword_recyclerView"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_marginTop="100dp"
+            android:id="@+id/keyword_product_ready_img"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:background="@drawable/shop_noitem"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/search_keyword_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
 
 </LinearLayout>

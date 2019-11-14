@@ -48,11 +48,23 @@
             android:layout_height="wrap_content"
             android:paddingStart="20dp"
             android:text="가게 주소 :"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+         <ImageView
+             android:layout_marginTop="100dp"
+             android:id="@+id/store_product_ready_img"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:visibility="gone"
+             android:background="@drawable/shop_noitem"/>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/search_store_recyclerView"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+        </RelativeLayout>
 
     </LinearLayout>
 </FrameLayout>
