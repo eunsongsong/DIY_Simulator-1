@@ -112,6 +112,7 @@ public class HomeSearch_Keyword_Adapter extends RecyclerView.Adapter<HomeSearch_
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Fragment tab1 = new Product_Detail_Fragment();
 
                 //번들에 부자재 상세정보 담아서 가게 상세 페이지 프래그먼트로 보내기
@@ -127,6 +128,9 @@ public class HomeSearch_Keyword_Adapter extends RecyclerView.Adapter<HomeSearch_
                 bundle.putString("storename", item.getStorename());
                 bundle.putString("unique_number", item.getUnique_number());
                 tab1.setArguments(bundle);
+
+                filteredList.clear();
+                unFilteredlist.clear();
 
                 //프래그먼트 키워드 검색 -> 제품 상세 페이지로 교체
                 FragmentManager fm = tab_search.getActivity().getSupportFragmentManager();
