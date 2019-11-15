@@ -95,8 +95,9 @@ public class Tab2_MyPage_Customer extends Fragment {
                 //로그인 되어있는 경우 로그아웃
                 if (mFirebaseUser != null)
                     FirebaseAuth.getInstance().signOut();
-                    Intent intent = new Intent(getActivity(), SignInActivity.class);
-                    startActivity(intent);
+                PreferenceUtil.getInstance(getContext()).putBooleanExtra("isSeller",false);
+                Intent intent = new Intent(getActivity(), SignInActivity.class);
+                startActivity(intent);
             }
         });
         return rootview;

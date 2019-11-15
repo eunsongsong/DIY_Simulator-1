@@ -2,11 +2,8 @@ package com.example.diy_simulator;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -39,7 +36,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public class Product_Detail_Fragment extends Fragment {
 
@@ -130,7 +126,7 @@ public class Product_Detail_Fragment extends Fragment {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                 //메인 탭 액티비티 변수 isSeller 가져오기
-                                boolean isSeller = ((MainTabActivity) Objects.requireNonNull(getActivity())).isSeller;
+                                boolean isSeller = PreferenceUtil.getInstance(getContext()).getBooleanExtra("isSeller");
                                 //break; 판매자일 경우 장바구니에 담을 수 없음
                                 if(isSeller) break;
 

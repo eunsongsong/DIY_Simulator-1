@@ -98,6 +98,7 @@ public class Tab2_MyPage_Seller extends Fragment {
                 //로그인 되어있는 경우 로그아웃
                 if (mFirebaseUser != null)
                     FirebaseAuth.getInstance().signOut();
+                PreferenceUtil.getInstance(getContext()).putBooleanExtra("isSeller",false);
                 Intent intent = new Intent(getActivity(), SignInActivity.class);
                 startActivity(intent);
             }

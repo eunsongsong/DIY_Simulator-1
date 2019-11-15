@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
-import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -54,7 +53,7 @@ public class MainTabActivity extends AppCompatActivity {
         Drawable drawable3_sell = getResources().getDrawable(R.drawable.tab3_seller_cart_selector);
         Drawable drawable4 = getResources().getDrawable(R.drawable.tab4_simulation_selector);
 
-        isSeller = getIntent().getBooleanExtra("whoIs",false);
+        isSeller = PreferenceUtil.getInstance(getApplicationContext()).getBooleanExtra("isSeller");
 
         mTabLayout.addTab(mTabLayout.newTab().setIcon(drawable1));
         mTabLayout.addTab(mTabLayout.newTab().setIcon(drawable2));

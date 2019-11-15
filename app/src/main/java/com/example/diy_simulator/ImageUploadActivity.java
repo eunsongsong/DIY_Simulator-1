@@ -15,7 +15,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,7 +25,6 @@ import android.widget.CheckBox;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -43,7 +41,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -67,6 +64,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.StringTokenizer;
 
 
@@ -97,7 +95,7 @@ public class ImageUploadActivity extends AppCompatActivity {
     private String imagePath;
     ArrayList<byte[]> data_arr;
     ArrayList<byte[]> rm_data_arr;
-    long count;  //DB의 부자재 개수
+    int count = 0;  //DB의 부자재 개수
 
     private CheckedTextView checkedTextView;
 
@@ -124,8 +122,7 @@ public class ImageUploadActivity extends AppCompatActivity {
         if (!OpenCVLoader.initDebug()) {
             // Handle initialization error
             finish();
-        }
-        getMyChildrenCount();
+        } getMyFinalMaterialNumber();
         //사진 찍어서 or 갤러리에서 가져온 사진 나타내는 이미지뷰
         checkedTextView = (CheckedTextView) findViewById(R.id.check_remove);
         //imageView = (ImageView) findViewById(R.id.preview);
@@ -566,12 +563,15 @@ public class ImageUploadActivity extends AppCompatActivity {
         checkUploadstate();
     }
 
-    //부자재의 child 개수 가져오기
-    private void getMyChildrenCount(){
+    // 마지막 부자재의 고유 번호 가져오기
+    private void getMyFinalMaterialNumber(){
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                count = dataSnapshot.getChildrenCount();
+                count = 0;
+                for(DataSnapshot ds : dataSnapshot.getChildren())
+                    count = Integer.parseInt(Objects.requireNonNull(ds.getKey())) + 1;
+                Log.i("카운트", count+"");
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -709,28 +709,7 @@ public class ImageUploadActivity extends AppCompatActivity {
             });
         }
     }
-/*
-    //입력 칸 비우기
-    private void ClearMaterialinfo(){
-        mname.setText(null);
-        mprice.setText(null);
-        mwidth.setText(null);
-        mheight.setText(null);
-        mdepth.setText(null);
-        mstock.setText(null);
-        mkeyword.setText(null);
-        keycheck.setChecked(false);
-        casecheck.setChecked(false);
-        earcheck.setChecked(false);
-        bracecheck.setChecked(false);
-        etccheck.setChecked(false);
-        keyspinner.setSelection(0);
-        casespinner.setSelection(0);
-        earspinner.setSelection(0);
-        bracespinner.setSelection(0);
-        etcspinner.setSelection(0);
-    }
-*/
+
     //디비에 부자재 URL 넣기
     private void Add_URL_Info(final Uri uri, final int target, final boolean check, final int number) {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {

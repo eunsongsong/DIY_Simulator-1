@@ -178,11 +178,11 @@ public class SignInActivity extends AppCompatActivity {
 
                                         Log.d("판매자인지?", isSeller+"");
                                         Intent intent = new Intent(getApplicationContext(), MainTabActivity.class);
-                                        intent.putExtra("whoIs", isSeller);
+                                        PreferenceUtil.getInstance(getApplicationContext()).putBooleanExtra("isSeller",isSeller);
                                         //로그인 이전 액티비티 스택을 비운다
                                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        startActivity(intent);
                                         dialog.dismiss();
+                                        startActivity(intent);
                                         finish();
                                     }
                                 }
@@ -230,6 +230,7 @@ public class SignInActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case android.R.id.home:{ //toolbar의 back키 눌렀을 때 동작
                 Intent intent = new Intent(getApplicationContext(), MainTabActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();
                 return true;

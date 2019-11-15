@@ -3,9 +3,7 @@ package com.example.diy_simulator;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,6 +90,7 @@ public class Tab3_MyStore extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    if(mFirebaseUser == null) break;
                     if (mFirebaseUser.getEmail().equals(ds.child("email").getValue().toString())){
                         material = ds.child("material").getValue().toString();
                         String name = ds.child("storename").getValue().toString();
