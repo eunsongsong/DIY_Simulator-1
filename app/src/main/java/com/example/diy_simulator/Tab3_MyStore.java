@@ -1,5 +1,6 @@
 package com.example.diy_simulator;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,6 +41,7 @@ public class Tab3_MyStore extends Fragment {
     String material = "";
     TextView mystore_title;
 
+    ProgressDialog pd;
     private ImageView no_item_img;
 
     public RecyclerView mystore_recyclerview;
@@ -49,6 +51,7 @@ public class Tab3_MyStore extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_tab3_my_store, container, false);
 
+        showProgress();
         Button upload_btn = rootview.findViewById(R.id.image_upload_btn_tab3);
         mystore_title = rootview.findViewById(R.id.mystore_toolbar_title);
         no_item_img = rootview.findViewById(R.id.mystore_product_ready_img);
@@ -104,6 +107,7 @@ public class Tab3_MyStore extends Fragment {
                 }
                 else
                 {
+                    hideProgress();
                     no_item_img.setVisibility(View.VISIBLE);
                     mystore_recyclerview.setVisibility(View.GONE);
                 }
@@ -154,6 +158,7 @@ public class Tab3_MyStore extends Fragment {
                         i++;
                     }
                 }
+                hideProgress();
             }
 
             @Override
@@ -214,9 +219,23 @@ public class Tab3_MyStore extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
+        showProgress();
         findSellerOwnMaterial();
         //이미지 업로드를 완료하고 다시 MyStore 프래그먼트로 돌아오면 다시 판매자 부자재 검색
+    }
+
+    // 프로그레스 다이얼로그 보이기
+    public void showProgress() {
+        if( pd == null ) { // 객체를 1회만 생성한다
+            pd = new ProgressDialog(getContext(), R.style.NewDialog); // 생성한다.
+            pd.setCancelable(false); // 백키로 닫는 기능을 제거한다.
+        }
+        pd.show(); // 화면에 띠워라//
+    }
+    public void hideProgress() {
+        if (pd != null && pd.isShowing()) {
+            pd.dismiss();
+        }
     }
 
 }
