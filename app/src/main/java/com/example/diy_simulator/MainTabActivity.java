@@ -82,6 +82,12 @@ public class MainTabActivity extends AppCompatActivity {
                 mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                     @Override
                     public void onTabSelected(TabLayout.Tab tab) {
+                        if(tab.getPosition() == 3)
+                            mViewPager.setPagingEnabled(false);
+                        else
+                            mViewPager.setPagingEnabled(true);
+
+
                         if(tab.getPosition() == 1 || tab.getPosition() == 2) {
                             firebaseAuth = FirebaseAuth.getInstance();
                             mFirebaseUser = firebaseAuth.getCurrentUser();
