@@ -12,9 +12,10 @@ public class Material_Detail_Info {
     private String stock;
     private String storename;
     private String unique_number;
+    private String category;
 
     public Material_Detail_Info(String name, String price, String preview_img_url, String[] img_url,
-                                String width, String height, String depth, String keyword, String stock, String storename, String unique_number) {
+                                String width, String height, String depth, String keyword, String stock, String storename, String unique_number, String category) {
         this.name = name;
         this.price = price;
         this.preview_img_url = preview_img_url;
@@ -26,6 +27,7 @@ public class Material_Detail_Info {
         this.stock = stock;
         this.storename = storename;
         this.unique_number = unique_number;
+        this.category = category;
     }
 
     public String getName() {
@@ -114,5 +116,13 @@ public class Material_Detail_Info {
 
     public void setUnique_number(String unique_number) {
         this.unique_number = unique_number;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

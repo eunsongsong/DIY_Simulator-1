@@ -73,6 +73,7 @@ public class Product_Detail_Fragment extends Fragment {
         TextView v_price = rootview.findViewById(R.id.detail_product_price);
         TextView v_keyword = rootview.findViewById(R.id.detail_product_keyword);
         TextView v_size = rootview.findViewById(R.id.detail_product_size);
+        TextView v_category = rootview.findViewById(R.id.detail_product_category);
 
         //부자재 세부 정보 가져오기
         String name = getArguments().getString("name");
@@ -85,6 +86,7 @@ public class Product_Detail_Fragment extends Fragment {
         String stock = getArguments().getString("stock");
         String store = getArguments().getString("storename");
         final String uni_num = getArguments().getString("unique_number");
+        String category = getArguments().getString("category");
 
         //뷰에 나타내기
         RequestOptions requestOptions = new RequestOptions();
@@ -94,13 +96,22 @@ public class Product_Detail_Fragment extends Fragment {
                 .load(url[0])
                 .into(representive);
 
-
         v_name.setText(name);
         v_price.setText(price);
         v_keyword.setText(keyword);
         v_store.setText(store);
         String size = width+" x "+height+" x "+depth;
         v_size.setText(size);
+
+        //카테고리 나타내기
+        if(!TextUtils.isEmpty(category)) {
+            String[] category_detail = category.split("#");
+            category = "";
+            for (String s : category_detail) {
+                category = category + s + "\n";
+            }
+        }
+        v_category.setText(category);
 
         //대표 이미지 제외 나머지 이미지 리사이클러뷰에 나타내기
         Product_Detail_Info[] item = new Product_Detail_Info[url.length-1];

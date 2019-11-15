@@ -83,6 +83,7 @@ public class HomeSearch_Keyword extends Fragment {
                     String stock = ds.child("stock").getValue().toString();
                     String keyword = ds.child("keyword").getValue().toString();
                     String storename = ds.child("storename").getValue().toString();
+                    String category = ds.child("category").getValue().toString();
                     //이미지 url 가져오기
                     String[] url = new String[(int) ds.child("image_url").getChildrenCount()];
                     int k = 0;
@@ -94,7 +95,7 @@ public class HomeSearch_Keyword extends Fragment {
                     String preview = url[0];
                     //리사이클러뷰에 아이템 add
                     Material_Detail_Info item = new Material_Detail_Info(name, price+" 원",
-                            preview, url, width, height, depth, keyword, stock, storename, ds.getKey());
+                            preview, url, width, height, depth, keyword, stock, storename, ds.getKey(), category);
                     keyword_item.add(item);
                 }
                 num_result.setVisibility(View.GONE);

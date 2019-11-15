@@ -87,7 +87,7 @@ public class ImageUploadActivity extends AppCompatActivity {
 
     private Button upload_btn;
     private EditText mname, mprice, mwidth, mheight, mdepth, mstock, mkeyword;
-    private String name, price, width, height, depth, stock, keyword;
+    private String name, price, width, height, depth, stock, keyword, category;
     private CheckBox keycheck, casecheck, earcheck, bracecheck, etccheck;
 
     private Spinner keyspinner, casespinner, earspinner, bracespinner, etcspinner;
@@ -305,8 +305,6 @@ public class ImageUploadActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(ImageUploadActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
             }
         }
-
-
     }
 
     // 권한 요청
@@ -446,17 +444,34 @@ public class ImageUploadActivity extends AppCompatActivity {
         depth = mdepth.getText().toString();
         stock = mstock.getText().toString();
         keyword = mkeyword.getText().toString();
+
+        //카테고리 가져오기
+        String[] category_check = new String[5];
+        category_check[0] = getSelectedCategory(keycheck, keyspin);
+        category_check[1] = getSelectedCategory(casecheck, casespin);
+        category_check[2] = getSelectedCategory(earcheck, earspin);
+        category_check[3] = getSelectedCategory(bracecheck, bracespin);
+        category_check[4] = getSelectedCategory(etccheck, etcspin);
+
+        for(int k=0; k<5; k++){
+            if(!TextUtils.isEmpty(category_check[k])){
+                if(TextUtils.isEmpty(category)) category = category_check[k];
+                else category = category + "#" + category_check[k];
+            }
+        }
+
         //판매자 가게 이름 가져오기
-        myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
+        String seller_id = mFirebaseUser.getEmail();
+        seller_id = seller_id.substring(0, seller_id.indexOf("@"));
+        myRef2.orderByChild(seller_id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds : dataSnapshot.getChildren()){
                     String u = mFirebaseUser.getEmail();
-                    if(u.equals(ds.child("email").getValue().toString())){
+                    if(u.equals(ds.child("email").getValue().toString())) {
                         storename = ds.child("storename").getValue().toString();
-                        Material material = new Material(name, price, width, height, depth, stock, keyword, storename);
-                        myRef.child(count+"").setValue(material);
-                        Log.d("한번","두번");
+                        Material material = new Material(name, price, width, height, depth, stock, keyword, storename, category);
+                        myRef.child(count + "").setValue(material);
                         break;
                     }
                 }
@@ -468,10 +483,8 @@ public class ImageUploadActivity extends AppCompatActivity {
             }
         });
 
-        //부자재 정보를 판매자, 카테고리 디비에 고유 아이디 값만 업데이트함
+        //부자재 정보를 판매자 디비에 고유 아이디 값만 업데이트함
         UpdateSellerMaterialinfo();
-        UpdateCategoryMaterialinfo();
-        //Toast.makeText(ImageUploadActivity.this, "업로드를 완료하였습니다.", Toast.LENGTH_LONG).show();
 
         final int target = (int) count;
         mFirebaseUser = firebaseAuth.getCurrentUser();
@@ -605,109 +618,14 @@ public class ImageUploadActivity extends AppCompatActivity {
         });
     }
 
-    //부자재 정보가 디비에 저장될때 부자재의 아이디 값만 카테고리 디비에 추가
-    private void UpdateCategoryMaterialinfo(){
-        //체크박스를 누르고 스피너는 '선택안함'이 아닐경우 카테고리에 저장
-        //키링 카테고리 업데이트
-        if(keycheck.isChecked() && !keyspin.equals("선택안함")){
-            myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for(DataSnapshot ds : dataSnapshot.getChildren()){
-                        if(ds.getKey().equals("키링")){
-                            String tmp = ds.child(keyspin).getValue().toString();
-                            if(TextUtils.isEmpty(tmp)) myRef3.child("키링").child(keyspin).setValue(count);
-                            else myRef3.child("키링").child(keyspin).setValue(tmp+"#"+count);
-                            break;
-                        }
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
+    //선택한 카테고리 스트링으로 반환
+    private String getSelectedCategory(CheckBox check, String spinner){
+        if(check.isChecked() && !spinner.equals("선택안함")){
+            String s_category = check.getText().toString();
+            s_category = s_category + ">" +  spinner;
+            return s_category;
         }
-        //폰케이스 카테고리 업데이트
-        if(casecheck.isChecked() && !casespin.equals("선택안함")){
-            myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for(DataSnapshot ds : dataSnapshot.getChildren()){
-                        if(ds.getKey().equals("폰케이스")){
-                            String tmp = ds.child(casespin).getValue().toString();
-                            if(TextUtils.isEmpty(tmp)) myRef3.child("폰케이스").child(casespin).setValue(count);
-                            else myRef3.child("폰케이스").child(casespin).setValue(tmp+"#"+count);
-                            break;
-                        }
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-        }
-        //액세서리 카테고리 업데이트 - 귀걸이
-        if(earcheck.isChecked() && !earspin.equals("선택안함")){
-            myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for(DataSnapshot ds : dataSnapshot.getChildren()){
-                        if(ds.getKey().equals("액세서리")){
-                            String tmp = ds.child("귀걸이").child(earspin).getValue().toString();
-                            if(TextUtils.isEmpty(tmp)) myRef3.child("액세서리").child("귀걸이").child(earspin).setValue(count);
-                            else myRef3.child("액세서리").child("귀걸이").child(earspin).setValue(tmp+"#"+count);
-                            break;
-                        }
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-        }
-        //액세서리 카테고리 업데이트 - 팔찌
-        if(bracecheck.isChecked() && !bracespin.equals("선택안함")){
-            myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for(DataSnapshot ds : dataSnapshot.getChildren()){
-                        if(ds.getKey().equals("액세서리")){
-                            String tmp = ds.child("팔찌").child(bracespin).getValue().toString();
-                            if(TextUtils.isEmpty(tmp)) myRef3.child("액세서리").child("팔찌").child(bracespin).setValue(count);
-                            else myRef3.child("액세서리").child("팔찌").child(bracespin).setValue(tmp+"#"+count);
-                            break;
-                        }
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-        }
-        //기타 카테고리 업데이트
-        if(etccheck.isChecked() && !etcspin.equals("선택안함")){
-            myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for(DataSnapshot ds : dataSnapshot.getChildren()){
-                        if(ds.getKey().equals("기타")){
-                            String tmp = ds.child(etcspin).getValue().toString();
-                            if(TextUtils.isEmpty(tmp)) myRef3.child("기타").child(etcspin).setValue(count);
-                            else myRef3.child("기타").child(etcspin).setValue(tmp+"#"+count);
-                            break;
-                        }
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-        }
+        else return null;
     }
 
     //디비에 부자재 URL 넣기

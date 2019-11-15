@@ -47,21 +47,18 @@
         android:orientation="horizontal">
         <Button
             android:id="@+id/category_detail_btn1"
-            android:visibility="gone"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#00ff0000"/>
         <Button
             android:id="@+id/category_detail_btn2"
-            android:visibility="gone"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#00ff0000"/>
         <Button
             android:id="@+id/category_detail_btn3"
-            android:visibility="gone"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

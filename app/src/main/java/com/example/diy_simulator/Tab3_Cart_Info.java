@@ -12,10 +12,11 @@ public class Tab3_Cart_Info {
     private String stock;
     private String storename;
     private String unique_number;
+    private String category;
     private int amount;
 
-    public Tab3_Cart_Info(String name, String price, String preview_img_url, String[] img_url,
-                          String width, String height, String depth, String keyword, String stock, String storename, String unique_number, int amount) {
+    public Tab3_Cart_Info(String name, String price, String preview_img_url, String[] img_url, String width, String height, String depth,
+                          String keyword, String stock, String storename, String unique_number, String category, int amount) {
         this.name = name;
         this.price = price;
         this.preview_img_url = preview_img_url;
@@ -27,6 +28,7 @@ public class Tab3_Cart_Info {
         this.stock = stock;
         this.storename = storename;
         this.unique_number = unique_number;
+        this.category = category;
         this.amount = amount;
     }
 
@@ -124,5 +126,13 @@ public class Tab3_Cart_Info {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

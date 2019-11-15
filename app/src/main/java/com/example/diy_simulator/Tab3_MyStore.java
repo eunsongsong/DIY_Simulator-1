@@ -143,6 +143,7 @@ public class Tab3_MyStore extends Fragment {
                         String stock = ds.child("stock").getValue().toString();
                         String keyword = ds.child("keyword").getValue().toString();
                         String storename = ds.child("storename").getValue().toString();
+                        String category = ds.child("category").getValue().toString();
                         //이미지 url 가져오기
                         String[] url = new String[(int) ds.child("image_url").getChildrenCount()];
                         int k = 0;
@@ -153,7 +154,7 @@ public class Tab3_MyStore extends Fragment {
                         //이미지 url의 0번이 상품 대표 이미지
                         String preview = url[0];
                         //리사이클러뷰에 아이템 add
-                        addItemToRecyclerView(name, price, preview, url, width, height, depth, keyword, stock, storename, ds.getKey());
+                        addItemToRecyclerView(name, price, preview, url, width, height, depth, keyword, stock, storename, ds.getKey(), category);
                         i++;
                     }
                 }
@@ -168,8 +169,8 @@ public class Tab3_MyStore extends Fragment {
     }
     //리사이클러뷰에 제품 이름, 가격, 이미지 url으로 아이템 나타내기
     public void addItemToRecyclerView(String name, String price, String preview, String[] data,
-                                      String width, String height, String depth, String keyword, String stock, String storename, String unique){
-        Material_Detail_Info item = new Material_Detail_Info(name, price+" 원", preview, data, width, height, depth, keyword, stock, storename, unique);
+                                      String width, String height, String depth, String keyword, String stock, String storename, String unique, String category){
+        Material_Detail_Info item = new Material_Detail_Info(name, price+" 원", preview, data, width, height, depth, keyword, stock, storename, unique, category);
         mystore_item.add(item);
 
         mystoreAdapter.notifyDataSetChanged();
@@ -188,6 +189,7 @@ public class Tab3_MyStore extends Fragment {
         String stock = mystore_item.get(position).getStock();
         String storename = mystore_item.get(position).getStorename();
         String unique_num = mystore_item.get(position).getUnique_number();
+        String category = mystore_item.get(position).getCategory();
 
         Fragment tab3 = new Product_Detail_Fragment();
 
@@ -203,6 +205,7 @@ public class Tab3_MyStore extends Fragment {
         bundle.putString("stock", stock);
         bundle.putString("storename", storename);
         bundle.putString("unique_number", unique_num);
+        bundle.putString("category", category);
         tab3.setArguments(bundle);
 
         //프래그먼트 tab3 내 가게 -> 제품 상세 페이지로 교체

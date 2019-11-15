@@ -3,6 +3,7 @@ package com.example.diy_simulator;
 /**
  * 부자재의 정보를 담는 클래스
  * 이름, 가격, 가로, 세로, 두께, 이미지 URL, 배경 없는 이미지 URL, 재고, 검색 키워드
+ * 해당 부자재를 파는 가게 이름, 부자재 카테고리
  */
 public class Material {
     public String material_name = "";
@@ -15,8 +16,10 @@ public class Material {
     public String stock = "";
     public String keyword = "";
     public String storename = "";
+    public String category  = "";
 
-    public Material(String material_name, String price, String size_width, String size_height, String size_depth, String stock, String keyword, String storename) {
+    public Material(String material_name, String price, String size_width, String size_height, String size_depth,
+                    String stock, String keyword, String storename, String category) {
         this.material_name = material_name;
         this.price = price;
         this.size_width = size_width;
@@ -25,6 +28,7 @@ public class Material {
         this.stock = stock;
         this.keyword = keyword;
         this.storename = storename;
+        this.category = category;
     }
 
     public String getMaterial_name() {
@@ -105,5 +109,13 @@ public class Material {
 
     public void setStorename(String storename) {
         this.storename = storename;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

@@ -1,11 +1,8 @@
 package com.example.diy_simulator;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -127,6 +124,7 @@ public class HomeSearch_Keyword_Adapter extends RecyclerView.Adapter<HomeSearch_
                 bundle.putString("stock", item.getStock());
                 bundle.putString("storename", item.getStorename());
                 bundle.putString("unique_number", item.getUnique_number());
+                bundle.putString("category", item.getCategory());
                 tab1.setArguments(bundle);
 
                 filteredList.clear();
