@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 public class MainTabActivity extends AppCompatActivity {
 
-    private ViewPager mViewPager;
+    private SwipeViewPager mViewPager;
     private TabLayout mTabLayout;
 
     FirebaseAuth firebaseAuth;
@@ -45,7 +45,7 @@ public class MainTabActivity extends AppCompatActivity {
 
         showProgress();
 
-        mViewPager = (ViewPager) findViewById(R.id.mainViewPager);
+        mViewPager = (SwipeViewPager) findViewById(R.id.mainViewPager);
         mTabLayout = (TabLayout) findViewById(R.id.mainTabLayout);
 
         Drawable drawable1 = getResources().getDrawable(R.drawable.tab1_home_selector);
@@ -82,8 +82,6 @@ public class MainTabActivity extends AppCompatActivity {
                 mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                     @Override
                     public void onTabSelected(TabLayout.Tab tab) {
-                        mViewPager.setCurrentItem(tab.getPosition(),true);
-
                         if(tab.getPosition() == 1 || tab.getPosition() == 2) {
                             firebaseAuth = FirebaseAuth.getInstance();
                             mFirebaseUser = firebaseAuth.getCurrentUser();
@@ -95,6 +93,7 @@ public class MainTabActivity extends AppCompatActivity {
                             }
                             else Log.d("현재 유저", mFirebaseUser.getEmail());
                         }
+                        mViewPager.setCurrentItem(tab.getPosition(),true);
                     }
                     //선택된 프레임을 제외하고 다 제거
                     @Override
