@@ -1,5 +1,6 @@
 package com.example.diy_simulator;
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -35,6 +36,7 @@ public class HomeSearch_Category extends Fragment {
     Button sub1, sub2, sub3;
     String[] acc_sub = new String[2];  //액세서리의 세부카테고리
     String[] acc_sub_sub = new String[5]; //액세서리 - 세부의 세부카테고리
+    ProgressDialog pd;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef2 = database.getReference("부자재");
@@ -44,6 +46,8 @@ public class HomeSearch_Category extends Fragment {
     private final List<Material_Detail_Info> category_item = new ArrayList<>();
     private final HomeSearch_Category_Adapter categoryAdapter = new HomeSearch_Category_Adapter(getContext(),
             category_item, R.layout.fragment_home_search_category);
+
+    private boolean progress = false;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_home_search_category, container, false);
@@ -79,6 +83,8 @@ public class HomeSearch_Category extends Fragment {
         title.setText(category);
         cur_category.setText(category);
 
+        showProgress();
+
         if(category.equals("액세서리")){
             // 세부 카테고리와 부자재 번호 찾아오기 - 액세서리
             // 액세서리인 경우 child 한번 더 깊이 검색
@@ -101,10 +107,17 @@ public class HomeSearch_Category extends Fragment {
                         }
                         i++;
                     }
-                    if(checkNoItem(material))
+                    if(checkNoItem(material)) {
                         noitem.setVisibility(View.VISIBLE);
-                    else
+                        hideProgress();
+                    }
+                    else {
                         search_category_recyclerview.setVisibility(View.VISIBLE);
+                        sub1.setVisibility(View.VISIBLE);
+                        sub2.setVisibility(View.VISIBLE);
+                        sub3.setVisibility(View.VISIBLE);
+                        hideProgress();
+                    }
                     //액세서리의 child가 2개이므로 3번째 버튼 invisible 설정
                     sub3.setVisibility(View.INVISIBLE);
                 }
@@ -137,10 +150,17 @@ public class HomeSearch_Category extends Fragment {
                         }
                         i++;
                     }
-                    if(checkNoItem(material))
+                    if(checkNoItem(material)) {
                         noitem.setVisibility(View.VISIBLE);
-                    else
+                        hideProgress();
+                    }
+                    else {
                         search_category_recyclerview.setVisibility(View.VISIBLE);
+                        sub1.setVisibility(View.VISIBLE);
+                        sub2.setVisibility(View.VISIBLE);
+                        sub3.setVisibility(View.VISIBLE);
+                        hideProgress();
+                    }
                 }
 
                 @Override
@@ -162,6 +182,11 @@ public class HomeSearch_Category extends Fragment {
         sub1.setOnClickListener(new View.OnClickListener() { //버튼1
             @Override
             public void onClick(View v) {
+                showProgress();
+                progress = true;
+                sub1.setVisibility(View.GONE);
+                sub2.setVisibility(View.GONE);
+                sub3.setVisibility(View.GONE);
                 //카테고리 액세서리 - 귀걸이 클릭
                 if (sub1.getText().toString().equals(acc_sub[0])) {
                     sub1.setText(acc_sub_sub[0]);
@@ -169,6 +194,7 @@ public class HomeSearch_Category extends Fragment {
                     showSubCategoryResult(0,1);
                     cur_category.setText(category + " > " + acc_sub[0]);
                 }
+
                 //귀걸이 or 팔찌의 세부 카테고리 클릭
                 else {
                     sub1.setTextColor(Color.parseColor("#3DC1AB"));
@@ -190,17 +216,23 @@ public class HomeSearch_Category extends Fragment {
                         showSubCategoryResult(0,0);
                         cur_category.setText(category + " > " +sub1.getText().toString());
                     }
+
                 }
+
             }
         });
         sub2.setOnClickListener(new View.OnClickListener() { //버튼2
             @Override
             public void onClick(View v) {
+                showProgress();
+                progress = true;
+                sub1.setVisibility(View.GONE);
+                sub2.setVisibility(View.GONE);
+                sub3.setVisibility(View.GONE);
                 //카테고리 액세서리 - 팔찌 클릭
                 if(sub2.getText().toString().equals(acc_sub[1])) {
                     sub1.setText(acc_sub_sub[2]);
                     sub2.setText(acc_sub_sub[3]);
-                    sub3.setVisibility(View.VISIBLE);
                     sub3.setText(acc_sub_sub[4]);
                     showSubCategoryResult(2,4);
                     cur_category.setText(category + " > " + acc_sub[1]);
@@ -225,12 +257,19 @@ public class HomeSearch_Category extends Fragment {
                         showSubCategoryResult(1,1);
                         cur_category.setText(category + " > " +sub2.getText().toString());
                     }
+
                 }
+
             }
         });
         sub3.setOnClickListener(new View.OnClickListener() { //버튼3
             @Override
             public void onClick(View v) {
+                showProgress();
+                progress = true;
+                sub1.setVisibility(View.GONE);
+                sub2.setVisibility(View.GONE);
+                sub3.setVisibility(View.GONE);
                 sub1.setTextColor(Color.parseColor("#181818"));
                 sub2.setTextColor(Color.parseColor("#181818"));
                 sub3.setTextColor(Color.parseColor("#3DC1AB"));
@@ -244,6 +283,7 @@ public class HomeSearch_Category extends Fragment {
                     showSubCategoryResult(2,2);
                     cur_category.setText(category + " > " +sub3.getText().toString());
                 }
+
             }
         });
 
@@ -282,6 +322,10 @@ public class HomeSearch_Category extends Fragment {
                         addItemToRecyclerView(name, price, preview, url, width, height, depth, keyword, stock, storename, ds.getKey());
                         i++;
                     }
+                    hideProgress();
+                    sub1.setVisibility(View.VISIBLE);
+                    sub2.setVisibility(View.VISIBLE);
+                    sub3.setVisibility(View.VISIBLE);
                 }
             }
             @Override
@@ -344,18 +388,26 @@ public class HomeSearch_Category extends Fragment {
     public void showSubCategoryResult(int start, int end){
         category_item.clear();
         boolean check = true;
+
+
+
         for(int i = start; i <= end ; i++) {
             if (!TextUtils.isEmpty(material[i])) {
                 noitem.setVisibility(View.GONE);
                 search_category_recyclerview.setVisibility(View.VISIBLE);
                 findMaterialInfo(material[i]);
-                if(check)
+                if(check) {
                     check = false;
+                }
             }
         }
         if(check) {
             noitem.setVisibility(View.VISIBLE);
             search_category_recyclerview.setVisibility(View.GONE);
+            hideProgress();
+            sub1.setVisibility(View.VISIBLE);
+            sub2.setVisibility(View.VISIBLE);
+            sub3.setVisibility(View.VISIBLE);
             categoryAdapter.notifyDataSetChanged();
         }
     }
@@ -367,5 +419,19 @@ public class HomeSearch_Category extends Fragment {
                 return false;
         }
         return true;
+    }
+
+    // 프로그레스 다이얼로그 보이기
+    public void showProgress() {
+        if( pd == null ) { // 객체를 1회만 생성한다
+            pd = new ProgressDialog(getContext(), R.style.NewDialog); // 생성한다.
+            pd.setCancelable(false); // 백키로 닫는 기능을 제거한다.
+        }
+        pd.show(); // 화면에 띠워라//
+    }
+    public void hideProgress() {
+        if (pd != null && pd.isShowing()) {
+            pd.dismiss();
+        }
     }
 }

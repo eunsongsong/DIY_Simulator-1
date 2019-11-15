@@ -39,13 +39,19 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
     List<Tab4_Simulation_Item> filteredList;
     int item_layout;
 
-    public Tab4_Simulation_Adatper(Context context, List<Tab4_Simulation_Item> items ,int item_layout) {
+
+
+    public Tab4_Simulation_Adatper(Context context, List<Tab4_Simulation_Item> items , int item_layout) {
         this.context = context;
         this.unFilteredlist = items;
         this.filteredList = items;
         this.item_layout = item_layout;
     }
-
+    public List<Tab4_Simulation_Item> getFilteredList() {
+        for(int i = 0 ; i < filteredList.size(); i++)
+            Log.d("우람",filteredList.get(i).getUrl());
+        return filteredList;
+    }
     public interface OnItemClickListener {
         void onItemClick(View v, int position);
     }

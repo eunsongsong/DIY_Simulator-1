@@ -57,7 +57,7 @@ public class Tab4_Simulation extends Fragment {
 
     //그리드 리싸이클러뷰
     public RecyclerView simul_recyclerview;
-    private final List<Tab4_Simulation_Item> simulation_items = new ArrayList<>();
+    private  List<Tab4_Simulation_Item> simulation_items = new ArrayList<>();
     private final Tab4_Simulation_Adatper simulationAdatper = new Tab4_Simulation_Adatper(getContext(), simulation_items, R.layout.fragment_tab4_simulation);
 
     FirebaseAuth firebaseAuth;
@@ -175,26 +175,37 @@ public class Tab4_Simulation extends Fragment {
         keyring_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    simulationAdatper.getFilter().filter("키링");
+                simulationAdatper.getFilter().filter("키링");
+                simulation_items = simulationAdatper.getFilteredList();
+                simulationAdatper.getFilter().filter("키링");
+                simulation_items = simulationAdatper.getFilteredList();
             }
         });
         phonecase_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 simulationAdatper.getFilter().filter("폰케이스");
+                simulation_items = simulationAdatper.getFilteredList();
+                simulationAdatper.getFilter().filter("폰케이스");
+                simulation_items = simulationAdatper.getFilteredList();
             }
         });
         acc_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 simulationAdatper.getFilter().filter("액세서리");
+                simulation_items = simulationAdatper.getFilteredList();
+                simulationAdatper.getFilter().filter("액세서리");
+                simulation_items = simulationAdatper.getFilteredList();
             }
         });
         etc_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 simulationAdatper.getFilter().filter("기타");
-                Log.d("허","dkdk");
+                simulation_items = simulationAdatper.getFilteredList();
+                simulationAdatper.getFilter().filter("기타");
+                simulation_items = simulationAdatper.getFilteredList();
             }
         });
 
@@ -423,7 +434,6 @@ public class Tab4_Simulation extends Fragment {
             }
         });
 
-        //아이템 클릭시 상품 상세 페이지로 이동Math
         simulationAdatper.setOnItemClickListener(new Tab4_Simulation_Adatper.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
