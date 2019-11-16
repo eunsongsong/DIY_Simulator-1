@@ -3,11 +3,7 @@ package com.example.diy_simulator;
 
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,20 +11,12 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.DrawableImageViewTarget;
-import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,12 +62,10 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
                 } else {
                     ArrayList<Tab4_Simulation_Item> filteringList = new ArrayList<>() ;
                     for (Tab4_Simulation_Item item : unFilteredlist) {
-                        for(int i = 0; i < 4; i++){
-                            if(!TextUtils.isEmpty(item.getCategory()[i]))
-                                if (item.getCategory()[i].equals(charString)) {
-                                    filteringList.add(item);
-                                }
-                        }
+                        if(!TextUtils.isEmpty(item.getCategory()))
+                            if (item.getCategory().contains(charString)) {
+                                filteringList.add(item);
+                            }
                     }
                     filteredList = filteringList;
                 }

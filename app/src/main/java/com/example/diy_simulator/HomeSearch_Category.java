@@ -82,141 +82,6 @@ public class HomeSearch_Category extends Fragment {
         title.setText(BIGcategory);
         cur_category.setText(BIGcategory);
 
-        //세부 카테고리 버튼 클릭시 해당 카테고리의 아이템만 보이기
-        sub1.setOnClickListener(new View.OnClickListener() { //버튼1
-            @Override
-            public void onClick(View v) {
-
-                categoryAdapter.getFilter().filter(sub1.getText().toString());
-                category_item = categoryAdapter.getFilteredList();
-                categoryAdapter.getFilter().filter(sub1.getText().toString());
-                category_item = categoryAdapter.getFilteredList();
-                showEmptyOrNot();
-
-                //카테고리 액세서리 - 귀걸이 클릭
-                if (sub1.getText().toString().equals(acc_sub[0])) {
-                    sub1.setText(acc_ear_sub[0]);
-                    sub2.setText(acc_ear_sub[1]);
-                    cur_category.setText(BIGcategory + " > " + acc_sub[0]);
-                }
-
-                //귀걸이 or 팔찌의 세부 카테고리 클릭
-                else{
-                    sub1.setTextColor(Color.parseColor("#3DC1AB"));
-                    sub2.setTextColor(Color.parseColor("#181818"));
-                    sub3.setTextColor(Color.parseColor("#181818"));
-                    //카테고리 액세서리
-                    //귀걸이의 세부 카테고리 - 귀걸이 침 클릭
-                    if (sub1.getText().toString().equals(acc_ear_sub[0])){
-                        cur_category.setText(BIGcategory + " > " + acc_sub[0] + " > " + acc_ear_sub[0]);
-                    }
-                    //팔찌의 세부 카테고리 - 파츠 클릭
-                    else if (BIGcategory.equals("액세서리") && sub1.getText().toString().equals(acc_brac_sub[0])){
-                        cur_category.setText(BIGcategory + " > " + acc_sub[1] + " > " + acc_brac_sub[0]);
-                    }
-                    //카테고리가 액세서리가 아닐시
-                    else{
-                        cur_category.setText(BIGcategory + " > " +sub1.getText().toString());
-                    }
-                }
-            }
-        });
-        sub2.setOnClickListener(new View.OnClickListener() { //버튼2
-            @Override
-            public void onClick(View v) {
-
-                categoryAdapter.getFilter().filter(sub2.getText().toString());
-                category_item = categoryAdapter.getFilteredList();
-                categoryAdapter.getFilter().filter(sub2.getText().toString());
-                category_item = categoryAdapter.getFilteredList();
-                showEmptyOrNot();
-
-                //카테고리 액세서리 - 팔찌 클릭
-                if(sub2.getText().toString().equals(acc_sub[1])) {
-                    sub1.setText(acc_brac_sub[0]);
-                    sub2.setText(acc_brac_sub[1]);
-                    sub3.setText(acc_brac_sub[2]);
-                    sub3.setVisibility(View.VISIBLE);
-                    cur_category.setText(BIGcategory + " > " + acc_sub[1]);
-                }
-                else {
-                    sub1.setTextColor(Color.parseColor("#181818"));
-                    sub2.setTextColor(Color.parseColor("#3DC1AB"));
-                    sub3.setTextColor(Color.parseColor("#181818"));
-                    //카테고리 액세서리
-                    //귀걸이의 세부 카테고리 - 팬던트 클릭
-                    if(sub2.getText().toString().equals(acc_ear_sub[1])) {
-                        cur_category.setText(BIGcategory + " > " + acc_sub[0] + " > " + acc_ear_sub[1]);
-                    }
-                    //팔찌의 세부 카테고리 - 팔찌대 클릭
-                    else if(sub2.getText().toString().equals(acc_brac_sub[1])) {
-                        cur_category.setText(BIGcategory + " > " + acc_sub[1] + " > " + acc_brac_sub[1]);
-                    }
-                    //카테고리가 액세서리가 아닐시
-                    else {
-                        cur_category.setText(BIGcategory + " > " +sub2.getText().toString());
-                    }
-                }
-
-            }
-        });
-        sub3.setOnClickListener(new View.OnClickListener() { //버튼3
-            @Override
-            public void onClick(View v) {
-                categoryAdapter.getFilter().filter(sub3.getText().toString());
-                category_item = categoryAdapter.getFilteredList();
-                categoryAdapter.getFilter().filter(sub3.getText().toString());
-                category_item = categoryAdapter.getFilteredList();
-                showEmptyOrNot();
-
-                sub1.setTextColor(Color.parseColor("#181818"));
-                sub2.setTextColor(Color.parseColor("#181818"));
-                sub3.setTextColor(Color.parseColor("#3DC1AB"));
-                //팔찌의 세부 카테고리 - 팬던트_참 클릭
-                if(BIGcategory.equals("액세서리") && sub3.getText().toString().equals(acc_brac_sub[2])){
-                    cur_category.setText(BIGcategory + " > " + acc_sub[1] + " > " + acc_brac_sub[2]);
-                }
-                else{
-                    //카테고리가 액세서리가 아닐시
-                    cur_category.setText(BIGcategory + " > " +sub3.getText().toString());
-                }
-            }
-        });
-
-        return rootview;
-    }
-
-    //버튼 눌림에 따라 세부 카테고리로 필터링한 아이템 보여주기
-    public void showEmptyOrNot(){
-        if(category_item.isEmpty()) {
-            Log.i("노아이템", "노노");
-            noitem.setVisibility(View.VISIBLE);
-            search_category_recyclerview.setVisibility(View.GONE);
-        }
-        else{
-            Log.i("예스", "아이템");
-            noitem.setVisibility(View.GONE);
-            search_category_recyclerview.setVisibility(View.VISIBLE);
-            categoryAdapter.notifyDataSetChanged();
-        }
-    }
-
-    // 프로그레스 다이얼로그 보이기
-    public void showProgress() {
-        if( pd == null ) { // 객체를 1회만 생성한다
-            pd = new ProgressDialog(getContext(), R.style.NewDialog); // 생성한다.
-            pd.setCancelable(false); // 백키로 닫는 기능을 제거한다.
-        }
-        pd.show(); // 화면에 띠워라//
-    }
-    public void hideProgress() {
-        if (pd != null && pd.isShowing()) {
-            pd.dismiss();
-        }
-    }
-
-    public void addAllCategoryItem(){
-
         category_item.clear();
         showProgress();
 
@@ -251,6 +116,7 @@ public class HomeSearch_Category extends Fragment {
                     }
                 }
                 hideProgress();
+                categoryAdapter.getFilter().filter("");
                 showEmptyOrNot();
             }
 
@@ -281,11 +147,136 @@ public class HomeSearch_Category extends Fragment {
             sub2.setText(etc_sub[1]);
             sub3.setText(etc_sub[2]);
         }
+
+        //세부 카테고리 버튼 클릭시 해당 카테고리의 아이템만 보이기
+        sub1.setOnClickListener(new View.OnClickListener() { //버튼1
+            @Override
+            public void onClick(View v) {
+
+                categoryAdapter.getFilter().filter(sub1.getText().toString());
+                category_item = categoryAdapter.getFilteredList();
+                categoryAdapter.getFilter().filter(sub1.getText().toString());
+                category_item = categoryAdapter.getFilteredList();
+
+                //카테고리 액세서리 - 귀걸이 클릭
+                if (sub1.getText().toString().equals(acc_sub[0])) {
+                    sub1.setText(acc_ear_sub[0]);
+                    sub2.setText(acc_ear_sub[1]);
+                    cur_category.setText(BIGcategory + " > " + acc_sub[0]);
+                }
+
+                //귀걸이 or 팔찌의 세부 카테고리 클릭
+                else{
+                    sub1.setTextColor(Color.parseColor("#3DC1AB"));
+                    sub2.setTextColor(Color.parseColor("#181818"));
+                    sub3.setTextColor(Color.parseColor("#181818"));
+                    //카테고리 액세서리
+                    //귀걸이의 세부 카테고리 - 귀걸이 침 클릭
+                    if (sub1.getText().toString().equals(acc_ear_sub[0])){
+                        cur_category.setText(BIGcategory + " > " + acc_sub[0] + " > " + acc_ear_sub[0]);
+                    }
+                    //팔찌의 세부 카테고리 - 파츠 클릭
+                    else if (BIGcategory.equals("액세서리") && sub1.getText().toString().equals(acc_brac_sub[0])){
+                        cur_category.setText(BIGcategory + " > " + acc_sub[1] + " > " + acc_brac_sub[0]);
+                    }
+                    //카테고리가 액세서리가 아닐시
+                    else{
+                        cur_category.setText(BIGcategory + " > " +sub1.getText().toString());
+                    }
+                }
+                showEmptyOrNot();
+            }
+        });
+        sub2.setOnClickListener(new View.OnClickListener() { //버튼2
+            @Override
+            public void onClick(View v) {
+
+                categoryAdapter.getFilter().filter(sub2.getText().toString());
+                category_item = categoryAdapter.getFilteredList();
+                categoryAdapter.getFilter().filter(sub2.getText().toString());
+                category_item = categoryAdapter.getFilteredList();
+
+                //카테고리 액세서리 - 팔찌 클릭
+                if(sub2.getText().toString().equals(acc_sub[1])) {
+                    sub1.setText(acc_brac_sub[0]);
+                    sub2.setText(acc_brac_sub[1]);
+                    sub3.setText(acc_brac_sub[2]);
+                    sub3.setVisibility(View.VISIBLE);
+                    cur_category.setText(BIGcategory + " > " + acc_sub[1]);
+                }
+                else {
+                    sub1.setTextColor(Color.parseColor("#181818"));
+                    sub2.setTextColor(Color.parseColor("#3DC1AB"));
+                    sub3.setTextColor(Color.parseColor("#181818"));
+                    //카테고리 액세서리
+                    //귀걸이의 세부 카테고리 - 팬던트 클릭
+                    if(sub2.getText().toString().equals(acc_ear_sub[1])) {
+                        cur_category.setText(BIGcategory + " > " + acc_sub[0] + " > " + acc_ear_sub[1]);
+                    }
+                    //팔찌의 세부 카테고리 - 팔찌대 클릭
+                    else if(sub2.getText().toString().equals(acc_brac_sub[1])) {
+                        cur_category.setText(BIGcategory + " > " + acc_sub[1] + " > " + acc_brac_sub[1]);
+                    }
+                    //카테고리가 액세서리가 아닐시
+                    else {
+                        cur_category.setText(BIGcategory + " > " +sub2.getText().toString());
+                    }
+                }
+                showEmptyOrNot();
+            }
+        });
+        sub3.setOnClickListener(new View.OnClickListener() { //버튼3
+            @Override
+            public void onClick(View v) {
+                categoryAdapter.getFilter().filter(sub3.getText().toString());
+                category_item = categoryAdapter.getFilteredList();
+                categoryAdapter.getFilter().filter(sub3.getText().toString());
+                category_item = categoryAdapter.getFilteredList();
+
+                sub1.setTextColor(Color.parseColor("#181818"));
+                sub2.setTextColor(Color.parseColor("#181818"));
+                sub3.setTextColor(Color.parseColor("#3DC1AB"));
+                //팔찌의 세부 카테고리 - 팬던트_참 클릭
+                if(BIGcategory.equals("액세서리") && sub3.getText().toString().equals(acc_brac_sub[2])){
+                    cur_category.setText(BIGcategory + " > " + acc_sub[1] + " > " + acc_brac_sub[2]);
+                }
+                else{
+                    //카테고리가 액세서리가 아닐시
+                    cur_category.setText(BIGcategory + " > " +sub3.getText().toString());
+                }
+                showEmptyOrNot();
+            }
+        });
+
+        return rootview;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        addAllCategoryItem();
+    //버튼 눌림에 따라 세부 카테고리로 필터링한 아이템 보여주기
+    public void showEmptyOrNot(){
+        if(category_item.isEmpty()) {
+            Log.i("노아이템", "노노");
+            noitem.setVisibility(View.VISIBLE);
+            search_category_recyclerview.setVisibility(View.GONE);
+        }
+        else{
+            Log.i("예스", "아이템");
+            noitem.setVisibility(View.GONE);
+            search_category_recyclerview.setVisibility(View.VISIBLE);
+            categoryAdapter.notifyDataSetChanged();
+        }
+    }
+
+    // 프로그레스 다이얼로그 보이기
+    public void showProgress() {
+        if( pd == null ) { // 객체를 1회만 생성한다
+            pd = new ProgressDialog(getContext(), R.style.NewDialog); // 생성한다.
+            pd.setCancelable(false); // 백키로 닫는 기능을 제거한다.
+        }
+        pd.show(); // 화면에 띠워라//
+    }
+    public void hideProgress() {
+        if (pd != null && pd.isShowing()) {
+            pd.dismiss();
+        }
     }
 }

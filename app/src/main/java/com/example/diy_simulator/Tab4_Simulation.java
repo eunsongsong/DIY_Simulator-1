@@ -1,12 +1,9 @@
 package com.example.diy_simulator;
 
 import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,7 +34,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 public class Tab4_Simulation extends Fragment {
 
@@ -63,12 +59,13 @@ public class Tab4_Simulation extends Fragment {
     FirebaseAuth firebaseAuth;
     FirebaseUser mFirebaseUser;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference myRef = database.getReference("구매자");
+    private DatabaseReference myRef_customer = database.getReference("구매자");
+    private DatabaseReference myRef_seller = database.getReference("판매자");
     private DatabaseReference myRef2 = database.getReference("부자재");
-    private DatabaseReference myRef3 = database.getReference("카테고리");
 
     private String cart;
-    private ImageView trashView;
+    String[] cart_arr;
+    private ImageView trashView, empty_item;
     private int trash_width;
     private int trash_height;
 
@@ -78,7 +75,6 @@ public class Tab4_Simulation extends Fragment {
     private float angle = 5.0f;
 
     private ArrayList<String[]> category;
-    private String[] category_arr = new String[4];
 
     private ImageButton keyring_btn;
     private ImageButton phonecase_btn;
@@ -163,7 +159,9 @@ public class Tab4_Simulation extends Fragment {
         relativeLayout = (RelativeLayout) rootview.findViewById(R.id.relative);
         firebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = firebaseAuth.getCurrentUser();
+        Boolean isSeller = PreferenceUtil.getInstance(getContext()).getBooleanExtra("isSeller");
         trashView = (ImageView) rootview.findViewById(R.id.trash);
+        empty_item = rootview.findViewById(R.id.no_simul_item);
 
         keyring_btn = (ImageButton) rootview.findViewById(R.id.img_but1);
         phonecase_btn = (ImageButton) rootview.findViewById(R.id.img_but2);
@@ -209,58 +207,52 @@ public class Tab4_Simulation extends Fragment {
             }
         });
 
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Log.d("우람", "dd");
-                    if ("rnjsdnfka7@gmail.com".equals(ds.child("email").getValue().toString())) {
-                        cart = ds.child("cart").getValue().toString();
-                        Log.d("dd", cart);
-                        break;
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int i = 0;
-                for (DataSnapshot ds : dataSnapshot.getChildren()){
-                    if( i == 1) {
-                        for (DataSnapshot ds2 : ds.getChildren()) {
-                            for(DataSnapshot ds3 : ds2.getChildren()){
-                                if (!TextUtils.isEmpty(ds3.getValue().toString())) {
-                                    category_arr[i] += ds3.getValue().toString() + "#";
-                                    Log.d("ㅇ",category_arr[i].replace("null",""));
-                                }
+        // 로그인 되어있을 경우 유저에 따라 시뮬레이션 아이템 목록 (부자재 번호만) 불러오기
+        if(mFirebaseUser != null){
+            empty_item.setVisibility(View.GONE);
+            // 판매자일 경우 내 가게 상품 목록 불러오기
+            if(isSeller){
+                myRef_seller.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            if (mFirebaseUser.getEmail().equals(ds.child("email").getValue().toString())) {
+                                cart = ds.child("material").getValue().toString();
+                                break;
                             }
                         }
                     }
-                    else
-                    {
-                        for (DataSnapshot ds2 : ds.getChildren()) {
-                            if (!TextUtils.isEmpty(ds2.getValue().toString())) {
-                                category_arr[i] += ds2.getValue().toString() + "#";
-                                Log.d("ㅇ",category_arr[i].replace("null",""));
-                            }
 
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+            // 고객일 경우 장바구니 목록 불러오기
+            else{
+                myRef_customer.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            if (mFirebaseUser.getEmail().equals(ds.child("email").getValue().toString())) {
+                                cart = ds.child("cart").getValue().toString();
+                                break;
+                            }
                         }
                     }
-                    i++;
-                }
-            }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                    }
+                });
             }
-        });
+        }
+        // 로그인 안되어 있을 경우
+        else {
+            empty_item.setVisibility(View.VISIBLE);
+        }
+
 
         ImageButton menubtn = rootview.findViewById(R.id.simulation_menu_button);
         ImageButton x_btn = rootview.findViewById(R.id.x_button);
@@ -340,50 +332,42 @@ public class Tab4_Simulation extends Fragment {
 
                 blur.setVisibility(View.GONE);
 
-
-                for(int i = 0 ; i < 4;i++){
-                    if(!TextUtils.isEmpty(category_arr[i]))
-                        category_arr[i] = category_arr[i].replace("null","");
+                // 시뮬레이션 아이템 불러오기
+                if(TextUtils.isEmpty(cart)) {
+                    empty_item.setVisibility(View.VISIBLE);
                 }
-                StringTokenizer st = new StringTokenizer(cart, "#");
-
-                final String[] arr = new String[st.countTokens()];
-
-                for(int i = 0; i < arr.length; i++) {
-                    arr[i] = st.nextToken();
-                    if( sortCategory(arr[i].charAt(0)) == null )
-                        category.add(category_arr);
-                    else
-                        category.add(sortCategory(arr[i].charAt(0)));
-                }
-
-                myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                       // Log.d("제발잠좀","자게해줘"+dataSnapshot.getValue().toString());
-                        //String url = dataSnapshot.child("image_RB_url").child(d.getKey()).getValue().toString();
-                        simulation_items.clear();
-                        int i = 0;
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            if ( i == arr.length)
-                                break;
-                            if(arr[i].equals(ds.getKey())){
-                                Log.d("궁금 " + ds.getKey(),ds.child("image_url").getChildrenCount()+"");
-                                String url = ds.child("image_RB_url").child(Integer.parseInt(ds.getKey()) + (int) ds.child("image_url").getChildrenCount()+"").getValue().toString();
-                                int width = Integer.parseInt(ds.child("size_width").getValue().toString());
-                                int height = Integer.parseInt(ds.child("size_height").getValue().toString());
-                                addItemToRecyclerView(url, width, height,  category.get(i));
-                                i++;
-                                continue;
+                else {
+                    empty_item.setVisibility(View.GONE);
+                    cart_arr = cart.split("#");
+                    myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            // Log.d("제발잠좀","자게해줘"+dataSnapshot.getValue().toString());
+                            //String url = dataSnapshot.child("image_RB_url").child(d.getKey()).getValue().toString();
+                            simulation_items.clear();
+                            int i = 0;
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                if ( i == cart_arr.length)
+                                    break;
+                                if(cart_arr[i].equals(ds.getKey())){
+                                    Log.d("궁금 " + ds.getKey(),ds.child("image_url").getChildrenCount()+"");
+                                    String url = ds.child("image_RB_url").child(Integer.parseInt(ds.getKey()) + (int) ds.child("image_url").getChildrenCount()+"").getValue().toString();
+                                    int width = Integer.parseInt(ds.child("size_width").getValue().toString());
+                                    int height = Integer.parseInt(ds.child("size_height").getValue().toString());
+                                    String category = ds.child("category").getValue().toString();
+                                    addItemToRecyclerView(url, width, height, category);
+                                    i++;
+                                    continue;
+                                }
                             }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
+                        }
+                    });
+                }
             }
         });
 
@@ -478,53 +462,10 @@ public class Tab4_Simulation extends Fragment {
         relativeLayout.addView(iv); // 기존 linearLayout에 imageView 추가
 
     }
-    public void addItemToRecyclerView(String url, int width, int height, String[] category){
+    public void addItemToRecyclerView(String url, int width, int height, String category){
         Tab4_Simulation_Item item = new Tab4_Simulation_Item(url, width, height, category);
         simulation_items.add(item);
         simulationAdatper.notifyDataSetChanged();
     }
 
-    private String[] sortCategory(char cart) {
-        String[] strings = new String[4];
-
-        for (int i = 0; i < category_arr.length; i++) {
-            if(TextUtils.isEmpty(category_arr[i]))
-                continue;
-            switch (i) {
-                case 0:
-                    for (int k = 0; k < category_arr[i].length(); k += 2) {
-                        if (category_arr[i].charAt(k) == cart) {
-                            strings[i] = "기타";
-                            break;
-                        }
-                    }
-                    break;
-                case 1:
-                    for (int k = 0; k < category_arr[i].length(); k += 2) {
-                        if (category_arr[i].charAt(k) == cart) {
-                            strings[i] = "액세서리";
-                            break;
-                        }
-                    }
-                    break;
-                case 2:
-                    for (int k = 0; k < category_arr[i].length(); k += 2) {
-                        if (category_arr[i].charAt(k) == cart) {
-                            strings[i] = "키링";
-                            break;
-                        }
-                    }
-                    break;
-                case 3:
-                    for (int k = 0; k < category_arr[i].length(); k += 2) {
-                        if (category_arr[i].charAt(k) == cart) {
-                            strings[i] = "폰케이스";
-                            break;
-                        }
-                    }
-                    break;
-            }
-        }
-        return strings;
-    }
 }

@@ -117,9 +117,6 @@ public class HomeSearch_Category_Adapter extends RecyclerView.Adapter<HomeSearch
                 bundle.putString("category", item.getCategory());
                 tab1.setArguments(bundle);
 
-                filteredList.clear();
-                unFilteredlist.clear();
-
                 //프래그먼트 키워드 검색 -> 제품 상세 페이지로 교체
                 FragmentManager fm = tab_search.getActivity().getSupportFragmentManager();
                 fm.beginTransaction()

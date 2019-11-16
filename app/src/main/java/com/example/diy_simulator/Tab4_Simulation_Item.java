@@ -6,20 +6,20 @@ public class Tab4_Simulation_Item {
     private String url;
     private int width;
     private int height;
-    private String[] category;
+    private String category;
 
-    public Tab4_Simulation_Item(String url, int width, int height, String[] category) {
+    public Tab4_Simulation_Item(String url, int width, int height, String category) {
         this.url = url;
         this.width = width;
         this.height = height;
         this.category = category;
     }
 
-    public String[] getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(String[] category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 

@@ -136,6 +136,13 @@
                     android:layout_marginTop="5dp"
                     android:background="#EEEEEE" />
 
+                <ImageView
+                    android:id="@+id/no_simul_item"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/empty_cart"/>
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/simulation_menu_recycler"
                     android:layout_width="match_parent"
