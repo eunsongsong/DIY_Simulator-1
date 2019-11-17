@@ -1,7 +1,9 @@
 package com.example.diy_simulator;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +12,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,33 +24,45 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Tab3_Cart extends Fragment {
+
+    private ProgressDialog pd;
 
     FirebaseAuth firebaseAuth;
     FirebaseUser mFirebaseUser;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("구매자");
-    DatabaseReference myRef2 = database.getReference("부자재");
+    DatabaseReference myRef_material = database.getReference("부자재");
+    DatabaseReference myRef_seller = database.getReference("판매자");
 
     private String cart = "";
     private ImageView empty;
-    private TextView money;
-    int sum_of_money;
+    TextView money, delivery_sum, guide, guide_title;
+    private ArrayList<String> store_names = new ArrayList<>();
+    String[] delivery_fee;
+    int sum_of_money = 0;
 
     public RecyclerView cart_recyclerview;
-    private final List<Tab3_Cart_Info> cart_item = new ArrayList<>();
+    private List<Tab3_Cart_Info> cart_item = new ArrayList<>();
+    List<Tab3_Cart_In_Item_Info> in_item = new ArrayList<>();
     private final Tab3_Cart_Adapter cartAdapter = new Tab3_Cart_Adapter(getContext(), cart_item, R.layout.tab3_cart_item, Tab3_Cart.this);
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_tab3_cart, container, false);
+
+        showProgress();
 
         firebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = firebaseAuth.getCurrentUser();
 
         empty = rootview.findViewById(R.id.empty_cart_img);
         money = rootview.findViewById(R.id.cart_sum_money);
+        delivery_sum = rootview.findViewById(R.id.cart_sum_delivery_fee);
+        guide = rootview.findViewById(R.id.cart_use_guide_txt);
+        guide_title = rootview.findViewById(R.id.cart_use_guide_title);
 
         //리사이클러뷰 리니어 레이아웃 매니저 설정 - vertical
         cart_recyclerview = rootview.findViewById(R.id.cart_recyclerView);
@@ -62,7 +75,6 @@ public class Tab3_Cart extends Fragment {
         //로그인이 되어있으면 장바구니 불러오기
         if(mFirebaseUser != null) getCartInfo();
 
-
         return rootview;
     }
 
@@ -74,6 +86,7 @@ public class Tab3_Cart extends Fragment {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     if (mFirebaseUser.getEmail().equals(ds.child("email").getValue().toString())){
                         cart = ds.child("cart").getValue().toString();
+                        Log.i("카트 번호", cart+"  dl");
                         break;
                     }
                 }
@@ -81,6 +94,11 @@ public class Tab3_Cart extends Fragment {
                 if(!TextUtils.isEmpty(cart)) {
                     empty.setVisibility(View.GONE);
                     findMaterialInfo(cart);
+                }
+                else{
+                    guide_title.setVisibility(View.VISIBLE);
+                    guide.setVisibility(View.VISIBLE);
+                    hideProgress();
                 }
             }
 
@@ -95,10 +113,11 @@ public class Tab3_Cart extends Fragment {
     public void findMaterialInfo(final String material) {
         final String[] material_each = material.split("#");
 
-        myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef_material.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 int i = 0;
+                int m = 0;
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     if (i == material_each.length)
                         break;
@@ -121,13 +140,62 @@ public class Tab3_Cart extends Fragment {
                         }
                         //이미지 url의 0번이 상품 대표 이미지
                         String preview = url[0];
-                        //리사이클러뷰에 아이템 add
-                        addItemToRecyclerView(name, price, preview, url, width, height, depth, keyword, stock, storename, ds.getKey(), category);
+                        Tab3_Cart_In_Item_Info in_item_info = new Tab3_Cart_In_Item_Info(name, price, preview, url, width, height, depth,
+                                keyword, stock, storename, ds.getKey(), category, 1);
+                        if(!store_names.contains(storename)){
+                            Log.i("저장되는 스토어 네임", storename);
+                            store_names.add(storename);
+                            m++;
+                        }
+                        in_item.add(in_item_info);
                         i++;
                     }
                 }
-                setSum_of_money();
+                findDeliveryFee(store_names);
+                //setSum_of_money();
 
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    // 장바구니 아이템 상점에 따라 나누기
+    public List<Tab3_Cart_In_Item_Info> classifyInItems(String store_name, List<Tab3_Cart_In_Item_Info> in_items){
+        List<Tab3_Cart_In_Item_Info> result_items = new ArrayList<>();
+        if(in_items.size() <= 1) return in_items;
+        else {
+            for(int i=0; i<in_items.size(); i++){
+                if(in_items.get(i).getStorename().equals(store_name)){
+                    result_items.add(in_items.get(i));
+                }
+            }
+            return result_items;
+        }
+    }
+
+    // 판매자 DB에서 배송비 찾기
+    public void findDeliveryFee(final ArrayList<String> storeNames){
+        Collections.sort(storeNames);
+        delivery_fee = new String[storeNames.size()];
+
+        myRef_seller.orderByChild("storename").addListenerForSingleValueEvent(new ValueEventListener() {
+            int i = 0;
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                    if(i == storeNames.size()) break;
+                    if(ds.child("storename").getValue().toString().equals(storeNames.get(i))){
+                        delivery_fee[i] = ds.child("delivery_fee").getValue().toString();
+                        Log.i("되니?", delivery_fee[i]+ " 원");
+                        i++;
+                    }
+                }
+                addItemToRecyclerView(in_item);
             }
 
             @Override
@@ -137,27 +205,54 @@ public class Tab3_Cart extends Fragment {
         });
     }
 
-    //리사이클러뷰에 제품 이름, 가격, 가게이름, 이미지 url으로 아이템 나타내기
-    public void addItemToRecyclerView(String name, String price, String preview, String[] url,
-                                      String width, String height, String depth, String keyword, String stock, String storename, String unique, String category){
-        Tab3_Cart_Info item = new Tab3_Cart_Info(name, price, preview, url, width, height, depth, keyword, stock, storename, unique, category, 1);
-        cart_item.add(item);
 
+    //리사이클러뷰에 제품 이름, 가격, 가게이름, 이미지 url으로 아이템 나타내기
+    public void addItemToRecyclerView(List<Tab3_Cart_In_Item_Info> in_items){
+        if(in_item.size() == 1) {
+            Tab3_Cart_Info item = new Tab3_Cart_Info(in_item.get(0).getStorename(), delivery_fee[0], in_item);
+            cart_item.add(item);
+        }
+        else{
+            for(int i=0; i<store_names.size(); i++){
+                Log.i("찾는 스토어 네임", store_names.get(i));
+
+                List<Tab3_Cart_In_Item_Info> list = classifyInItems(store_names.get(i), in_items);
+                Tab3_Cart_Info item = new Tab3_Cart_Info(store_names.get(i), delivery_fee[i], list);
+                cart_item.add(item);
+            }
+        }
+        setSum_of_money();
+        hideProgress();
+        guide_title.setVisibility(View.VISIBLE);
+        guide.setVisibility(View.VISIBLE);
         cartAdapter.notifyDataSetChanged();
     }
+
 
     // 주문 금액 총합 세팅하는 함수
     public void setSum_of_money() {
         sum_of_money = 0;
         // 장바구니 모든 아이템의 가격 x 수량을 해서 더함
         for (int i = 0; i < cart_item.size(); i++) {
-            int amount = cart_item.get(i).getAmount();
-            int price = Integer.parseInt(cart_item.get(i).getPrice());
-            sum_of_money = sum_of_money + amount * price;
+            for(int k = 0; k < cart_item.get(i).getIn_items().size(); k++){
+                int amount = cart_item.get(i).getIn_items().get(k).getAmount();
+                int price = Integer.parseInt( cart_item.get(i).getIn_items().get(k).getPrice());
+                sum_of_money = sum_of_money + amount * price;
+            }
         }
-        String str = "총 주문 금액 : " + sum_of_money + " 원";
-        money.setText(str);  //텍스트뷰 설정
+        Log.i("주문 금액 합   ", sum_of_money + "");
+        int sum_of_delivery_fee = 0;
+        for(int j=0; j<delivery_fee.length; j++){
+            sum_of_delivery_fee = sum_of_delivery_fee + Integer.parseInt(delivery_fee[j]);
+        }
+        String str = "총 배송비 : " + sum_of_delivery_fee + " 원";
+        String str2 = "총 주문 금액 : " + (sum_of_money + sum_of_delivery_fee) + " 원";
+        money.setText(str2);  //텍스트뷰 설정
+        delivery_sum.setText(str);
     }
+
+
+/*
 
     //부자재 정보 번들에 담아서 상품 상세 페이지로 이동
     public void movetoProductDetail(int position){
@@ -200,10 +295,24 @@ public class Tab3_Cart extends Fragment {
                 .addToBackStack(null)
                 .commit();
     }
-
     // 고객이 장바구니에 담긴 물건 모두 삭제했을 때 빈 이미지 띄워줌
     public void isEmptyCart(){
         empty.setVisibility(View.VISIBLE);
     }
+*/
 
+    // 프로그레스 다이얼로그 보이기
+    public void showProgress() {
+        if( pd == null ) { // 객체를 1회만 생성한다
+            pd = new ProgressDialog(getContext(), R.style.NewDialog); // 생성한다.
+            pd.setCancelable(false); // 백키로 닫는 기능을 제거한다.
+            Log.d("ㅇㅇ","dnfka");
+        }
+        pd.show(); // 화면에 띠워라//
+    }
+    public void hideProgress(){
+        if( pd != null && pd.isShowing() ){
+            pd.dismiss();
+        }
+    }
 }

@@ -13,14 +13,16 @@ public class Seller {
     public String storename = "";
     public String order = "";
     public String material = "";
+    public String delivery_fee = "";
 
     //판매자 생성자
-    public Seller(String email, String username, String phonenumber, String address, String storename) {
+    public Seller(String email, String username, String phonenumber, String address, String storename, String delivery_fee) {
         this.email = email;
         this.username = username;
         this.phonenumber = phonenumber;
         this.address = address;
         this.storename = storename;
+        this.delivery_fee = delivery_fee;
     }
 }
 

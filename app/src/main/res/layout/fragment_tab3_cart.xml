@@ -24,7 +24,7 @@
             android:textSize="18sp"/>
     </androidx.appcompat.widget.Toolbar>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1">
@@ -41,11 +41,14 @@
             android:layout_gravity="center"/>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:nestedScrollingEnabled="false"
             android:id="@+id/cart_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
         <TextView
+            android:id="@+id/cart_use_guide_title"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="20dp"
@@ -55,6 +58,7 @@
             android:text="* 장바구니 이용안내"/>
 
         <TextView
+            android:id="@+id/cart_use_guide_txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -62,12 +66,13 @@
             android:paddingEnd="20dp"
             android:layout_marginBottom="10dp"
             android:textSize="13sp"
+            android:visibility="gone"
             android:text="- 장바구니에 담은 상품을 이용해 완제품을 가상으로 조합해볼 수 있는 시뮬레이션을 진행할 수 있습니다.
             \n- 구매시점에서 품절된 상품은 제외하고 주문이 진행됩니다.
             \n- 각각 다른 가게의 상품을 구매할 경우 가게별로 상이한 배송비가 부과될 수 있습니다."/>
 
     </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -88,16 +93,16 @@
                 android:textAlignment="viewEnd"
                 android:textColor="#222222"
                 android:textSize="13sp"
-                android:text=" 총 주문 금액 : - 원"/>
+                android:text="총 주문 금액 : - 원"/>
             <TextView
-                android:id="@+id/cart_sum_delivery"
+                android:id="@+id/cart_sum_delivery_fee"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="viewEnd"
                 android:layout_marginTop="5dp"
                 android:textColor="#222222"
                 android:textSize="13sp"
-                android:text=" 총 배송비 : - 원"/>
+                android:text="총 배송비 : - 원"/>
         </LinearLayout>
 
         <Button

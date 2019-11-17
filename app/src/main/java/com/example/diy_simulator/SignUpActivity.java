@@ -42,7 +42,7 @@ public class SignUpActivity extends AppCompatActivity {
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^[a-zA-Z0-9!@.#$%^&*?_~]{4,16}$");
     ProgressDialog dialog;
 
-    private EditText email_join, pwd_join, check_pwd_join, name_join, address_join, phone_number_join, store_name_join;
+    private EditText email_join, pwd_join, check_pwd_join, name_join, address_join, phone_number_join, store_name_join, delivery_fee_join;
 
     private TextView check_show; //비밀번호 일치 확인 텍스트
     private Button sign_up_btn;
@@ -56,6 +56,7 @@ public class SignUpActivity extends AppCompatActivity {
     private String address = "";
     private String phone_number = "";
     private String store_name = "";
+    private String delivery_fee = "";
     long count = 0;
     String whois = ""; //판매자 가입인지 고객 가입인지 확인
 
@@ -84,6 +85,7 @@ public class SignUpActivity extends AppCompatActivity {
         phone_number_join = (EditText) findViewById(R.id.phonenumberInput);
         address_join = (EditText) findViewById(R.id.addressInput);
         store_name_join = (EditText) findViewById(R.id.storenameInput);
+        delivery_fee_join = findViewById(R.id.deliveryfeeinput);
 
         check_show = (TextView) findViewById(R.id.checkText);
 
@@ -93,7 +95,10 @@ public class SignUpActivity extends AppCompatActivity {
         final Intent intent = getIntent();
         String who = intent.getStringExtra("who");
         whois = who;
-        if(who.equals("customer")) store_name_join.setVisibility(View.INVISIBLE);
+        if(who.equals("customer")) {
+            store_name_join.setVisibility(View.GONE);
+            delivery_fee_join.setVisibility(View.GONE);
+        }
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseAuth.useAppLanguage();
@@ -139,6 +144,7 @@ public class SignUpActivity extends AppCompatActivity {
                 phone_number_join.setText(null);
                 address_join.setText(null);
                 store_name_join.setText(null);
+                delivery_fee_join.setText(null);
             }
         });
     }
@@ -215,7 +221,7 @@ public class SignUpActivity extends AppCompatActivity {
                                                             count++;
                                                         }
                                                         //판매자 - 유저정보를 디비에 넣는다.
-                                                        Seller seller = new Seller(email, name, phone_number, address, store_name);
+                                                        Seller seller = new Seller(email, name, phone_number, address, store_name, delivery_fee);
 
                                                         StringTokenizer st = new StringTokenizer(email, "@");
                                                         if (count >= 9) {
@@ -255,6 +261,7 @@ public class SignUpActivity extends AppCompatActivity {
         phone_number = phone_number_join.getText().toString();
         address = address_join.getText().toString();
         store_name = store_name_join.getText().toString();
+        delivery_fee = delivery_fee_join.getText().toString();
 
         //이메일 입력 칸이 빈칸인 경우 알림
         if (TextUtils.isEmpty(email)) {

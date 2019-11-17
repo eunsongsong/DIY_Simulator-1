@@ -74,10 +74,11 @@
             android:layout_marginTop="30dp"
             android:text="*고객에게 보여지는 제품 이름을 입력해주세요."
             android:textColor="#555555"/>
-        <EditText   
+        <EditText
             android:id="@+id/material_name"
             android:layout_width="300dp"
             android:layout_below="@+id/name_guide"
+            android:maxLines="1"
             android:hint="제품명"
             android:layout_height="wrap_content"/>
         <TextView
@@ -155,7 +156,6 @@
             android:layout_below="@+id/keyword_guide_txt"
             android:hint="제품 검색 키워드"
             android:layout_height="wrap_content"/>
-
         <TextView
             android:id="@+id/category_guide_txt"
             android:text="*카테고리를 체크하고 세부 카테고리를 선택해주세요.\n 중복 선택 가능합니다."
@@ -186,7 +186,6 @@
             android:layout_width="300dp"
             android:layout_height="2dp"
             android:background="#EEEEEE"/>
-
         <CheckBox
             android:id="@+id/category_check_case"
             android:layout_width="wrap_content"

@@ -1,107 +1,19 @@
 package com.example.diy_simulator;
 
+import java.util.List;
+
 public class Tab3_Cart_Info {
-    private String name;
-    private String price;
-    private String preview_img_url;
-    private String[] img_url;
-    private String width;
-    private String height;
-    private String depth;
-    private String keyword;
-    private String stock;
     private String storename;
-    private String unique_number;
-    private String category;
-    private int amount;
+    private String delivery_fee;
+    private List<Tab3_Cart_In_Item_Info> in_items;
 
-    public Tab3_Cart_Info(String name, String price, String preview_img_url, String[] img_url, String width, String height, String depth,
-                          String keyword, String stock, String storename, String unique_number, String category, int amount) {
-        this.name = name;
-        this.price = price;
-        this.preview_img_url = preview_img_url;
-        this.img_url = img_url;
-        this.width = width;
-        this.height = height;
-        this.depth = depth;
-        this.keyword = keyword;
-        this.stock = stock;
+    public Tab3_Cart_Info() {
+    }
+
+    public Tab3_Cart_Info(String storename, String delivery_fee, List<Tab3_Cart_In_Item_Info> in_items) {
         this.storename = storename;
-        this.unique_number = unique_number;
-        this.category = category;
-        this.amount = amount;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
-    public String getPreview_img_url() {
-        return preview_img_url;
-    }
-
-    public void setPreview_img_url(String preview_img_url) {
-        this.preview_img_url = preview_img_url;
-    }
-
-    public String[] getImg_url() {
-        return img_url;
-    }
-
-    public void setImg_url(String[] img_url) {
-        this.img_url = img_url;
-    }
-
-    public String getWidth() {
-        return width;
-    }
-
-    public void setWidth(String width) {
-        this.width = width;
-    }
-
-    public String getHeight() {
-        return height;
-    }
-
-    public void setHeight(String height) {
-        this.height = height;
-    }
-
-    public String getDepth() {
-        return depth;
-    }
-
-    public void setDepth(String depth) {
-        this.depth = depth;
-    }
-
-    public String getKeyword() {
-        return keyword;
-    }
-
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
-    }
-
-    public String getStock() {
-        return stock;
-    }
-
-    public void setStock(String stock) {
-        this.stock = stock;
+        this.delivery_fee = delivery_fee;
+        this.in_items = in_items;
     }
 
     public String getStorename() {
@@ -112,27 +24,19 @@ public class Tab3_Cart_Info {
         this.storename = storename;
     }
 
-    public String getUnique_number() {
-        return unique_number;
+    public String getDelivery_fee() {
+        return delivery_fee;
     }
 
-    public void setUnique_number(String unique_number) {
-        this.unique_number = unique_number;
+    public void setDelivery_fee(String delivery_fee) {
+        this.delivery_fee = delivery_fee;
     }
 
-    public int getAmount() {
-        return amount;
+    public List<Tab3_Cart_In_Item_Info> getIn_items() {
+        return in_items;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
+    public void setIn_items(List<Tab3_Cart_In_Item_Info> in_items) {
+        this.in_items = in_items;
     }
 }

@@ -82,6 +82,15 @@
         android:layout_centerHorizontal="true"
         android:hint="상호명"/>
 
+    <EditText
+        android:id="@+id/deliveryfeeinput"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/storenameInput"
+        android:layout_centerHorizontal="true"
+        android:inputType="number"
+        android:hint="주문 건당 배송비"/>
+
     <Button
         android:id="@+id/signup_button"
         android:layout_width="300dp"
@@ -98,7 +107,7 @@
         android:id="@+id/checkText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/storenameInput"
+        android:layout_below="@+id/deliveryfeeinput"
         android:layout_marginLeft="65dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="15dp"
