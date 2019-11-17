@@ -1,6 +1,7 @@
 package com.example.diy_simulator;
 
 import android.annotation.SuppressLint;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -37,6 +38,36 @@ import java.util.List;
 
 public class Tab4_Simulation extends Fragment {
 
+    /*class ViewItem{
+
+        private ImageView imageView;
+        private int idx;
+
+        public ViewItem(ImageView imageView, int idx)
+        {
+            this.imageView = imageView;
+            this.idx = idx;
+        }
+
+        public ImageView getImageView() {
+            return imageView;
+        }
+
+        public void setImageView(ImageView imageView) {
+            this.imageView = imageView;
+        }
+
+        public int getIdx() {
+            return idx;
+        }
+
+        public void setIdx(int idx) {
+            this.idx = idx;
+        }
+    }
+
+     */
+
     private LinearLayout simul_menu_layout;
     private LinearLayout blur;
     private View view;
@@ -71,10 +102,12 @@ public class Tab4_Simulation extends Fragment {
 
     private ImageButton left_rotate;
     private ImageButton right_rotate;
+    private ImageButton order_front;
+    private ImageButton order_back;
     private int MOVE = 1;
     private float angle = 5.0f;
 
-    private ArrayList<String[]> category;
+    private ArrayList<ImageView> view_order;
 
     private ImageButton keyring_btn;
     private ImageButton phonecase_btn;
@@ -145,6 +178,58 @@ public class Tab4_Simulation extends Fragment {
                         v.setRotation(v.getRotation() + angle);
                     }
                     break;
+                case 4:
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        v.bringToFront();
+
+                        for(ImageView imageView : view_order)
+                        {
+                            if(imageView == v) {
+                                Log.d("ㅇㅇ","1");
+                                ArrayList<ImageView> imageViews = new ArrayList<>();
+                                for(ImageView imageView1 : view_order)
+                                {
+                                    Log.d("ㅇㅇ","2");
+                                    if( imageView1 == v)
+                                    {
+                                        Log.d("ㅇㅇ","3");
+                                        continue;
+                                    }
+                                    imageViews.add(imageView1);
+                                }
+                                imageViews.add(imageView);
+                                view_order = imageViews;
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                case 5:
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+
+                        for(ImageView imageView : view_order)
+                        {
+                            if(imageView == v) {
+                                Log.d("ㅇㅇ","1");
+                                ArrayList<ImageView> imageViews = new ArrayList<>();
+                                imageViews.add(imageView);
+                                for(int i = 0; i < view_order.size(); i++){
+                                    if( view_order.get(i) == v) {
+                                        Log.d("ㅇㅇ", "2");
+                                        continue;
+                                    }
+                                    Log.d("ㅇㅇ","3");
+                                    view_order.get(i).bringToFront();
+                                    imageViews.add(view_order.get(i));
+                                }
+                                Log.d("ㅇㅇ","4");
+                                view_order = imageViews;
+                                break;
+                            }
+                        }
+                    }
+                    break;
+
             }
                 return true;
             }
@@ -156,6 +241,8 @@ public class Tab4_Simulation extends Fragment {
 
         left_rotate = (ImageButton) rootview.findViewById(R.id.left_rotate);
         right_rotate = (ImageButton) rootview.findViewById(R.id.right_rotate);
+        order_front = (ImageButton) rootview.findViewById(R.id.order_front);
+        order_back = (ImageButton) rootview.findViewById(R.id.order_back);
         relativeLayout = (RelativeLayout) rootview.findViewById(R.id.relative);
         firebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = firebaseAuth.getCurrentUser();
@@ -168,7 +255,7 @@ public class Tab4_Simulation extends Fragment {
         acc_btn = (ImageButton) rootview.findViewById(R.id.img_but3);
         etc_btn = (ImageButton) rootview.findViewById(R.id.img_but4);
 
-        category = new ArrayList<>();
+        view_order = new ArrayList<>();
 
         keyring_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -252,7 +339,6 @@ public class Tab4_Simulation extends Fragment {
         else {
             empty_item.setVisibility(View.VISIBLE);
         }
-
 
         ImageButton menubtn = rootview.findViewById(R.id.simulation_menu_button);
         ImageButton x_btn = rootview.findViewById(R.id.x_button);
@@ -418,6 +504,30 @@ public class Tab4_Simulation extends Fragment {
             }
         });
 
+        order_front.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(MOVE != 4){
+                    MOVE = 4;
+                }
+                else{
+                    MOVE = 1;
+                }
+            }
+        });
+
+        order_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(MOVE != 5){
+                    MOVE = 5;
+                }
+                else{
+                    MOVE = 1;
+                }
+            }
+        });
+
         simulationAdatper.setOnItemClickListener(new Tab4_Simulation_Adatper.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
@@ -460,6 +570,7 @@ public class Tab4_Simulation extends Fragment {
         iv.setScaleType(ImageView.ScaleType.FIT_XY);
 
         relativeLayout.addView(iv); // 기존 linearLayout에 imageView 추가
+        view_order.add(iv);
 
     }
     public void addItemToRecyclerView(String url, int width, int height, String category){

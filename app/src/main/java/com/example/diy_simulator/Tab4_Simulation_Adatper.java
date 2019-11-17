@@ -97,7 +97,6 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
         //제품 이름, 가격 텍스트 나타내기
         holder.name.setText(item.getName());
         holder.price.setText(item.getPrice());
-
  */
         RequestOptions requestOptions = new RequestOptions();
         requestOptions = requestOptions.placeholder(R.drawable.mungmung);
@@ -115,7 +114,6 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
                           //  holder.progressBar.setVisibility(View.GONE);
                             return false;
                         }
-
                         @Override
                         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                           //  holder.progressBar.setVisibility(View.GONE);
@@ -123,7 +121,6 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
                             return false;
                         }
                     })
-
                      */
                     .into(holder.imageView);
 
@@ -144,19 +141,16 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imageView;
-        ImageView imageView2;
-       // ProgressBar progressBar;
-         //DrawableImageViewTarget gifImage;
+        // ProgressBar progressBar;
+        //DrawableImageViewTarget gifImage;
 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.simulation_menu_product_img);
-          //  imageView2 = imageView.findViewById(R.id.chuchu);
-           //progressBar = itemView.findViewById(R.id.progress_circular);
-           // gifImage = new DrawableImageViewTarget(imageView2);
+            //  imageView2 = imageView.findViewById(R.id.chuchu);
+            //progressBar = itemView.findViewById(R.id.progress_circular);
+            // gifImage = new DrawableImageViewTarget(imageView2);
         }
     }
 }
-
-
