@@ -86,8 +86,7 @@ public class MainTabActivity extends AppCompatActivity {
                         else
                             mViewPager.setPagingEnabled(true);
 
-
-                        if(tab.getPosition() == 1 || tab.getPosition() == 2) {
+                        if(tab.getPosition() != 0) {
                             firebaseAuth = FirebaseAuth.getInstance();
                             mFirebaseUser = firebaseAuth.getCurrentUser();
                             //로그인 되어있지 않으면 로그인 요청

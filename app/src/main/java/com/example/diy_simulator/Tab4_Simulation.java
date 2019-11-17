@@ -1,6 +1,8 @@
 package com.example.diy_simulator;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
@@ -67,7 +69,7 @@ public class Tab4_Simulation extends Fragment {
     }
 
      */
-
+    private ProgressDialog pd;
     private LinearLayout simul_menu_layout;
     private LinearLayout blur;
     private View view;
@@ -145,8 +147,20 @@ public class Tab4_Simulation extends Fragment {
                         int b = (int) v.getY();
 
                         if ((Math.abs((int) a - trash_width) <= 100 && Math.abs((int) b + 200 - trash_height) <= 150)
-                                || (Math.abs((int) a - trash_width) <= 500 && Math.abs((int) b + v.getHeight()) > parentHeight))
+                                || (Math.abs((int) a - trash_width) <= 500 && Math.abs((int) b + v.getHeight()) > parentHeight)){
+                            int find_idx = 0;
+                            for(ImageView imageView : view_order)
+                            {
+                                if( v == imageView)
+                                {
+                                    view_order.remove(find_idx);
+                                    break;
+                                }
+                                find_idx++;
+                            }
                             v.setVisibility(View.GONE);
+                        }
+
                         if (v.getX() < 0) {
                             v.setX(0);
                         } else if ((v.getX() + v.getWidth()) > parentWidth) {
@@ -260,43 +274,51 @@ public class Tab4_Simulation extends Fragment {
         keyring_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showProgress();
                 simulationAdatper.getFilter().filter("키링");
                 simulation_items = simulationAdatper.getFilteredList();
                 simulationAdatper.getFilter().filter("키링");
                 simulation_items = simulationAdatper.getFilteredList();
+                hideProgress();
             }
         });
         phonecase_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showProgress();
                 simulationAdatper.getFilter().filter("폰케이스");
                 simulation_items = simulationAdatper.getFilteredList();
                 simulationAdatper.getFilter().filter("폰케이스");
                 simulation_items = simulationAdatper.getFilteredList();
+                hideProgress();
             }
         });
         acc_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showProgress();
                 simulationAdatper.getFilter().filter("액세서리");
                 simulation_items = simulationAdatper.getFilteredList();
                 simulationAdatper.getFilter().filter("액세서리");
                 simulation_items = simulationAdatper.getFilteredList();
+                hideProgress();
             }
         });
         etc_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showProgress();
                 simulationAdatper.getFilter().filter("기타");
                 simulation_items = simulationAdatper.getFilteredList();
                 simulationAdatper.getFilter().filter("기타");
                 simulation_items = simulationAdatper.getFilteredList();
+                hideProgress();
             }
         });
 
+        showProgress();
         // 로그인 되어있을 경우 유저에 따라 시뮬레이션 아이템 목록 (부자재 번호만) 불러오기
         if(mFirebaseUser != null){
-            empty_item.setVisibility(View.GONE);
             // 판매자일 경우 내 가게 상품 목록 불러오기
             if(isSeller){
                 myRef_seller.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -305,9 +327,17 @@ public class Tab4_Simulation extends Fragment {
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
                             if (mFirebaseUser.getEmail().equals(ds.child("email").getValue().toString())) {
                                 cart = ds.child("material").getValue().toString();
+                                if(TextUtils.isEmpty(cart))
+                                {
+                                    empty_item.setVisibility(View.VISIBLE);
+                                    empty_item.setBackground(getResources().getDrawable(R.drawable.no_item_seller));
+                                }
+                                else
+                                    empty_item.setVisibility(View.GONE);
                                 break;
                             }
                         }
+                        hideProgress();
                     }
 
                     @Override
@@ -324,9 +354,17 @@ public class Tab4_Simulation extends Fragment {
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
                             if (mFirebaseUser.getEmail().equals(ds.child("email").getValue().toString())) {
                                 cart = ds.child("cart").getValue().toString();
+                                if(TextUtils.isEmpty(cart))
+                                {
+                                    empty_item.setVisibility(View.VISIBLE);
+                                    empty_item.setBackground(getResources().getDrawable(R.drawable.empty_cart));
+                                }
+                                else
+                                    empty_item.setVisibility(View.GONE);
                                 break;
                             }
                         }
+                        hideProgress();
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -336,9 +374,6 @@ public class Tab4_Simulation extends Fragment {
             }
         }
         // 로그인 안되어 있을 경우
-        else {
-            empty_item.setVisibility(View.VISIBLE);
-        }
 
         ImageButton menubtn = rootview.findViewById(R.id.simulation_menu_button);
         ImageButton x_btn = rootview.findViewById(R.id.x_button);
@@ -397,6 +432,8 @@ public class Tab4_Simulation extends Fragment {
         menubtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showProgress();
+
                 DisplayMetrics dm = getContext().getResources().getDisplayMetrics();
             //    Log.d("촉",cart);
                 int width = dm.widthPixels;
@@ -419,10 +456,8 @@ public class Tab4_Simulation extends Fragment {
                 blur.setVisibility(View.GONE);
 
                 // 시뮬레이션 아이템 불러오기
-                if(TextUtils.isEmpty(cart)) {
-                    empty_item.setVisibility(View.VISIBLE);
-                }
-                else {
+
+                if(!TextUtils.isEmpty(cart)) {
                     empty_item.setVisibility(View.GONE);
                     cart_arr = cart.split("#");
                     myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -446,6 +481,11 @@ public class Tab4_Simulation extends Fragment {
                                     continue;
                                 }
                             }
+                            simulationAdatper.getFilter().filter("");
+                            simulation_items = simulationAdatper.getFilteredList();
+                            simulationAdatper.getFilter().filter("");
+                            simulation_items = simulationAdatper.getFilteredList();
+                            hideProgress();
                         }
 
                         @Override
@@ -481,6 +521,8 @@ public class Tab4_Simulation extends Fragment {
                     MOVE = 2;
                     left_rotate.setBackground(getResources().getDrawable(R.drawable.left_mint));
                     right_rotate.setBackground(getResources().getDrawable(R.drawable.right_black));
+                    order_front.setBackground(getResources().getDrawable(R.drawable.front_black));
+                    order_back.setBackground(getResources().getDrawable(R.drawable.back_black));
                 }
                 else {
                     MOVE = 1;
@@ -496,6 +538,8 @@ public class Tab4_Simulation extends Fragment {
                     MOVE = 3;
                     right_rotate.setBackground(getResources().getDrawable(R.drawable.right_mint));
                     left_rotate.setBackground(getResources().getDrawable(R.drawable.left_black));
+                    order_front.setBackground(getResources().getDrawable(R.drawable.front_black));
+                    order_back.setBackground(getResources().getDrawable(R.drawable.back_black));
                 }
                 else {
                     MOVE = 1;
@@ -509,9 +553,14 @@ public class Tab4_Simulation extends Fragment {
             public void onClick(View v) {
                 if(MOVE != 4){
                     MOVE = 4;
+                    order_front.setBackground(getResources().getDrawable(R.drawable.front_mint));
+                    order_back.setBackground(getResources().getDrawable(R.drawable.back_black));
+                    left_rotate.setBackground(getResources().getDrawable(R.drawable.left_black));
+                    right_rotate.setBackground(getResources().getDrawable(R.drawable.right_black));
                 }
                 else{
                     MOVE = 1;
+                    order_front.setBackground(getResources().getDrawable(R.drawable.front_black));
                 }
             }
         });
@@ -521,9 +570,14 @@ public class Tab4_Simulation extends Fragment {
             public void onClick(View v) {
                 if(MOVE != 5){
                     MOVE = 5;
+                    order_back.setBackground(getResources().getDrawable(R.drawable.back_mint));
+                    order_front.setBackground(getResources().getDrawable(R.drawable.front_black));
+                    left_rotate.setBackground(getResources().getDrawable(R.drawable.left_black));
+                    right_rotate.setBackground(getResources().getDrawable(R.drawable.right_black));
                 }
                 else{
                     MOVE = 1;
+                    order_back.setBackground(getResources().getDrawable(R.drawable.back_black));
                 }
             }
         });
@@ -579,4 +633,23 @@ public class Tab4_Simulation extends Fragment {
         simulationAdatper.notifyDataSetChanged();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    // 프로그레스 다이얼로그 보이기
+    public void showProgress() {
+        if( pd == null ) { // 객체를 1회만 생성한다
+            pd = new ProgressDialog(getContext(), R.style.NewDialog); // 생성한다.
+            pd.setCancelable(false); // 백키로 닫는 기능을 제거한다.
+            Log.d("ㅇㅇ","dnfka");
+        }
+        pd.show(); // 화면에 띠워라//
+    }
+    public void hideProgress(){
+        if( pd != null && pd.isShowing() ){
+            pd.dismiss();
+        }
+    }
 }
