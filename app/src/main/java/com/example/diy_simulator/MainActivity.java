@@ -77,8 +77,10 @@ public class MainActivity extends Activity {
                     String path = url.substring(APP_SCHEME.length());
                     if ( "process".equalsIgnoreCase(path) ) {
                         mainWebView.loadUrl("javascript:IMP.communicate({result:'process'})");
+                        Log.d("결제성공","dd");
                     } else {
                         mainWebView.loadUrl("javascript:IMP.communicate({result:'cancel'})");
+                        Log.d("결제성ddd공","dd");
                     }
                 }
             }

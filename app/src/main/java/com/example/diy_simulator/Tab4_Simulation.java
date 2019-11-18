@@ -95,6 +95,7 @@ public class Tab4_Simulation extends Fragment {
 
     private int touch_cnt;
 
+
     //싱글 터치
     private View.OnTouchListener touchListener = new View.OnTouchListener() {
         @SuppressLint("ClickableViewAccessibility")
@@ -105,7 +106,7 @@ public class Tab4_Simulation extends Fragment {
                 case 1: // 기본움직임
                     int parentWidth = ((ViewGroup) v.getParent()).getWidth();    // 부모 View 의 Width
                     int parentHeight = ((ViewGroup) v.getParent()).getHeight();    // 부모 View 의 Height
-
+                    Log.d("vie3123wTest", "oldXva123123213lue : " + v.getScaleX() + " oldY12312value : " + v.getScaleY());    // View 내부에서 터치한 지점의 상대 좌표값.
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
                         // 뷰 누름
                         oldXvalue = event.getX();
@@ -123,7 +124,14 @@ public class Tab4_Simulation extends Fragment {
                         v.setX(v.getX() + (float)((event.getX() - oldXvalue) * Math.pow(1.5, touch_cnt)));
                         v.setY(v.getY() + (float)((event.getY() - oldYvalue) * Math.pow(1.5, touch_cnt)));
 
-
+                        int a = (int) v.getX();
+                        int b = (int) v.getY();
+                        if ((Math.abs((int) a - trash_width) <= 100 && Math.abs((int) b + 200 - trash_height) <= 150)
+                                || (Math.abs((int) a - trash_width) <= 500 && Math.abs((int) b + v.getHeight()) > parentHeight)) {
+                            trashView.setImageDrawable(getResources().getDrawable(R.drawable.trash_mint));
+                        }
+                        else
+                            trashView.setImageDrawable(getResources().getDrawable(R.drawable.trash));
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
                         // 뷰에서 손을
                         Log.d("현재위치", v.getX() + "x " + v.getY());
@@ -145,17 +153,19 @@ public class Tab4_Simulation extends Fragment {
                             }
                             //v.setVisibility(View.GONE);
                             relativeLayout.removeView(v);
+                            trashView.setImageDrawable(getResources().getDrawable(R.drawable.trash));
                         }
-
-                        if (v.getX() < 0) {
+                        int[] location = new int[2];
+                        v.getLocationOnScreen(location);
+                        if ( location[0] < 0) {
                             v.setX(0);
-                        } else if ((v.getX() + v.getWidth()) > parentWidth) {
+                        } else if ( location[0] > parentWidth) {
                             v.setX(parentWidth - v.getWidth());
                         }
 
-                        if (v.getY() < 0) {
+                        if ( location[1] < 0) {
                             v.setY(0);
-                        } else if ((v.getY() + v.getHeight()) > parentHeight) {
+                        } else if ( location[1] > parentHeight) {
                             v.setY(parentHeight - v.getHeight());
                         }
                     }
@@ -593,10 +603,10 @@ public class Tab4_Simulation extends Fragment {
                 for(int i = 0; i < view_order.size(); i++)
                 {
                     Log.d("이전1",view_order.get(i).getScaleX()+"");
-                    Log.d("이전2",view_order.get(i).getScaleX()+"");
+                    Log.d("이전2",view_order.get(i).getScaleY()+"");
                     view_order.get(i).setScaleX( (float)(view_order.get(i).getScaleX() * 1.5));
-                    view_order.get(i).setScaleY((float) (view_order.get(i).getScaleY() * 1.5) );
-                    Log.d("이후1",view_order.get(i).getScaleY()+"");
+                    view_order.get(i).setScaleY((float) (view_order.get(i).getScaleY() * 1.5));
+                    Log.d("이후1",view_order.get(i).getScaleX()+"");
                     Log.d("이후2",view_order.get(i).getScaleY()+"");
                 }
             }
@@ -617,10 +627,12 @@ public class Tab4_Simulation extends Fragment {
                 for(int i = 0; i < view_order.size(); i++)
                 {
                     Log.d("이전1",view_order.get(i).getScaleX()+"");
-                    Log.d("이전2",view_order.get(i).getScaleX()+"");
+                    Log.d("이전2",view_order.get(i).getScaleY()+"");
                     view_order.get(i).setScaleX( (float)(view_order.get(i).getScaleX() / 1.5));
                     view_order.get(i).setScaleY((float) (view_order.get(i).getScaleY() / 1.5) );
-                    Log.d("이후1",view_order.get(i).getScaleY()+"");
+
+
+                    Log.d("이후1",view_order.get(i).getScaleX()+"");
                     Log.d("이후2",view_order.get(i).getScaleY()+"");
                 }
             }
@@ -647,6 +659,7 @@ public class Tab4_Simulation extends Fragment {
 
         double randomValue = Math.random();
         int intValue = (int) (randomValue * 5) + 2;
+
         iv.setX( intValue * parentWidth / 9 * (float)Math.pow(1.5,touch_cnt));
         randomValue = Math.random();
         intValue = (int) (randomValue * 8) + 2;
@@ -660,10 +673,10 @@ public class Tab4_Simulation extends Fragment {
 
         double ratio = (double)parentHeight/parentWidth * 9;
 
-        Log.d("짜이", parentHeight + "");
+        Log.d("짜이", (int) ( width* parentWidth / 90 * Math.pow(1.5, touch_cnt)) + "");
         Log.d("우람", parentWidth + "");
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams( (int) ( width* parentWidth / 90 * Math.pow(1.5, touch_cnt)),(int) (height* parentHeight / (ratio*10) * Math.pow(1.5, touch_cnt) ));
-
+        iv.setAdjustViewBounds(true);
         iv.setLayoutParams(layoutParams);  // imageView layout 설정
         iv.setScaleType(ImageView.ScaleType.FIT_XY);
 
