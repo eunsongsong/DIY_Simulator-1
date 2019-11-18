@@ -95,6 +95,16 @@ public class Tab3_Cart_Adapter extends  RecyclerView.Adapter<Tab3_Cart_Adapter.V
                     int mPrice = Integer.parseInt(all_store_items.get(position).getIn_items().get(pos).getPrice());
                     int mAmount = all_store_items.get(position).getIn_items().get(pos).getAmount();
                     int sum = mAmount*mPrice;
+
+                    Boolean allfalse = true;
+                    for(int i=0; i<all_store_items.get(position).getIn_items().size(); i++){
+                        if(all_store_items.get(position).getIn_items().get(i).getCheckBox()){
+                            allfalse = false;
+                        }
+                    }
+                    item.setAnySelected(!allfalse);
+                    Log.i("check 하나라도 선택된건지", item.getAnySelected()+"");
+                    Log.i("isis!! 전부 체크 해제인지", allfalse+"");
                     mListener.onItemClick(v, position, sum, false);
                 }
                 else{
@@ -102,15 +112,15 @@ public class Tab3_Cart_Adapter extends  RecyclerView.Adapter<Tab3_Cart_Adapter.V
                     int mAmount = all_store_items.get(position).getIn_items().get(pos).getAmount();
                     int sum = - mAmount*mPrice;
 
-                    Boolean allfalse = false;
+                    Boolean allfalse = true;
                     for(int i=0; i<all_store_items.get(position).getIn_items().size(); i++){
                         if(all_store_items.get(position).getIn_items().get(i).getCheckBox()){
                             allfalse = false;
                         }
-                        else{
-                            allfalse = true;
-                        }
                     }
+                    item.setAnySelected(!allfalse);
+                    Log.i("ununcheck 하나라도 선택된건지", item.getAnySelected()+"");
+                    Log.i("unun!! 전부 체크 해제인지", allfalse+"");
                     mListener.onItemClick(v, position, sum, allfalse);
 
                 }

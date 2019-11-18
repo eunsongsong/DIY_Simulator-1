@@ -79,24 +79,26 @@ public class Tab3_Cart extends Fragment {
         cartAdapter.setOnItemClickListener(new Tab3_Cart_Adapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position, int sum, boolean all) {
+                //해당 가게 상품이 모두 체크박스 해제
                 if(all) {
-                    sum_of_money = sum_of_money - Integer.parseInt(cart_item.get(position).getDelivery_fee());
                     sum_of_delivery_fee = sum_of_delivery_fee - Integer.parseInt(cart_item.get(position).getDelivery_fee());
                     String str = "총 배송비 : " + sum_of_delivery_fee  + " 원";
                     delivery_sum.setText(str);
                 }
+                //해당 가게 상품이 하나라도 체크 되어있을 때
                 else  {
                     sum_of_delivery_fee = 0;
-                    for(int j=0; j<cart_item.size(); j++){
-                        sum_of_delivery_fee = sum_of_delivery_fee + Integer.parseInt(cart_item.get(j).getDelivery_fee());
+                    for(int k=0; k<cart_item.size(); k++){
+                        if(cart_item.get(k).getAnySelected()){
+                            sum_of_delivery_fee = sum_of_delivery_fee + Integer.parseInt(cart_item.get(k).getDelivery_fee());
+                        }
                     }
-                    sum_of_money = sum_of_money + Integer.parseInt(cart_item.get(position).getDelivery_fee());
                     String str = "총 배송비 : " + sum_of_delivery_fee  + " 원";
                     delivery_sum.setText(str);
                 }
                 Log.i("합합", sum + "");
                 sum_of_money = sum_of_money + sum;
-                String str2 = "총 주문 금액 : " + sum_of_money + " 원";
+                String str2 = "총 주문 금액 : " + (sum_of_money + sum_of_delivery_fee) + " 원";
                 money.setText(str2);  //텍스트뷰 설정
             }
         });
@@ -272,8 +274,7 @@ public class Tab3_Cart extends Fragment {
             sum_of_delivery_fee = sum_of_delivery_fee + Integer.parseInt(cart_item.get(j).getDelivery_fee());
         }
         String str = "총 배송비 : " + sum_of_delivery_fee + " 원";
-        sum_of_money = sum_of_money + sum_of_delivery_fee;
-        String str2 = "총 주문 금액 : " + sum_of_money + " 원";
+        String str2 = "총 주문 금액 : " + (sum_of_money + sum_of_delivery_fee) + " 원";
         money.setText(str2);  //텍스트뷰 설정
         delivery_sum.setText(str);
     }

@@ -153,7 +153,7 @@ public class Tab3_Cart_In_Item_Adapter extends RecyclerView.Adapter<Tab3_Cart_In
                                     if(mFirebaseUser.getEmail().equals(ds.child("email").getValue().toString())){
                                         String cart = ds.child("cart").getValue().toString();
                                         //해당 부자재 번호 삭제
-                                        cart = cart.replace(item.getUnique_number(), "");
+                                        cart = cart.replaceFirst(item.getUnique_number(), "");
                                         //가운데에서 삭제되었을 경우 삭제되고 남은 ## 를 #으로 변경
                                         cart = cart.replace("##","#");
                                         //맨 앞에서 삭제되었을 경우 맨 앞에 남은 # 지우기
