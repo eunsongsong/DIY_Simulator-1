@@ -44,6 +44,7 @@ public class Tab3_Cart extends Fragment {
     private ArrayList<String> store_names = new ArrayList<>();
     String[] delivery_fee;
     int sum_of_money = 0;
+    int sum_of_delivery_fee = 0;
 
     public RecyclerView cart_recyclerview;
     private List<Tab3_Cart_Info> cart_item = new ArrayList<>();
@@ -74,6 +75,31 @@ public class Tab3_Cart extends Fragment {
 
         //로그인이 되어있으면 장바구니 불러오기
         if(mFirebaseUser != null) getCartInfo();
+
+        cartAdapter.setOnItemClickListener(new Tab3_Cart_Adapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position, int sum, boolean all) {
+                if(all) {
+                    sum_of_money = sum_of_money - Integer.parseInt(cart_item.get(position).getDelivery_fee());
+                    sum_of_delivery_fee = sum_of_delivery_fee - Integer.parseInt(cart_item.get(position).getDelivery_fee());
+                    String str = "총 배송비 : " + sum_of_delivery_fee  + " 원";
+                    delivery_sum.setText(str);
+                }
+                else  {
+                    sum_of_delivery_fee = 0;
+                    for(int j=0; j<cart_item.size(); j++){
+                        sum_of_delivery_fee = sum_of_delivery_fee + Integer.parseInt(cart_item.get(j).getDelivery_fee());
+                    }
+                    sum_of_money = sum_of_money + Integer.parseInt(cart_item.get(position).getDelivery_fee());
+                    String str = "총 배송비 : " + sum_of_delivery_fee  + " 원";
+                    delivery_sum.setText(str);
+                }
+                Log.i("합합", sum + "");
+                sum_of_money = sum_of_money + sum;
+                String str2 = "총 주문 금액 : " + sum_of_money + " 원";
+                money.setText(str2);  //텍스트뷰 설정
+            }
+        });
 
         return rootview;
     }
@@ -241,12 +267,13 @@ public class Tab3_Cart extends Fragment {
             }
         }
         Log.i("주문 금액 합   ", sum_of_money + "");
-        int sum_of_delivery_fee = 0;
-        for(int j=0; j<delivery_fee.length; j++){
-            sum_of_delivery_fee = sum_of_delivery_fee + Integer.parseInt(delivery_fee[j]);
+        sum_of_delivery_fee = 0;
+        for(int j=0; j<cart_item.size(); j++){
+            sum_of_delivery_fee = sum_of_delivery_fee + Integer.parseInt(cart_item.get(j).getDelivery_fee());
         }
         String str = "총 배송비 : " + sum_of_delivery_fee + " 원";
-        String str2 = "총 주문 금액 : " + (sum_of_money + sum_of_delivery_fee) + " 원";
+        sum_of_money = sum_of_money + sum_of_delivery_fee;
+        String str2 = "총 주문 금액 : " + sum_of_money + " 원";
         money.setText(str2);  //텍스트뷰 설정
         delivery_sum.setText(str);
     }
@@ -295,11 +322,12 @@ public class Tab3_Cart extends Fragment {
                 .addToBackStack(null)
                 .commit();
     }
+ */
     // 고객이 장바구니에 담긴 물건 모두 삭제했을 때 빈 이미지 띄워줌
     public void isEmptyCart(){
         empty.setVisibility(View.VISIBLE);
     }
-*/
+
 
     // 프로그레스 다이얼로그 보이기
     public void showProgress() {

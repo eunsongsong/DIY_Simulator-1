@@ -156,6 +156,7 @@ public class Product_Detail_Fragment extends Fragment {
                                     //디비에 정렬된 장바구니 값 저장
                                     myRef.child(ds.getKey()).child("cart").setValue(cart_num);
                                     toast.show();
+                                    break;
                                 }
                             }
                         }
@@ -196,6 +197,7 @@ public class Product_Detail_Fragment extends Fragment {
 
     //장바구니에 담겨있던 숫자 오름차순 정렬하는 함수
     public String sortMaterialNumber(String number){
+        Log.i("카트 번호 디테일 페이지", number);
         String result = "";
         // 0#6#2#10 ... 로 되어있는 스트링을 배열로 쪼갠다
         String[] s_num = number.split("#");

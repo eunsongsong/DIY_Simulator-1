@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,8 +44,33 @@ public class Tab3_Cart_In_Item_Adapter extends RecyclerView.Adapter<Tab3_Cart_In
         this.item_layout = item_layout;
     }
 
+    public interface OnCheckItemClickListener {
+        void onCheckItemClick(View v, int position);
+    }
+
+    // 리스너 객체 참조를 저장하는 변수
+    private Tab3_Cart_In_Item_Adapter.OnCheckItemClickListener cListener = null ;
+
+    // OnItemClickListener 리스너 객체 참조를 어댑터에 전달하는 메서드
+    public void setOnCheckItemClickListener(Tab3_Cart_In_Item_Adapter.OnCheckItemClickListener listener) {
+        this.cListener = listener ;
+    }
+
+
+    public interface OnXItemClickListener {
+        void onXItemClick(View v);
+    }
+
+    // 리스너 객체 참조를 저장하는 변수
+    private Tab3_Cart_In_Item_Adapter.OnXItemClickListener xListener = null ;
+
+    // OnItemClickListener 리스너 객체 참조를 어댑터에 전달하는 메서드
+    public void setOnXItemClickListener(Tab3_Cart_In_Item_Adapter.OnXItemClickListener listener) {
+        this.xListener = listener ;
+    }
+
     public interface OnItemClickListener {
-        void onItemClick(View v, int position);
+        void onItemClick(View v, int pos);
     }
 
     // 리스너 객체 참조를 저장하는 변수
@@ -76,6 +102,19 @@ public class Tab3_Cart_In_Item_Adapter extends RecyclerView.Adapter<Tab3_Cart_In
         holder.store_name.setText(item.getStorename());
         holder.amount.setText(String.valueOf(item.getAmount()));
 
+        //in some cases, it will prevent unwanted situations
+        holder.check.setOnCheckedChangeListener(null);
+
+        //if true, your checkbox will be selected, else unselected
+        holder.check.setChecked(item.getCheckBox());
+
+        holder.check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //set your object's last status
+                item.setCheckBox(isChecked);
+            }
+        });
 
         RequestOptions requestOptions = new RequestOptions();
         requestOptions = requestOptions.placeholder(R.drawable.mungmung);
@@ -102,7 +141,7 @@ public class Tab3_Cart_In_Item_Adapter extends RecyclerView.Adapter<Tab3_Cart_In
                         // 아이템 리스트에서 제거
                         items.remove(position);
                         notifyDataSetChanged();
-
+                        xListener.onXItemClick(v);
                         //if(items.size() == 0) tab3.isEmptyCart();
 
                         // 구매자 DB - cart 에서 해당 번호 삭제
@@ -125,7 +164,6 @@ public class Tab3_Cart_In_Item_Adapter extends RecyclerView.Adapter<Tab3_Cart_In
                                         break;
                                     }
                                 }
-                                mListener.onItemClick(v, position);
                             }
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -159,7 +197,7 @@ public class Tab3_Cart_In_Item_Adapter extends RecyclerView.Adapter<Tab3_Cart_In
         holder.check.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onItemClick(v, position);
+                cListener.onCheckItemClick(v, position);
             }
         });
 
