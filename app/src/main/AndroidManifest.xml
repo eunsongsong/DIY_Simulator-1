@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:targetSandboxVersion="1"
     package="com.example.diy_simulator">
     <!-- 네트워크 사용에 대한 퍼미션 -->
     <uses-permission android:name="android.permission.INTERNET" /> <!-- 카메라 관련 -->
@@ -37,8 +38,12 @@
         android:roundIcon="@mipmap/logo_white_mint_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ModifySellerActivity"></activity>
+        tools:ignore="GoogleAppIndexingWarning"
+        android:usesCleartextTraffic="true"
+        android:networkSecurityConfig="@xml/network_security_config">
+
+        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".ModifySellerActivity" />
         <activity android:name=".ModifyInfoActivity" />
         <activity android:name=".MainTabActivity" />
         <activity android:name=".ImageActivity" />

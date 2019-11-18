@@ -41,28 +41,6 @@ import java.util.List;
 
 public class Tab4_Simulation extends Fragment {
 
-    /*class ViewItem{
-        private ImageView imageView;
-        private int idx;
-        public ViewItem(ImageView imageView, int idx)
-        {
-            this.imageView = imageView;
-            this.idx = idx;
-        }
-        public ImageView getImageView() {
-            return imageView;
-        }
-        public void setImageView(ImageView imageView) {
-            this.imageView = imageView;
-        }
-        public int getIdx() {
-            return idx;
-        }
-        public void setIdx(int idx) {
-            this.idx = idx;
-        }
-    }
-     */
     private ProgressDialog pd;
     private LinearLayout simul_menu_layout;
     private LinearLayout blur;
@@ -669,10 +647,10 @@ public class Tab4_Simulation extends Fragment {
 
         double randomValue = Math.random();
         int intValue = (int) (randomValue * 5) + 2;
-        iv.setX( intValue * parentWidth / 9 );
+        iv.setX( intValue * parentWidth / 9 * (float)Math.pow(1.5,touch_cnt));
         randomValue = Math.random();
         intValue = (int) (randomValue * 8) + 2;
-        iv.setY( intValue * parentHeight / 16 );
+        iv.setY( intValue * parentHeight / 16 * (float)Math.pow(1.5,touch_cnt));
 
         Glide.with(getContext())
                 .load(url)

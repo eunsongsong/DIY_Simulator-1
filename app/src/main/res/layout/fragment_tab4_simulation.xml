@@ -256,8 +256,7 @@
                     android:id="@+id/relative"
                     android:layout_weight="10"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/simul_border">
+                    android:layout_height="match_parent">
                     <ImageView
                         android:id="@+id/trash"
                         android:layout_width="70dp"
