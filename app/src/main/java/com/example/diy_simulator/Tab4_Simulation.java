@@ -42,33 +42,26 @@ import java.util.List;
 public class Tab4_Simulation extends Fragment {
 
     /*class ViewItem{
-
         private ImageView imageView;
         private int idx;
-
         public ViewItem(ImageView imageView, int idx)
         {
             this.imageView = imageView;
             this.idx = idx;
         }
-
         public ImageView getImageView() {
             return imageView;
         }
-
         public void setImageView(ImageView imageView) {
             this.imageView = imageView;
         }
-
         public int getIdx() {
             return idx;
         }
-
         public void setIdx(int idx) {
             this.idx = idx;
         }
     }
-
      */
     private ProgressDialog pd;
     private LinearLayout simul_menu_layout;
@@ -146,10 +139,15 @@ public class Tab4_Simulation extends Fragment {
 
                     } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
                         // 뷰 이동 중
-                        v.setX(event.getRawX() - oldXvalue);
-                        v.setY(event.getRawY() - oldYvalue - 250);
+                        Log.d("viewTest", "v.getX() : " + v.getX());    // View 의 좌측 상단이 되는 지점의 절대 좌표값.
+                        Log.d("viewTest22", "v.getY() : " + v.getY());    // View 의 좌측 상단이 되는 지점의 절대 좌표값.
+
+                        v.setX(v.getX() + (float)((event.getX() - oldXvalue) * Math.pow(1.5, touch_cnt)));
+                        v.setY(v.getY() + (float)((event.getY() - oldYvalue) * Math.pow(1.5, touch_cnt)));
+
+
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        // 뷰에서 손을 뗌
+                        // 뷰에서 손을
                         Log.d("현재위치", v.getX() + "x " + v.getY());
                         Log.d("타겟", trash_width + "x " + trash_height);
                         int a = (int) v.getX();
@@ -255,8 +253,8 @@ public class Tab4_Simulation extends Fragment {
                     break;
 
             }
-                return true;
-            }
+            return true;
+        }
     };
 
     @SuppressLint("ClickableViewAccessibility")
@@ -454,7 +452,7 @@ public class Tab4_Simulation extends Fragment {
                 showProgress();
 
                 DisplayMetrics dm = getContext().getResources().getDisplayMetrics();
-            //    Log.d("촉",cart);
+                //    Log.d("촉",cart);
                 int width = dm.widthPixels;
                 int f_width = width - (int) (width * 0.8);
                 simulation_items.clear();
@@ -686,7 +684,7 @@ public class Tab4_Simulation extends Fragment {
 
         Log.d("짜이", parentHeight + "");
         Log.d("우람", parentWidth + "");
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams( (int)  width* parentWidth / 90,(int) (height* parentHeight / (ratio*10) ));
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams( (int) ( width* parentWidth / 90 * Math.pow(1.5, touch_cnt)),(int) (height* parentHeight / (ratio*10) * Math.pow(1.5, touch_cnt) ));
 
         iv.setLayoutParams(layoutParams);  // imageView layout 설정
         iv.setScaleType(ImageView.ScaleType.FIT_XY);
