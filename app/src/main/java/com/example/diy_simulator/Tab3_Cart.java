@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -41,6 +42,7 @@ public class Tab3_Cart extends Fragment {
     private String cart = "";
     private ImageView empty;
     TextView money, delivery_sum, guide, guide_title;
+    Button pay_btn;
     private ArrayList<String> store_names = new ArrayList<>();
     String[] delivery_fee;
     int sum_of_money = 0;
@@ -64,6 +66,7 @@ public class Tab3_Cart extends Fragment {
         delivery_sum = rootview.findViewById(R.id.cart_sum_delivery_fee);
         guide = rootview.findViewById(R.id.cart_use_guide_txt);
         guide_title = rootview.findViewById(R.id.cart_use_guide_title);
+        pay_btn = rootview.findViewById(R.id.cart_pay_button);
 
         //리사이클러뷰 리니어 레이아웃 매니저 설정 - vertical
         cart_recyclerview = rootview.findViewById(R.id.cart_recyclerView);
@@ -98,8 +101,10 @@ public class Tab3_Cart extends Fragment {
                 }
                 Log.i("합합", sum + "");
                 sum_of_money = sum_of_money + sum;
-                String str2 = "총 주문 금액 : " + (sum_of_money + sum_of_delivery_fee) + " 원";
+                String str2 = "총 주문 금액 : " + (sum_of_money) + " 원";
                 money.setText(str2);  //텍스트뷰 설정
+                String str3 = "구매하기 (￦" + (sum_of_money + sum_of_delivery_fee) +")";
+                pay_btn.setText(str3);
             }
         });
 
@@ -274,9 +279,11 @@ public class Tab3_Cart extends Fragment {
             sum_of_delivery_fee = sum_of_delivery_fee + Integer.parseInt(cart_item.get(j).getDelivery_fee());
         }
         String str = "총 배송비 : " + sum_of_delivery_fee + " 원";
-        String str2 = "총 주문 금액 : " + (sum_of_money + sum_of_delivery_fee) + " 원";
+        String str2 = "총 주문 금액 : " + (sum_of_money) + " 원";
         money.setText(str2);  //텍스트뷰 설정
         delivery_sum.setText(str);
+        String str3 = "구매하기 (￦" + (sum_of_money + sum_of_delivery_fee) +")";
+        pay_btn.setText(str3);
     }
 
 

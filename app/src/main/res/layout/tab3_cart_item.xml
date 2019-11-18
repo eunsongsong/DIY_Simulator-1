@@ -2,13 +2,18 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="15dp"
-    android:paddingStart="13dp"
-    android:paddingEnd="13dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingTop="5dp"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp">
+<androidx.cardview.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="5dp"
+    app:cardCornerRadius="12dp">
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#443DC1AB"
     android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,20 +23,28 @@
         <TextView
             android:id="@+id/out_cart_store_name"
             android:paddingStart="5dp"
+            android:paddingTop="5dp"
             android:text="상점"
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textColor="#000000"
             android:textStyle="bold"/>
+        <ImageView
+            android:id="@+id/out_cart_store_delivery_car"
+            android:paddingTop="5dp"
+            android:paddingEnd="8dp"
+            android:src="@mipmap/delivery_car"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
         <TextView
             android:id="@+id/out_cart_store_delivery_fee"
             android:text="배송비 2500"
             android:textAlignment="viewEnd"
+            android:paddingTop="5dp"
             android:paddingEnd="5dp"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:textColor="#000000" />
     </LinearLayout>
 
@@ -41,4 +54,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </LinearLayout>
+</androidx.cardview.widget.CardView>
 </FrameLayout>
