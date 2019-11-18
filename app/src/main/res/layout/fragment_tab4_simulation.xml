@@ -166,6 +166,7 @@
         android:visibility="visible">
 
         <FrameLayout
+            android:id="@+id/top_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -218,6 +219,26 @@
                 android:background="@drawable/back_black" />
 
             <ImageButton
+                android:id="@+id/magnify"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="215dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:scaleType="fitXY"
+                android:background="@drawable/zoom_in_black" />
+
+            <ImageButton
+                android:id="@+id/minimize"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="270dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:scaleType="fitXY"
+                android:background="@drawable/zoom_out_black" />
+
+            <ImageButton
                 android:id="@+id/simulation_menu_button"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -226,55 +247,25 @@
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/menu" />
 
+
+
         </FrameLayout>
 
-        <RelativeLayout
-            android:id="@+id/relative"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="10">
 
-
-            <Button
-                android:id="@+id/add_btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="200dp"
-                android:text="눌러봣"
-                android:visibility="gone" />
-
-            <ImageView
-                android:id="@+id/trash"
-                android:layout_width="70dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/trash" />
-            <!--
-            <ImageView
-                android:id="@+id/test"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@drawable/plus"
-                android:layout_centerInParent="true"/>
-                -->
-        </RelativeLayout>
-        <!--
-        <ImageButton
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginLeft="20dp"
-            android:background="@drawable/zoom_in"/>
-        <ImageButton
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="20dp"
-            android:background="@drawable/zoom_out"/>
-
--->
+                <RelativeLayout
+                    android:id="@+id/relative"
+                    android:layout_weight="10"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/simul_border">
+                    <ImageView
+                        android:id="@+id/trash"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_alignParentBottom="true"
+                        android:background="@drawable/trash" />
+                </RelativeLayout>
 
 
     </LinearLayout>

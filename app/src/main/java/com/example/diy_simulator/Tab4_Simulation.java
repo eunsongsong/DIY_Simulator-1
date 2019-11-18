@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -106,6 +107,8 @@ public class Tab4_Simulation extends Fragment {
     private ImageButton right_rotate;
     private ImageButton order_front;
     private ImageButton order_back;
+    private ImageButton magnify_btn;
+    private ImageButton minimize_btn;
     private int MOVE = 1;
     private float angle = 5.0f;
 
@@ -115,6 +118,12 @@ public class Tab4_Simulation extends Fragment {
     private ImageButton phonecase_btn;
     private ImageButton acc_btn;
     private ImageButton etc_btn;
+
+    private float loX;
+    private float loy;
+
+    private int touch_cnt;
+
     //싱글 터치
     private View.OnTouchListener touchListener = new View.OnTouchListener() {
         @SuppressLint("ClickableViewAccessibility")
@@ -158,7 +167,8 @@ public class Tab4_Simulation extends Fragment {
                                 }
                                 find_idx++;
                             }
-                            v.setVisibility(View.GONE);
+                            //v.setVisibility(View.GONE);
+                            relativeLayout.removeView(v);
                         }
 
                         if (v.getX() < 0) {
@@ -257,13 +267,16 @@ public class Tab4_Simulation extends Fragment {
         right_rotate = (ImageButton) rootview.findViewById(R.id.right_rotate);
         order_front = (ImageButton) rootview.findViewById(R.id.order_front);
         order_back = (ImageButton) rootview.findViewById(R.id.order_back);
+        magnify_btn  = (ImageButton) rootview.findViewById(R.id.magnify);
+        minimize_btn  = (ImageButton) rootview.findViewById(R.id.minimize);
+
         relativeLayout = (RelativeLayout) rootview.findViewById(R.id.relative);
+
         firebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = firebaseAuth.getCurrentUser();
         Boolean isSeller = PreferenceUtil.getInstance(getContext()).getBooleanExtra("isSeller");
         trashView = (ImageView) rootview.findViewById(R.id.trash);
         empty_item = rootview.findViewById(R.id.no_simul_item);
-
         keyring_btn = (ImageButton) rootview.findViewById(R.id.img_but1);
         phonecase_btn = (ImageButton) rootview.findViewById(R.id.img_but2);
         acc_btn = (ImageButton) rootview.findViewById(R.id.img_but3);
@@ -391,6 +404,7 @@ public class Tab4_Simulation extends Fragment {
         simul_recyclerview.setAdapter(simulationAdatper);
 
         simulation_items.clear();
+        check = true;
 
         ViewTreeObserver viewTreeObserver = relativeLayout.getViewTreeObserver();
         mOnGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -400,18 +414,23 @@ public class Tab4_Simulation extends Fragment {
                 if(check) {
                     parentWidth = relativeLayout.getWidth();    // 부모 View 의 Width
                     parentHeight = relativeLayout.getHeight();    // 부모 View 의 Height
+                    loX = relativeLayout.getX();
+                    loy = relativeLayout.getY();
                     trash_width = (int) trashView.getX();
                     trash_height =(int) trashView.getY();
 
                     check = false;
-                    Log.d("ㅇㅇ","가까운");
+                    Log.d("상대레이아웃 넓이",parentWidth+"");
+                    Log.d("상대레이아웃 높이",parentHeight+"");
+                    Log.d("상대레이아웃 X",loX+"");
+                    Log.d("상대레이아웃 Y",loy+"");
                 }
             }
         };
 
         viewTreeObserver.addOnGlobalLayoutListener(mOnGlobalLayoutListener);
 
-         check = true;
+
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -582,6 +601,55 @@ public class Tab4_Simulation extends Fragment {
             }
         });
 
+        magnify_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                touch_cnt++;
+                if(touch_cnt > 0) {
+                    magnify_btn.setImageDrawable(getResources().getDrawable(R.drawable.zoom_in_mint));
+                    minimize_btn.setImageDrawable(getResources().getDrawable(R.drawable.zoom_out_black));
+                }
+                else if( touch_cnt == 0)
+                {
+                    magnify_btn.setImageDrawable(getResources().getDrawable(R.drawable.zoom_in_black));
+                    minimize_btn.setImageDrawable(getResources().getDrawable(R.drawable.zoom_out_black));
+                }
+                for(int i = 0; i < view_order.size(); i++)
+                {
+                    Log.d("이전1",view_order.get(i).getScaleX()+"");
+                    Log.d("이전2",view_order.get(i).getScaleX()+"");
+                    view_order.get(i).setScaleX( (float)(view_order.get(i).getScaleX() * 1.5));
+                    view_order.get(i).setScaleY((float) (view_order.get(i).getScaleY() * 1.5) );
+                    Log.d("이후1",view_order.get(i).getScaleY()+"");
+                    Log.d("이후2",view_order.get(i).getScaleY()+"");
+                }
+            }
+        });
+        minimize_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                touch_cnt--;
+                if(touch_cnt < 0) {
+                    magnify_btn.setImageDrawable(getResources().getDrawable(R.drawable.zoom_in_black));
+                    minimize_btn.setImageDrawable(getResources().getDrawable(R.drawable.zoom_out_mint));
+                }
+                else if( touch_cnt == 0)
+                {
+                    magnify_btn.setImageDrawable(getResources().getDrawable(R.drawable.zoom_in_black));
+                    minimize_btn.setImageDrawable(getResources().getDrawable(R.drawable.zoom_out_black));
+                }
+                for(int i = 0; i < view_order.size(); i++)
+                {
+                    Log.d("이전1",view_order.get(i).getScaleX()+"");
+                    Log.d("이전2",view_order.get(i).getScaleX()+"");
+                    view_order.get(i).setScaleX( (float)(view_order.get(i).getScaleX() / 1.5));
+                    view_order.get(i).setScaleY((float) (view_order.get(i).getScaleY() / 1.5) );
+                    Log.d("이후1",view_order.get(i).getScaleY()+"");
+                    Log.d("이후2",view_order.get(i).getScaleY()+"");
+                }
+            }
+        });
+
         simulationAdatper.setOnItemClickListener(new Tab4_Simulation_Adatper.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
@@ -627,6 +695,7 @@ public class Tab4_Simulation extends Fragment {
         view_order.add(iv);
 
     }
+
     public void addItemToRecyclerView(String url, int width, int height, String category){
         Tab4_Simulation_Item item = new Tab4_Simulation_Item(url, width, height, category);
         simulation_items.add(item);
