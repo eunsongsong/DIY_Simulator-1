@@ -442,7 +442,6 @@ public class Tab4_Simulation extends Fragment {
         menubtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showProgress();
 
                 DisplayMetrics dm = getContext().getResources().getDisplayMetrics();
                 //    Log.d("촉",cart);
@@ -468,6 +467,9 @@ public class Tab4_Simulation extends Fragment {
                 // 시뮬레이션 아이템 불러오기
 
                 if(!TextUtils.isEmpty(cart)) {
+                    
+                    showProgress();
+
                     empty_item.setVisibility(View.GONE);
                     cart_arr = cart.split("#");
                     myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
