@@ -109,6 +109,7 @@ public class Tab4_Simulation extends Fragment {
                     Log.d("vie3123wTest", "oldXva123123213lue : " + v.getScaleX() + " oldY12312value : " + v.getScaleY());    // View 내부에서 터치한 지점의 상대 좌표값.
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
                         // 뷰 누름
+
                         oldXvalue = event.getX();
                         oldYvalue = event.getY();
                         Log.d("viewTest", "oldXvalue : " + oldXvalue + " oldYvalue : " + oldYvalue);    // View 내부에서 터치한 지점의 상대 좌표값.
@@ -121,11 +122,12 @@ public class Tab4_Simulation extends Fragment {
                         Log.d("viewTest", "v.getX() : " + v.getX());    // View 의 좌측 상단이 되는 지점의 절대 좌표값.
                         Log.d("viewTest22", "v.getY() : " + v.getY());    // View 의 좌측 상단이 되는 지점의 절대 좌표값.
 
+                        int[] location = new int[2];
+                        v.getLocationOnScreen(location);
                         v.setX(v.getX() + (float)((event.getX() - oldXvalue) * Math.pow(1.5, touch_cnt)));
                         v.setY(v.getY() + (float)((event.getY() - oldYvalue) * Math.pow(1.5, touch_cnt)));
 
-                        int[] location = new int[2];
-                        v.getLocationOnScreen(location);
+
                         Log.d("오니~", parentHeight+"");
                         Log.d("오니~", trash_height+"");
                         Log.d("오니~",  location[1]+"");
@@ -467,7 +469,7 @@ public class Tab4_Simulation extends Fragment {
                 // 시뮬레이션 아이템 불러오기
 
                 if(!TextUtils.isEmpty(cart)) {
-                    
+
                     showProgress();
 
                     empty_item.setVisibility(View.GONE);
@@ -665,12 +667,12 @@ public class Tab4_Simulation extends Fragment {
         ImageView iv = new ImageView(getContext());  // 새로 추가할 imageView 생성
 
         double randomValue = Math.random();
-        int intValue = (int) (randomValue * 5) + 2;
+        int intValue = (int) (randomValue * 4) + 2;
 
-        iv.setX( intValue * parentWidth / 9 * (float)Math.pow(1.5,touch_cnt));
+        iv.setX( intValue * parentWidth / 9 * (float)Math.pow(1.5, -Math.abs(touch_cnt)));
         randomValue = Math.random();
-        intValue = (int) (randomValue * 8) + 2;
-        iv.setY( intValue * parentHeight / 16 * (float)Math.pow(1.5,touch_cnt));
+        intValue = (int) (randomValue * 4) + 1;
+        iv.setY( intValue * parentHeight / 16 * (float)Math.pow(1.5,-Math.abs(touch_cnt)));
 
         Glide.with(getContext())
                 .load(url)
@@ -682,9 +684,11 @@ public class Tab4_Simulation extends Fragment {
 
         Log.d("짜이", (int) ( width* parentWidth / 90 * Math.pow(1.5, touch_cnt)) + "");
         Log.d("우람", parentWidth + "");
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams( (int) ( width* parentWidth / 90 * Math.pow(1.5, touch_cnt)),(int) (height* parentHeight / (ratio*10) * Math.pow(1.5, touch_cnt) ));
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams( (int) ( width* parentWidth / 90 ),(int) (height* parentHeight / (ratio*10)));
         iv.setAdjustViewBounds(true);
         iv.setLayoutParams(layoutParams);  // imageView layout 설정
+        iv.setScaleX(iv.getScaleX() * (float) Math.pow(1.5, touch_cnt));
+        iv.setScaleY(iv.getScaleY() * (float) Math.pow(1.5, touch_cnt));
         iv.setScaleType(ImageView.ScaleType.FIT_XY);
 
         relativeLayout.addView(iv); // 기존 linearLayout에 imageView 추가
