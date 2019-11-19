@@ -3,6 +3,7 @@ package com.example.diy_simulator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -217,8 +218,9 @@ public class Tab3_Cart_In_Item_Adapter extends RecyclerView.Adapter<Tab3_Cart_In
                 }
                 // 현재 담은 수량이 재고와 같으면 +1 불가능
                 else{
-                    Toast.makeText(v.getContext(), "장바구니에 담으려는 수량이 주문 가능 수량보다 많습니다.",
-                            Toast.LENGTH_SHORT).show();
+                    Toast toast = Toast.makeText(v.getContext(), "장바구니에 담으려는 수량이 주문 가능 수량보다 많습니다.", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER,0,0);
+                    toast.show();
                 }
             }
         });
