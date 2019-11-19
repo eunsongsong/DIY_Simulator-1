@@ -124,10 +124,12 @@ public class Tab4_Simulation extends Fragment {
                         v.setX(v.getX() + (float)((event.getX() - oldXvalue) * Math.pow(1.5, touch_cnt)));
                         v.setY(v.getY() + (float)((event.getY() - oldYvalue) * Math.pow(1.5, touch_cnt)));
 
-                        int a = (int) v.getX();
-                        int b = (int) v.getY();
-                        if ((Math.abs((int) a - trash_width) <= 100 && Math.abs((int) b + 200 - trash_height) <= 150)
-                                || (Math.abs((int) a - trash_width) <= 500 && Math.abs((int) b + v.getHeight()) > parentHeight)) {
+                        int[] location = new int[2];
+                        v.getLocationOnScreen(location);
+                        Log.d("오니~", parentHeight+"");
+                        Log.d("오니~", trash_height+"");
+                        Log.d("오니~",  location[1]+"");
+                        if (parentHeight - (parentHeight - trash_height) <= location[1]){
                             trashView.setImageDrawable(getResources().getDrawable(R.drawable.trash_mint));
                         }
                         else
@@ -136,11 +138,11 @@ public class Tab4_Simulation extends Fragment {
                         // 뷰에서 손을
                         Log.d("현재위치", v.getX() + "x " + v.getY());
                         Log.d("타겟", trash_width + "x " + trash_height);
-                        int a = (int) v.getX();
-                        int b = (int) v.getY();
+                 
+                        int[] location = new int[2];
+                        v.getLocationOnScreen(location);
 
-                        if ((Math.abs((int) a - trash_width) <= 100 && Math.abs((int) b + 200 - trash_height) <= 150)
-                                || (Math.abs((int) a - trash_width) <= 500 && Math.abs((int) b + v.getHeight()) > parentHeight)){
+                        if (parentHeight - (parentHeight - trash_height)  <= location[1]){
                             int find_idx = 0;
                             for(ImageView imageView : view_order)
                             {
@@ -155,18 +157,21 @@ public class Tab4_Simulation extends Fragment {
                             relativeLayout.removeView(v);
                             trashView.setImageDrawable(getResources().getDrawable(R.drawable.trash));
                         }
-                        int[] location = new int[2];
-                        v.getLocationOnScreen(location);
+
                         if ( location[0] < 0) {
                             v.setX(0);
-                        } else if ( location[0] > parentWidth) {
+                            Log.d("11월19일",v.getWidth()+"");
+                            Log.d("11월19일",v.getScaleX()+"");
+                        } else if ( location[0] + (v.getWidth() * v.getScaleX()) > parentWidth) {
                             v.setX(parentWidth - v.getWidth());
                         }
 
                         if ( location[1] < 0) {
                             v.setY(0);
-                        } else if ( location[1] > parentHeight) {
+
+                        } else if ( location[1] + (v.getHeight() *v.getScaleY()) > parentHeight) {
                             v.setY(parentHeight - v.getHeight());
+
                         }
                     }
                     break;
