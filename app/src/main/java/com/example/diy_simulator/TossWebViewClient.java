@@ -5,17 +5,18 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.net.http.SslError;
+import android.util.Log;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import java.net.URISyntaxException;
 
-public class KakaoWebViewClient extends WebViewClient {
+public class TossWebViewClient extends WebViewClient {
 
     private Activity activity;
 
-    public KakaoWebViewClient(Activity activity) {
+    public TossWebViewClient(Activity activity) {
         this.activity = activity;
     }
     @Override
@@ -25,7 +26,8 @@ public class KakaoWebViewClient extends WebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-
+        Log.d("ㅇㅇ",url);
+/*
         if (!url.startsWith("http://") && !url.startsWith("https://") && !url.startsWith("javascript:")) {
             Intent intent = null;
 
@@ -49,7 +51,7 @@ public class KakaoWebViewClient extends WebViewClient {
                 return false;
             }
         }
-
+*/
         return false;
     }
 

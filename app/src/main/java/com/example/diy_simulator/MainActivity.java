@@ -1,91 +1,191 @@
 package com.example.diy_simulator;
 
-import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Message;
 import android.util.JsonReader;
 import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.TextView;
+import android.webkit.WebViewClient;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
-
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 
+import javax.net.ssl.HttpsURLConnection;
+public class MainActivity extends AppCompatActivity {
 
-public class MainActivity extends Activity {
-    private WebView mainWebView;
-    private final String APP_SCHEME = "iamportkakao://";
+    URL url = null;
+    URLConnection connection = null;
+    StringBuilder responseBody = new StringBuilder();
+    private  WebView webView;
 
-
-    @SuppressLint("SetJavaScriptEnabled")
+    private  String url2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mainWebView = (WebView) findViewById(R.id.mainWebView);
-        mainWebView.setWebViewClient(new KakaoWebViewClient(this));
-        WebSettings settings = mainWebView.getSettings();
-        settings.setJavaScriptEnabled(true);
+        (new HttpPingAsyncTask()).execute("https://pay.toss.im/api/v1/payments");
+        webView = (WebView) findViewById(R.id.mainWebView);
 
-        mainWebView.loadUrl("https://www.iamport.kr/demo");
-    }
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        setIntent(intent);
+
+
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    class HttpPingAsyncTask extends AsyncTask<String, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(String... urls) {
+            try {
+                // HttpURLConnection.setFollowRedirects(false);
+                HttpURLConnection connection = (HttpURLConnection) new URL(urls[0]).openConnection();
+                //con.setInstanceFollowRedirects(false);
 
-        Intent intent = getIntent();
-        if ( intent != null ) {
-            Uri intentData = intent.getData();
+                connection.addRequestProperty("Content-Type", "application/json");
+                connection.setDoOutput(true);
+                connection.setDoInput(true);
 
-            if ( intentData != null ) {
-                //카카오페이 인증 후 복귀했을 때 결제 후속조치
-                String url = intentData.toString();
+                JSONObject jsonBody = new JSONObject();
+                jsonBody.put("orderNo", "0");
+                jsonBody.put("amount", 35000);
+                jsonBody.put("amountTaxFree", 0);
+                jsonBody.put("productDesc", "토스티셔츠");
+                jsonBody.put("apiKey", "sk_test_apikey1234567890");
+                jsonBody.put("autoExecute", true);
+                jsonBody.put("resultCallback", "http://localhost:3000/auth");
+                jsonBody.put("retUrl", "http://YOUR-SITE.COM/ORDER-CHECK?orderno=1");
+                jsonBody.put("retCancelUrl", "http://YOUR-SITE.COM/close");
 
-                if ( url.startsWith(APP_SCHEME) ) {
-                    String path = url.substring(APP_SCHEME.length());
-                    if ( "process".equalsIgnoreCase(path) ) {
-                        mainWebView.loadUrl("javascript:IMP.communicate({result:'process'})");
-                        Log.d("결제성공","dd");
-                    } else {
-                        mainWebView.loadUrl("javascript:IMP.communicate({result:'cancel'})");
-                        Log.d("결제성ddd공","dd");
-                    }
+                BufferedOutputStream bos = new BufferedOutputStream(connection.getOutputStream());
+
+                bos.write(jsonBody.toString().getBytes(StandardCharsets.UTF_8));
+                bos.flush();
+                bos.close();
+
+
+                BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+                String line = null;
+                int i= 0;
+                while ((line = br.readLine()) != null) {
+                    responseBody.append(line + " ");
+                    Log.d("ㅇㅇㅇ",i+"");
+                    Log.d("rd",line);
+                    i++;
                 }
+                String[] temp = responseBody.toString().split(",");
+                Log.d("ㅇㅇ",temp[3]);
+                String result = temp[3].replace("checkoutPage\":\"", "");
+                result = result.substring(1);
+                result = result.substring(0, result.length() - 1);
+                Log.d("ㅇㅇ",result);
+
+                final String a = result;
+                webView.post(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        //webView.setWebViewClient(new TossWebViewClient(MainActivity.this    ));
+                        WebSettings settings = webView.getSettings();
+
+                        settings.setJavaScriptEnabled(true);
+                        webView.loadUrl(a);
+
+                        //동작
+                    }
+                });
+
+
+                responseBody.toString().indexOf("checkoutPage\":\"");
+
+                br.close();
+                return (connection.getResponseCode() == HttpURLConnection.HTTP_OK);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return false;
             }
         }
+    }
+
+
+}
+/*
+public class MainActivity extends AppCompatActivity {
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        (new HttpPingAsyncTask()).execute("https:///v1/api/talk/profile");
+
+// Create connection
 
     }
 
-}
+    static class HttpPingAsyncTask extends AsyncTask<String, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(String... urls) {
+            try {
+                // HttpURLConnection.setFollowRedirects(false);
+                HttpURLConnection con = (HttpURLConnection) new URL(urls[0]).openConnection();
+               //con.setInstanceFollowRedirects(false);
+
+                con.setRequestProperty("Host", "kapi.kakao.com");
+                con.setRequestProperty("Authorization",
+                        "KakaoAK " + "c511b12fb7098c2790ae67d08a01bcb4");
+                con.setRequestProperty("Accept",
+                        "hathibelagal@example.com");
+
+                if (con.getResponseCode() == 200) {
+                    // Success
+                    // Further processing here
+
+                    InputStream responseBody = con.getInputStream();
+                    InputStreamReader responseBodyReader =
+                            new InputStreamReader(responseBody, "UTF-8");
+                    JsonReader jsonReader = new JsonReader(responseBodyReader);
+                    jsonReader.beginObject(); // Start processing the JSON object
+                    while (jsonReader.hasNext()) { // Loop through all keys
+                        String key = jsonReader.nextName(); // Fetch the next key
+                       // if (key.equals("organization_url")) { // Check if desired key
+                            // Fetch the value as a String
+                            String value = jsonReader.nextString();
+                            Log.d("ㅇㅇ",value);
+                            // Do something with the value
+                            // ...
+
+                          //  break; // Break out of the loop
+                      //  }
+                    //else {
+                    //        jsonReader.skipValue(); // Skip values of other keys
+                   //     }
+                    }
+
+                    jsonReader.close();
+                    con.disconnect();
+                } else {
+                    // Error handling code goes here
+                }
+                return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
+
+            } catch (Exception e) {
+                return false;
+            }
+        }
+}}
+ */
