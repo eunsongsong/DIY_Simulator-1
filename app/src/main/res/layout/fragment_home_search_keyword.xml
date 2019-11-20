@@ -77,7 +77,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            android:background="@drawable/shop_noitem"/>
+            android:src="@drawable/shop_noitem"/>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/search_keyword_recyclerView"
             android:layout_width="match_parent"

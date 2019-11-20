@@ -8,37 +8,56 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/mystore_product_img"
-            android:layout_width="170dp"
-            android:layout_height="170dp"
-            android:scaleType="fitCenter"
-            android:adjustViewBounds="true"
-            android:src="@drawable/photo_outline"/>
-        <TextView
-            android:id="@+id/mystore_product_name"
-            android:layout_width="170dp"
+        <RelativeLayout
+            android:id="@+id/mystore_prouduct_whole"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:maxLines="2"
-            android:textColor="#000000"
-            android:layout_below="@+id/mystore_product_img"
-            android:text="제품 이름"/>
-        <TextView
-            android:id="@+id/mystore_product_price"
-            android:layout_width="170dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:maxLines="2"
-            android:textColor="#000000"
-            android:textStyle="bold"
-            android:layout_below="@+id/mystore_product_name"
-            android:text="제품 가격"/>
+            android:background="?android:attr/selectableItemBackground">
 
-
+            <ImageView
+                android:id="@+id/mystore_product_img"
+                android:layout_width="170dp"
+                android:layout_height="170dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:src="@drawable/photo_outline"/>
+            <TextView
+                android:id="@+id/mystore_product_name"
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:maxLines="2"
+                android:textColor="#000000"
+                android:layout_below="@+id/mystore_product_img"
+                android:text="제품 이름"/>
+            <TextView
+                android:id="@+id/mystore_product_price"
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:maxLines="2"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:layout_below="@+id/mystore_product_name"
+                android:text="제품 가격"/>
+        </RelativeLayout>
+        <Button
+            android:id="@+id/mystore_item_modify_btn"
+            android:layout_width="85dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/mystore_prouduct_whole"
+            android:text="수정"/>
+        <Button
+            android:id="@+id/mystore_item_delete_btn"
+            android:layout_width="85dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@+id/mystore_item_modify_btn"
+            android:layout_below="@+id/mystore_prouduct_whole"
+            android:text="삭제"/>
     </RelativeLayout>
 
 </FrameLayout>

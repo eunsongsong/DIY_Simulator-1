@@ -202,7 +202,7 @@ public class Product_Detail_Fragment extends Fragment {
         // 0#6#2#10 ... 로 되어있는 스트링을 배열로 쪼갠다
         String[] s_num = number.split("#");
         // 카트에 중복된 아이템인지 확인 - 이미 카트에 담긴 아이템은 중복 담기 없음
-        Boolean exist = false;
+        boolean exist = false;
         for(int i=0; i<s_num.length-1; i++){
             if(s_num[s_num.length-1].equals(s_num[i])){
                 exist = true;

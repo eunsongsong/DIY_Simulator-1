@@ -14,7 +14,7 @@ public class Tab3_Cart_In_Item_Info {
     private String unique_number;
     private String category;
     private int amount;
-    private Boolean checkBox;
+    private boolean checkBox;
 
     public Tab3_Cart_In_Item_Info(String name, String price, String preview_img_url, String[] img_url, String width, String height, String depth,
                           String keyword, String stock, String storename, String unique_number, String category, int amount) {
@@ -138,11 +138,11 @@ public class Tab3_Cart_In_Item_Info {
         this.category = category;
     }
 
-    public Boolean getCheckBox() {
+    public boolean getCheckBox() {
         return checkBox;
     }
 
-    public void setCheckBox(Boolean checkBox) {
+    public void setCheckBox(boolean checkBox) {
         this.checkBox = checkBox;
     }
 }

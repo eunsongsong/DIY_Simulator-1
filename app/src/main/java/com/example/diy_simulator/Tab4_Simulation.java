@@ -264,7 +264,7 @@ public class Tab4_Simulation extends Fragment {
 
         firebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = firebaseAuth.getCurrentUser();
-        Boolean isSeller = PreferenceUtil.getInstance(getContext()).getBooleanExtra("isSeller");
+        boolean isSeller = PreferenceUtil.getInstance(getContext()).getBooleanExtra("isSeller");
         trashView = (ImageView) rootview.findViewById(R.id.trash);
         empty_item = rootview.findViewById(R.id.no_simul_item);
         keyring_btn = (ImageButton) rootview.findViewById(R.id.img_but1);

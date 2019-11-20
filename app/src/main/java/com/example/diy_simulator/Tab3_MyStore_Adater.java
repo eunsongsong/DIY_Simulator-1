@@ -1,30 +1,45 @@
 package com.example.diy_simulator;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.DialogInterface;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.DrawableImageViewTarget;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adater.ViewHolder> {
     Context context;
     List<Material_Detail_Info> items;
     int item_layout;
+
+    FirebaseDatabase database= FirebaseDatabase.getInstance();
+    DatabaseReference myRef = database.getReference("부자재");
+    DatabaseReference myRef_seller = database.getReference("판매자");
+    DatabaseReference myRef_customer = database.getReference("구매자");
+
+    FirebaseAuth firebaseAuth;
+    FirebaseUser mFirebaseUser;
 
     public Tab3_MyStore_Adater(Context context, List<Material_Detail_Info> items, int item_layout) {
         this.context = context;
@@ -55,6 +70,9 @@ public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adat
     public void onBindViewHolder(@NonNull final Tab3_MyStore_Adater.ViewHolder holder, final int position) {
         final Material_Detail_Info item = items.get(position);
 
+        firebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = firebaseAuth.getCurrentUser();
+
         //제품 이름, 가격 텍스트 나타내기
         holder.name.setText(item.getName());
         holder.price.setText(item.getPrice());
@@ -72,17 +90,99 @@ public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adat
             Glide.with(holder.itemView.getContext())
                     .load(R.drawable.chu)
                     .into(holder.drawableImageViewTarget);
-
              */
         }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.item_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mListener != null) mListener.onItemClick(v, position);
             }
         });
 
+        //삭제 버튼 누르면 아이템 삭제
+        holder.del_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 다이얼로그 띄워서 삭제 의사 묻기
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setTitle("상품을 정말 삭제하시겠습니까?");
+                // '네' 클릭시 아이템 삭제
+                builder.setPositiveButton("네", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        //해당 부자재 삭제
+                        myRef.child(item.getUnique_number()).removeValue();
+                        //판매자 material 에서 삭제
+                        myRef_seller.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                                    if(ds.child("email").getValue().toString().equals(mFirebaseUser.getEmail())){
+                                        String material = ds.child("material").getValue().toString();
+                                        material = material.replaceFirst(item.getUnique_number(), "");
+                                        //가운데에서 삭제되었을 경우 삭제되고 남은 ## 를 #으로 변경
+                                        material = material.replace("##","#");
+                                        //맨 앞에서 삭제되었을 경우 맨 앞에 남은 # 지우기
+                                        if(material.startsWith("#")) material = material.substring(1);
+                                        //맨 뒤에서 삭제되었을 경우 맨 뒤에 남은 # 지우기
+                                        if(material.endsWith("#")) material = material.substring(0, material.length()-1);
+                                        myRef_seller.child(ds.getKey()).child("material").setValue(material);
+                                        break;
+                                    }
+                                }
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                        //구매자 cart에서 삭제
+                        myRef_customer.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                    // 장바구니 값 가져오기
+                                    String cart = ds.child("cart").getValue().toString();
+                                    // 장바구니가 비어있지 않은 경우
+                                    if(!TextUtils.isEmpty(cart)){
+                                        String[] cart_arr = cart.split("#");
+                                        boolean exist= Arrays.asList(cart_arr).contains(item.getUnique_number());
+                                        // 장바구니에 해당 아이템이 존재할 경우 삭제 실행
+                                        if(exist){
+                                            cart = cart.replaceFirst(item.getUnique_number(), "");
+                                            //가운데에서 삭제되었을 경우 삭제되고 남은 ## 를 #으로 변경
+                                            cart = cart.replace("##","#");
+                                            //맨 앞에서 삭제되었을 경우 맨 앞에 남은 # 지우기
+                                            if(cart.startsWith("#")) cart = cart.substring(1);
+                                            //맨 뒤에서 삭제되었을 경우 맨 뒤에 남은 # 지우기
+                                            if(cart.endsWith("#")) cart = cart.substring(0, cart.length()-1);
+                                            myRef_customer.child(ds.getKey()).child("cart").setValue(cart);
+                                        }
+                                    }
+                                }
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                        items.remove(position);
+                        notifyDataSetChanged();
+                    }
+                });
+
+                // '아니오' 클릭시 동작 없음
+                builder.setNegativeButton("아니오", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+        });
     }
 
     @Override
@@ -94,6 +194,9 @@ public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adat
         TextView name;
         TextView price;
         ImageView img;
+        RelativeLayout item_view;
+        Button modi_btn;
+        Button del_btn;
         //DrawableImageViewTarget drawableImageViewTarget;
 
         public ViewHolder(@NonNull View itemView) {
@@ -101,6 +204,9 @@ public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adat
             name = itemView.findViewById(R.id.mystore_product_name);
             price = itemView.findViewById(R.id.mystore_product_price);
             img = itemView.findViewById(R.id.mystore_product_img);
+            item_view = itemView.findViewById(R.id.mystore_prouduct_whole);
+            del_btn = itemView.findViewById(R.id.mystore_item_delete_btn);
+            modi_btn = itemView.findViewById(R.id.mystore_item_modify_btn);
             //drawableImageViewTarget = new DrawableImageViewTarget(img);
         }
     }

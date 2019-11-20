@@ -6,7 +6,7 @@ public class Tab3_Cart_Info {
     private String storename;
     private String delivery_fee;
     private List<Tab3_Cart_In_Item_Info> in_items;
-    private Boolean isAnySelected;
+    private boolean isAnySelected;
 
     public Tab3_Cart_Info() {
     }
@@ -42,11 +42,11 @@ public class Tab3_Cart_Info {
         this.in_items = in_items;
     }
 
-    public Boolean getAnySelected() {
+    public boolean getAnySelected() {
         return isAnySelected;
     }
 
-    public void setAnySelected(Boolean anySelected) {
+    public void setAnySelected(boolean anySelected) {
         isAnySelected = anySelected;
     }
 }
