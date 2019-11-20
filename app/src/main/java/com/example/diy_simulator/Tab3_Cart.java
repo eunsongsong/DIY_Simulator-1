@@ -56,8 +56,6 @@ public class Tab3_Cart extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_tab3_cart, container, false);
 
-        showProgress();
-
         firebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = firebaseAuth.getCurrentUser();
 
@@ -84,6 +82,8 @@ public class Tab3_Cart extends Fragment {
 
     //구매자 아이디(이메일)를 통해 장바구니에 담긴 부자재 번호 가져오기
     public void getCartInfo(){
+        showProgress();
+
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

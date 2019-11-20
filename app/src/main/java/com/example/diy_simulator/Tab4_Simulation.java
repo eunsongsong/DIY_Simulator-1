@@ -2,8 +2,6 @@ package com.example.diy_simulator;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -16,7 +14,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -322,9 +319,10 @@ public class Tab4_Simulation extends Fragment {
             }
         });
 
-        showProgress();
         // 로그인 되어있을 경우 유저에 따라 시뮬레이션 아이템 목록 (부자재 번호만) 불러오기
         if(mFirebaseUser != null){
+            showProgress();
+
             // 판매자일 경우 내 가게 상품 목록 불러오기
             if(isSeller){
                 myRef_seller.addListenerForSingleValueEvent(new ValueEventListener() {

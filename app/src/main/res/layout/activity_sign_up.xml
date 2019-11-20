@@ -36,9 +36,20 @@
         android:layout_height="50dp"
         android:id="@+id/passwordInput"
         android:layout_centerHorizontal="true"
-        android:hint="비밀번호 4~16자리"
+        android:hint="비밀번호"
         android:password="true"
         android:layout_below="@+id/emailInput" />
+
+    <TextView
+        android:id="@+id/sign_up_password_guide"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/passwordInput"
+        android:textColor="#AAFF0000"
+        android:visibility="gone"
+        android:textSize="12sp"
+        android:text="※4~16자 영문 대 소문자, 숫자, 특수문자를 사용해주세요.\n  가능 특수문자: !@.#$%^&amp;*?_~"/>
 
     <EditText
         android:layout_width="300dp"
@@ -47,7 +58,7 @@
         android:layout_centerHorizontal="true"
         android:hint="비밀번호 확인"
         android:password="true"
-        android:layout_below="@+id/passwordInput" />
+        android:layout_below="@+id/sign_up_password_guide" />
 
     <EditText
         android:id="@+id/nameInput"

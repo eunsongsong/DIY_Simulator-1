@@ -45,6 +45,7 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText email_join, pwd_join, check_pwd_join, name_join, address_join, phone_number_join, store_name_join, delivery_fee_join;
 
     private TextView check_show; //비밀번호 일치 확인 텍스트
+    private TextView password_guide;
     private Button sign_up_btn;
 
     FirebaseAuth firebaseAuth;
@@ -88,6 +89,7 @@ public class SignUpActivity extends AppCompatActivity {
         delivery_fee_join = findViewById(R.id.deliveryfeeinput);
 
         check_show = (TextView) findViewById(R.id.checkText);
+        password_guide = findViewById(R.id.sign_up_password_guide);
 
         sign_up_btn = (Button) findViewById(R.id.signup_button);
 
@@ -102,6 +104,31 @@ public class SignUpActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseAuth.useAppLanguage();
+
+        // 비밀번호 형식 안내문구
+        pwd_join.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.toString().isEmpty()){
+                    password_guide.setVisibility(View.GONE);
+                }
+                else{
+                    if(PASSWORD_PATTERN.matcher(s).matches()){
+                        password_guide.setVisibility(View.GONE);
+                    }
+                    else  //비밀번호 형식 맞지 않을 때 안내문구 보여주기
+                        password_guide.setVisibility(View.VISIBLE);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
 
         //비밀번호 일치 여부 확인
         //일치하면 회원가입 버튼 활성화
@@ -133,18 +160,20 @@ public class SignUpActivity extends AppCompatActivity {
         sign_up_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog = ProgressDialog.show(SignUpActivity.this, "회원가입 진행 중입니다!"
-                        , "이메일로 인증 메일이 발송됩니다.", true);
-                registerUser();
+                Boolean isValid = registerUser();
+                if(isValid){
+                    dialog = ProgressDialog.show(SignUpActivity.this, "회원가입 진행 중입니다!"
+                            , "이메일로 인증 메일이 발송됩니다.", true);
 
-                email_join.setText(null);
-                pwd_join.setText(null);
-                check_pwd_join.setText(null);
-                name_join.setText(null);
-                phone_number_join.setText(null);
-                address_join.setText(null);
-                store_name_join.setText(null);
-                delivery_fee_join.setText(null);
+                    email_join.setText(null);
+                    pwd_join.setText(null);
+                    check_pwd_join.setText(null);
+                    name_join.setText(null);
+                    phone_number_join.setText(null);
+                    address_join.setText(null);
+                    store_name_join.setText(null);
+                    delivery_fee_join.setText(null);
+                }
             }
         });
     }
@@ -254,7 +283,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     //회원 등록 함수
-    public void registerUser() {
+    public Boolean registerUser() {
         email = email_join.getText().toString();
         password = pwd_join.getText().toString();
         name = name_join.getText().toString();
@@ -266,19 +295,26 @@ public class SignUpActivity extends AppCompatActivity {
         //이메일 입력 칸이 빈칸인 경우 알림
         if (TextUtils.isEmpty(email)) {
             Toast.makeText(this, "이메일을 입력해 주세요.", Toast.LENGTH_SHORT).show();
-            return;
         }
         //비밀번호 입력 칸이 빈칸인 경우 알림
         if (TextUtils.isEmpty(password)) {
             Toast.makeText(this, "비밀번호를 입력해 주세요.", Toast.LENGTH_SHORT).show();
-            return;
         }
 
-        //유저 등록 함수 실행
-        if (isValidEmail() && isValidPasswd()) {
-            createUser(email, password);
+        else{
+            if(!isValidEmail()){
+                Toast.makeText(this, "이메일 형식이 올바르지 않습니다.", Toast.LENGTH_SHORT).show();
+            }
+            else if(!isValidPasswd()){
+                Toast.makeText(this, "비밀번호 형식이 올바르지 않습니다.", Toast.LENGTH_SHORT).show();
+            }
+            //유저 등록 함수 실행
+            else if (isValidEmail() && isValidPasswd()) {
+                createUser(email, password);
+                return true;
+            }
         }
-
+        return false;
     }
 
 
