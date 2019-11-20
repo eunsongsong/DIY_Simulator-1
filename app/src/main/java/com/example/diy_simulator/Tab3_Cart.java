@@ -79,35 +79,6 @@ public class Tab3_Cart extends Fragment {
         //로그인이 되어있으면 장바구니 불러오기
         if(mFirebaseUser != null) getCartInfo();
 
-        cartAdapter.setOnItemClickListener(new Tab3_Cart_Adapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View v, int position, int sum, boolean all) {
-                //해당 가게 상품이 모두 체크박스 해제
-                if(all) {
-                    sum_of_delivery_fee = sum_of_delivery_fee - Integer.parseInt(cart_item.get(position).getDelivery_fee());
-                    String str = "총 배송비 : " + sum_of_delivery_fee  + " 원";
-                    delivery_sum.setText(str);
-                }
-                //해당 가게 상품이 하나라도 체크 되어있을 때
-                else  {
-                    sum_of_delivery_fee = 0;
-                    for(int k=0; k<cart_item.size(); k++){
-                        if(cart_item.get(k).getAnySelected()){
-                            sum_of_delivery_fee = sum_of_delivery_fee + Integer.parseInt(cart_item.get(k).getDelivery_fee());
-                        }
-                    }
-                    String str = "총 배송비 : " + sum_of_delivery_fee  + " 원";
-                    delivery_sum.setText(str);
-                }
-                Log.i("합합", sum + "");
-                sum_of_money = sum_of_money + sum;
-                String str2 = "총 주문 금액 : " + (sum_of_money) + " 원";
-                money.setText(str2);  //텍스트뷰 설정
-                String str3 = "구매하기 (￦" + (sum_of_money + sum_of_delivery_fee) +")";
-                pay_btn.setText(str3);
-            }
-        });
-
         return rootview;
     }
 
@@ -268,15 +239,19 @@ public class Tab3_Cart extends Fragment {
         // 장바구니 모든 아이템의 가격 x 수량을 해서 더함
         for (int i = 0; i < cart_item.size(); i++) {
             for(int k = 0; k < cart_item.get(i).getIn_items().size(); k++){
-                int amount = cart_item.get(i).getIn_items().get(k).getAmount();
-                int price = Integer.parseInt( cart_item.get(i).getIn_items().get(k).getPrice());
-                sum_of_money = sum_of_money + amount * price;
+                if(cart_item.get(i).getIn_items().get(k).getCheckBox()){
+                    int amount = cart_item.get(i).getIn_items().get(k).getAmount();
+                    int price = Integer.parseInt( cart_item.get(i).getIn_items().get(k).getPrice());
+                    sum_of_money = sum_of_money + amount * price;
+                }
             }
         }
         Log.i("주문 금액 합   ", sum_of_money + "");
         sum_of_delivery_fee = 0;
         for(int j=0; j<cart_item.size(); j++){
-            sum_of_delivery_fee = sum_of_delivery_fee + Integer.parseInt(cart_item.get(j).getDelivery_fee());
+            if(cart_item.get(j).getAnySelected()){
+                sum_of_delivery_fee = sum_of_delivery_fee + Integer.parseInt(cart_item.get(j).getDelivery_fee());
+            }
         }
         String str = "총 배송비 : " + sum_of_delivery_fee + " 원";
         String str2 = "총 주문 금액 : " + (sum_of_money) + " 원";

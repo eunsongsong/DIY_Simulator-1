@@ -1,7 +1,6 @@
 package com.example.diy_simulator;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,20 +26,6 @@ public class Tab3_Cart_Adapter extends  RecyclerView.Adapter<Tab3_Cart_Adapter.V
         this.tab3 = tab3;
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(View v, int position, int sum, boolean all);
-    }
-
-    // 리스너 객체 참조를 저장하는 변수
-    private Tab3_Cart_Adapter.OnItemClickListener mListener = null ;
-
-    // OnItemClickListener 리스너 객체 참조를 어댑터에 전달하는 메서드
-    public void setOnItemClickListener(Tab3_Cart_Adapter.OnItemClickListener listener) {
-        this.mListener = listener ;
-    }
-
-
-
     @NonNull
     @Override
     public Tab3_Cart_Adapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -52,8 +37,6 @@ public class Tab3_Cart_Adapter extends  RecyclerView.Adapter<Tab3_Cart_Adapter.V
     public void onBindViewHolder(@NonNull Tab3_Cart_Adapter.ViewHolder holder, final int position) {
         final Tab3_Cart_Info item = all_store_items.get(position);
         final Tab3_Cart_In_Item_Adapter in_item_adapter = new Tab3_Cart_In_Item_Adapter(context, item.getIn_items(), R.layout.tab3_cart_item_in_item);
-
-        int sum_of_money = 0;
 
         //상점 이름, 배송비 텍스트 나타내기
         holder.store_name.setText(item.getStorename());
@@ -68,62 +51,38 @@ public class Tab3_Cart_Adapter extends  RecyclerView.Adapter<Tab3_Cart_Adapter.V
         in_item_adapter.setOnXItemClickListener(new Tab3_Cart_In_Item_Adapter.OnXItemClickListener() {
             @Override
             public void onXItemClick(View v) {
-                if(all_store_items.get(position).getIn_items().size() == 0)
+                if(all_store_items.get(position).getIn_items().size() == 0){
                     all_store_items.remove(position);
-                notifyDataSetChanged();
+                    notifyDataSetChanged();
+                }
+                else{
+                    Boolean allfalse = true;
+                    for(int i=0; i<all_store_items.get(position).getIn_items().size(); i++){
+                        if(all_store_items.get(position).getIn_items().get(i).getCheckBox()){
+                            allfalse = false;
+                        }
+                    }
+                    item.setAnySelected(!allfalse);
+                }
+
                 tab3.setSum_of_money();
                 if(all_store_items.size() == 0 ) tab3.isEmptyCart();
             }
         });
 
 
-        for(int i=0; i<all_store_items.size(); i++){
-            for(int k = 0; k < all_store_items.get(i).getIn_items().size(); k++){
-                int amount = all_store_items.get(i).getIn_items().get(k).getAmount();
-                int price = Integer.parseInt( all_store_items.get(i).getIn_items().get(k).getPrice());
-                sum_of_money = sum_of_money + amount * price;
-            }
-            sum_of_money = sum_of_money+  Integer.parseInt(all_store_items.get(i).getDelivery_fee());
-        }
-        Log.i("어댑터에서 하는", sum_of_money+" 총합");
-
         in_item_adapter.setOnCheckItemClickListener(new Tab3_Cart_In_Item_Adapter.OnCheckItemClickListener() {
             @Override
             public void onCheckItemClick(View v, int pos) {
-                Boolean ischecked = all_store_items.get(position).getIn_items().get(pos).getCheckBox();
-                if(ischecked) {
-                    int mPrice = Integer.parseInt(all_store_items.get(position).getIn_items().get(pos).getPrice());
-                    int mAmount = all_store_items.get(position).getIn_items().get(pos).getAmount();
-                    int sum = mAmount*mPrice;
-
-                    Boolean allfalse = true;
-                    for(int i=0; i<all_store_items.get(position).getIn_items().size(); i++){
-                        if(all_store_items.get(position).getIn_items().get(i).getCheckBox()){
-                            allfalse = false;
-                        }
+                Boolean allfalse = true;
+                for(int i=0; i<all_store_items.get(position).getIn_items().size(); i++){
+                    if(all_store_items.get(position).getIn_items().get(i).getCheckBox()){
+                        allfalse = false;
                     }
-                    item.setAnySelected(!allfalse);
-                    Log.i("check 하나라도 선택된건지", item.getAnySelected()+"");
-                    Log.i("isis!! 전부 체크 해제인지", allfalse+"");
-                    mListener.onItemClick(v, position, sum, false);
                 }
-                else{
-                    int mPrice = Integer.parseInt(all_store_items.get(position).getIn_items().get(pos).getPrice());
-                    int mAmount = all_store_items.get(position).getIn_items().get(pos).getAmount();
-                    int sum = - mAmount*mPrice;
+                item.setAnySelected(!allfalse);
+                tab3.setSum_of_money();
 
-                    Boolean allfalse = true;
-                    for(int i=0; i<all_store_items.get(position).getIn_items().size(); i++){
-                        if(all_store_items.get(position).getIn_items().get(i).getCheckBox()){
-                            allfalse = false;
-                        }
-                    }
-                    item.setAnySelected(!allfalse);
-                    Log.i("ununcheck 하나라도 선택된건지", item.getAnySelected()+"");
-                    Log.i("unun!! 전부 체크 해제인지", allfalse+"");
-                    mListener.onItemClick(v, position, sum, allfalse);
-
-                }
             }
         });
 

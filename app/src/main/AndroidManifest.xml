@@ -40,8 +40,6 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         android:usesCleartextTraffic="true">
-        <activity android:name=".MainActivity" />
-        <activity android:name=".WebViewActivity" />
         <activity android:name=".ModifySellerActivity" />
         <activity android:name=".ModifyInfoActivity" />
         <activity android:name=".MainTabActivity" />

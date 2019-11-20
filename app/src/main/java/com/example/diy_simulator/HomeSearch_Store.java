@@ -1,5 +1,6 @@
 package com.example.diy_simulator;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -35,6 +36,7 @@ public class HomeSearch_Store extends Fragment {
     String material = "";
     String seller_name, seller_phone, seller_addr;
     TextView name, phone, addr;
+    ProgressDialog pd;
 
     private ImageView no_item_img;
     public RecyclerView search_store_recyclerview;
@@ -63,6 +65,7 @@ public class HomeSearch_Store extends Fragment {
         search_store_recyclerview.setAdapter(storeAdapter);
 
         store_item.clear();
+        showProgress();
 
         name = rootview.findViewById(R.id.search_seller_name);
         phone = rootview.findViewById(R.id.search_seller_phone);
@@ -95,6 +98,7 @@ public class HomeSearch_Store extends Fragment {
                  }
                  else
                  {
+                     hideProgress();
                      no_item_img.setVisibility(View.VISIBLE);
                      return;
                  }
@@ -157,6 +161,7 @@ public class HomeSearch_Store extends Fragment {
                         i++;
                     }
                 }
+                hideProgress();
             }
 
             @Override
@@ -215,5 +220,19 @@ public class HomeSearch_Store extends Fragment {
                 .hide(HomeSearch_Store.this)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    // 프로그레스 다이얼로그 보이기
+    public void showProgress() {
+        if( pd == null ) { // 객체를 1회만 생성한다
+            pd = new ProgressDialog(getContext(), R.style.NewDialog); // 생성한다.
+            pd.setCancelable(false); // 백키로 닫는 기능을 제거한다.
+        }
+        pd.show(); // 화면에 띠워라//
+    }
+    public void hideProgress() {
+        if (pd != null && pd.isShowing()) {
+            pd.dismiss();
+        }
     }
 }
