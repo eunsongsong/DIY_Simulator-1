@@ -45,6 +45,19 @@ public class Tab3_Cart_In_Item_Adapter extends RecyclerView.Adapter<Tab3_Cart_In
         this.item_layout = item_layout;
     }
 
+    public interface OnItemImageClickListener {
+        void onItemImageClick(View v, int pos);
+    }
+
+    // 리스너 객체 참조를 저장하는 변수
+    private Tab3_Cart_In_Item_Adapter.OnItemImageClickListener iListener = null ;
+
+    // OnItemClickListener 리스너 객체 참조를 어댑터에 전달하는 메서드
+    public void setOnItemImageClickListener(Tab3_Cart_In_Item_Adapter.OnItemImageClickListener listener) {
+        this.iListener = listener ;
+    }
+
+
     public interface OnCheckItemClickListener {
         void onCheckItemClick(View v, int position);
     }
@@ -191,7 +204,7 @@ public class Tab3_Cart_In_Item_Adapter extends RecyclerView.Adapter<Tab3_Cart_In
         holder.img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //tab3.movetoProductDetail(position);
+                iListener.onItemImageClick(v, position);
             }
         });
 

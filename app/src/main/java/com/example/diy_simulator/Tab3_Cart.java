@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -76,6 +77,14 @@ public class Tab3_Cart extends Fragment {
 
         //로그인이 되어있으면 장바구니 불러오기
         if(mFirebaseUser != null) getCartInfo();
+
+        // 상품 이미지 누르면 상품 상세 정보 페이지로 이동
+        cartAdapter.setOnItemClickListener(new Tab3_Cart_Adapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int outer_position, int inner_position) {
+                movetoProductDetail(outer_position, inner_position);
+            }
+        });
 
         return rootview;
     }
@@ -261,23 +270,20 @@ public class Tab3_Cart extends Fragment {
         pay_btn.setText(str3);
     }
 
-
-/*
-
     //부자재 정보 번들에 담아서 상품 상세 페이지로 이동
-    public void movetoProductDetail(int position){
+    public void movetoProductDetail(int outer_pos, int inner_pos){
         //상품 상세 페이지 정보 가져오기
-        String name = cart_item.get(position).getName();
-        String price = cart_item.get(position).getPrice();
-        String[] url = cart_item.get(position).getImg_url();
-        String width = cart_item.get(position).getWidth();
-        String height = cart_item.get(position).getHeight();
-        String depth = cart_item.get(position).getDepth();
-        String keyword = cart_item.get(position).getKeyword();
-        String stock = cart_item.get(position).getStock();
-        String storename = cart_item.get(position).getStorename();
-        String unique_num = cart_item.get(position).getUnique_number();
-        String category = cart_item.get(position).getCategory();
+        String name = cart_item.get(outer_pos).getIn_items().get(inner_pos).getName();
+        String price = cart_item.get(outer_pos).getIn_items().get(inner_pos).getPrice();
+        String[] url = cart_item.get(outer_pos).getIn_items().get(inner_pos).getImg_url();
+        String width = cart_item.get(outer_pos).getIn_items().get(inner_pos).getWidth();
+        String height = cart_item.get(outer_pos).getIn_items().get(inner_pos).getHeight();
+        String depth = cart_item.get(outer_pos).getIn_items().get(inner_pos).getDepth();
+        String keyword = cart_item.get(outer_pos).getIn_items().get(inner_pos).getKeyword();
+        String stock = cart_item.get(outer_pos).getIn_items().get(inner_pos).getStock();
+        String storename = cart_item.get(outer_pos).getIn_items().get(inner_pos).getStorename();
+        String unique_num = cart_item.get(outer_pos).getIn_items().get(inner_pos).getUnique_number();
+        String category = cart_item.get(outer_pos).getIn_items().get(inner_pos).getCategory();
 
         Fragment tab3 = new Product_Detail_Fragment();
 
@@ -305,7 +311,7 @@ public class Tab3_Cart extends Fragment {
                 .addToBackStack(null)
                 .commit();
     }
- */
+
     // 고객이 장바구니에 담긴 물건 모두 삭제했을 때 빈 이미지 띄워줌
     public void isEmptyCart(){
         empty.setVisibility(View.VISIBLE);
