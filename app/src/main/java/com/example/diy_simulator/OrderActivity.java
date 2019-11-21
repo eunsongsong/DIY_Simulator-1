@@ -17,19 +17,18 @@ package com.example.diy_simulator;
  */
 
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.media.RingtoneManager;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 public class OrderActivity extends AppCompatActivity {
 
@@ -43,6 +42,37 @@ public class OrderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
 
+        String channelId = "channel";
+        String channelName = "Channel Name";
+
+        NotificationManager notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        //채널 생성
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel mChannel = new NotificationChannel(channelId, channelName, importance);
+            notifManager.createNotificationChannel(mChannel);
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId);
+        Intent notificationIntent = new Intent(getApplicationContext(), OrderActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        int requestID = (int) System.currentTimeMillis();
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
+                requestID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentTitle("하비게이션")
+                .setContentText("취미 활동은 어떠셨나요?")
+                .setDefaults(Notification.DEFAULT_ALL) // 알림, 사운드 진동 설정
+                .setAutoCancel(true) // 알림 터치시 반응 후 삭제
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setSmallIcon(R.mipmap.logo_white_mint) //아이콘 설정
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.logo_white_mint))
+                .setContentIntent(pendingIntent);
+
+        notifManager.notify(0, builder.build());
+
+        /*
         // Get token
         // [START retrieve_current_token]
         FirebaseInstanceId.getInstance().getInstanceId()
@@ -70,6 +100,7 @@ public class OrderActivity extends AppCompatActivity {
                     }
                 });
         // [END retrieve_current_token]
-    }
+        */
 
+    }
 }

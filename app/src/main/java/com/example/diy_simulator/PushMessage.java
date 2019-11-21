@@ -14,8 +14,8 @@ import android.os.IBinder;
 
 import androidx.core.app.NotificationCompat;
 
-public class PushMessage extends Service {
-
+public class PushMessage {
+/*
     NotificationManager Notifi_M;
     ServiceThread thread;
     @Override
@@ -74,4 +74,6 @@ public class PushMessage extends Service {
             notifManager.notify(0, builder.build());
         };
     }
+
+ */
 }
