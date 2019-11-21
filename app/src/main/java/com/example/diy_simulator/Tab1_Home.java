@@ -62,7 +62,7 @@ public class Tab1_Home extends Fragment implements View.OnClickListener {
                 //프래그먼트 tab1 -> search keyword 로 교체
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 fm.beginTransaction()
-                        .setCustomAnimations(R.anim.enter_from_right,R.anim.exit_to_right)
+                        .setCustomAnimations(R.anim.enter_from_right,R.anim.fade_out)
                         .replace(R.id.main_tab_view, tab1)
                         .hide(Tab1_Home.this)
                         .addToBackStack(null)

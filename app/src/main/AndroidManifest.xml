@@ -54,6 +54,7 @@
         <meta-data
             android:name="firebase_analytics_collection_enabled"
             android:value="false" />
+        <activity android:name=".ModifySellerProductActivity"/>
         <activity android:name=".OrderActivity"></activity>
         <activity android:name=".ModifySellerActivity" />
         <activity android:name=".ModifyInfoActivity" />

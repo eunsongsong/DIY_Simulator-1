@@ -215,7 +215,7 @@ public class HomeSearch_Store extends Fragment {
         //프래그먼트 카테고리 검색 -> 제품 상세 페이지로 교체
         FragmentManager fm = getActivity().getSupportFragmentManager();
         fm.beginTransaction()
-                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right)
+                .setCustomAnimations(R.anim.enter_from_right, R.anim.fade_out)
                 .replace(R.id.main_tab_view, tab1)
                 .hide(HomeSearch_Store.this)
                 .addToBackStack(null)

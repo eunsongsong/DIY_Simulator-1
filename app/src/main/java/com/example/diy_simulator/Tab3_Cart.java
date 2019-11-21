@@ -305,7 +305,7 @@ public class Tab3_Cart extends Fragment {
         //프래그먼트 tab3 내 가게 -> 제품 상세 페이지로 교체
         FragmentManager fm = getActivity().getSupportFragmentManager();
         fm.beginTransaction()
-                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right)
+                .setCustomAnimations(R.anim.enter_from_right, R.anim.fade_out)
                 .replace(R.id.main_tab_view, tab3)
                 .hide(Tab3_Cart.this)
                 .addToBackStack(null)

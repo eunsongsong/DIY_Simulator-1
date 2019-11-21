@@ -39,6 +39,8 @@ public class Tab3_MyStore extends Fragment {
     String material = "";
     TextView mystore_title;
 
+    public static Material_Detail_Info modi_item;
+
     ProgressDialog pd;
     private ImageView no_item_img;
 
@@ -78,6 +80,15 @@ public class Tab3_MyStore extends Fragment {
             @Override
             public void onItemClick(View v, int position) {
                 movetoProductDetail(position);
+            }
+        });
+
+        mystoreAdapter.setOnModifyItemClickListener(new Tab3_MyStore_Adater.OnModifyItemClickListener() {
+            @Override
+            public void onModifyItemClick(View v, int position) {
+                modi_item = mystore_item.get(position);
+                startActivity(new Intent(getActivity(), ModifySellerProductActivity.class));
+                getActivity().overridePendingTransition(R.anim.enter_from_right, R.anim.fade_out);
             }
         });
 
@@ -170,7 +181,7 @@ public class Tab3_MyStore extends Fragment {
     //리사이클러뷰에 제품 이름, 가격, 이미지 url으로 아이템 나타내기
     public void addItemToRecyclerView(String name, String price, String preview, String[] data,
                                       String width, String height, String depth, String keyword, String stock, String storename, String unique, String category){
-        Material_Detail_Info item = new Material_Detail_Info(name, price+" 원", preview, data, width, height, depth, keyword, stock, storename, unique, category);
+        Material_Detail_Info item = new Material_Detail_Info(name, price, preview, data, width, height, depth, keyword, stock, storename, unique, category);
         mystore_item.add(item);
 
         mystoreAdapter.notifyDataSetChanged();
@@ -211,7 +222,7 @@ public class Tab3_MyStore extends Fragment {
         //프래그먼트 tab3 내 가게 -> 제품 상세 페이지로 교체
         FragmentManager fm = getActivity().getSupportFragmentManager();
         fm.beginTransaction()
-                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right)
+                .setCustomAnimations(R.anim.enter_from_right, R.anim.fade_out)
                 .replace(R.id.main_tab_view, tab3)
                 .hide(Tab3_MyStore.this)
                 .addToBackStack(null)

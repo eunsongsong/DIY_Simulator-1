@@ -3,10 +3,11 @@ package com.example.diy_simulator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,6 +27,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,6 +42,13 @@ public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adat
     DatabaseReference myRef = database.getReference("부자재");
     DatabaseReference myRef_seller = database.getReference("판매자");
     DatabaseReference myRef_customer = database.getReference("구매자");
+
+    FirebaseStorage storage = FirebaseStorage.getInstance("gs://diy-simulator-607c9.appspot.com");
+    // Create a storage reference from our app
+    StorageReference storageRef = storage.getReference();
+
+    String seller_id = "";
+    int img_num = 0;  //부자재 사진 파일 개수
 
     FirebaseAuth firebaseAuth;
     FirebaseUser mFirebaseUser;
@@ -59,6 +71,17 @@ public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adat
         this.mListener = listener ;
     }
 
+    public interface OnModifyItemClickListener {
+        void onModifyItemClick(View v, int position);
+    }
+
+    // 리스너 객체 참조를 저장하는 변수
+    private Tab3_MyStore_Adater.OnModifyItemClickListener MListener = null ;
+
+    // OnItemClickListener 리스너 객체 참조를 어댑터에 전달하는 메서드
+    public void setOnModifyItemClickListener(Tab3_MyStore_Adater.OnModifyItemClickListener listener) {
+        this.MListener = listener ;
+    }
     @NonNull
     @Override
     public Tab3_MyStore_Adater.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -75,7 +98,7 @@ public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adat
 
         //제품 이름, 가격 텍스트 나타내기
         holder.name.setText(item.getName());
-        holder.price.setText(item.getPrice());
+        holder.price.setText(item.getPrice()+" 원");
 
         RequestOptions requestOptions = new RequestOptions();
         requestOptions = requestOptions.placeholder(R.drawable.mungmung);
@@ -111,14 +134,52 @@ public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adat
                 builder.setPositiveButton("네", new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        //해당 부자재 삭제
-                        myRef.child(item.getUnique_number()).removeValue();
-                        //판매자 material 에서 삭제
+                        /* 디비, 스토리지에서 해당 부자재 디비, 파일 삭제 */
+                        myRef.child(item.getUnique_number()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                img_num = (int)dataSnapshot.child("image_url").getChildrenCount();
+                                img_num = img_num + (int)dataSnapshot.child("image_RB_url").getChildrenCount();
+                                Log.i("개수", img_num + "");
+
+                                for(int i=0; i<img_num ;i++){
+                                    //스토리지에서 해당 부자재 이미지 파일 삭제
+                                    // Create a reference to the file to delete
+                                    StorageReference desertRef = storageRef.child(seller_id+"-"+item.getUnique_number()+"-"+i);
+                                    // Delete the file
+                                    desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            // File deleted successfully
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception exception) {
+                                            // Uh-oh, an error occurred!
+                                            Log.i("실패","페이렁");
+                                        }
+                                    });
+                                }
+
+                                //해당 부자재 디비 삭제
+                                myRef.child(item.getUnique_number()).removeValue();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        /* 판매자 material 디비에서 삭제 */
                         myRef_seller.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 for(DataSnapshot ds : dataSnapshot.getChildren()){
                                     if(ds.child("email").getValue().toString().equals(mFirebaseUser.getEmail())){
+                                        //판매자 아이디 저장
+                                        seller_id = ds.getKey().substring(8);
+                                        //판매자의 부자재 가져오기
                                         String material = ds.child("material").getValue().toString();
                                         material = material.replaceFirst(item.getUnique_number(), "");
                                         //가운데에서 삭제되었을 경우 삭제되고 남은 ## 를 #으로 변경
@@ -137,7 +198,7 @@ public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adat
 
                             }
                         });
-                        //구매자 cart에서 삭제
+                        /* 구매자 cart 디비에서 삭제 */
                         myRef_customer.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -167,6 +228,7 @@ public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adat
 
                             }
                         });
+
                         items.remove(position);
                         notifyDataSetChanged();
                     }
@@ -183,6 +245,14 @@ public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adat
                 alertDialog.show();
             }
         });
+
+        //수정 버튼 누르면 부자재 정보 수정
+        holder.modi_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (MListener != null) MListener.onModifyItemClick(v, position);
+            }
+        });
     }
 
     @Override
@@ -195,8 +265,8 @@ public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adat
         TextView price;
         ImageView img;
         RelativeLayout item_view;
-        Button modi_btn;
-        Button del_btn;
+        ImageButton modi_btn;
+        ImageButton del_btn;
         //DrawableImageViewTarget drawableImageViewTarget;
 
         public ViewHolder(@NonNull View itemView) {

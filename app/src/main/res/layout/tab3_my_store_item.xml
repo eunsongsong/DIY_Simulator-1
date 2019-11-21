@@ -43,21 +43,21 @@
                 android:layout_below="@+id/mystore_product_name"
                 android:text="제품 가격"/>
         </RelativeLayout>
-        <Button
+        <ImageButton
             android:id="@+id/mystore_item_modify_btn"
             android:layout_width="85dp"
             android:layout_height="40dp"
             android:layout_marginTop="5dp"
             android:layout_below="@+id/mystore_prouduct_whole"
-            android:text="수정"/>
-        <Button
+            android:src="@mipmap/edit_pen"/>
+        <ImageButton
             android:id="@+id/mystore_item_delete_btn"
             android:layout_width="85dp"
             android:layout_height="40dp"
             android:layout_marginTop="5dp"
             android:layout_toEndOf="@+id/mystore_item_modify_btn"
             android:layout_below="@+id/mystore_prouduct_whole"
-            android:text="삭제"/>
+            android:src="@mipmap/clear_black"/>
     </RelativeLayout>
 
 </FrameLayout>

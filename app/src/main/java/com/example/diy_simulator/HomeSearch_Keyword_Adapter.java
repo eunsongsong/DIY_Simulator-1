@@ -133,7 +133,7 @@ public class HomeSearch_Keyword_Adapter extends RecyclerView.Adapter<HomeSearch_
                 //프래그먼트 키워드 검색 -> 제품 상세 페이지로 교체
                 FragmentManager fm = tab_search.getActivity().getSupportFragmentManager();
                 fm.beginTransaction()
-                        .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right)
+                        .setCustomAnimations(R.anim.enter_from_right, R.anim.fade_out)
                         .replace(R.id.main_tab_view, tab1)
                         .hide(tab_search)
                         .addToBackStack(null)
