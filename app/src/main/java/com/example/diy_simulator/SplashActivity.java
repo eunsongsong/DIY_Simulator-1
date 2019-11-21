@@ -16,7 +16,7 @@ public class SplashActivity extends AppCompatActivity {
             Thread.sleep(1300);
 
             //홈액티비티로 전환
-            Intent mainIntent = new Intent(getApplicationContext(), MainTabActivity.class);
+            Intent mainIntent = new Intent(getApplicationContext(), OrderActivity.class);
             startActivity(mainIntent);
             finish();
 
