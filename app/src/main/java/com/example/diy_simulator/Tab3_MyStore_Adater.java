@@ -127,6 +127,8 @@ public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adat
         holder.del_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //판매자 아이디 저장
+                seller_id = mFirebaseUser.getEmail().substring(0,mFirebaseUser.getEmail().indexOf("@"));
                 // 다이얼로그 띄워서 삭제 의사 묻기
                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                 builder.setTitle("상품을 정말 삭제하시겠습니까?");
@@ -177,8 +179,6 @@ public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adat
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 for(DataSnapshot ds : dataSnapshot.getChildren()){
                                     if(ds.child("email").getValue().toString().equals(mFirebaseUser.getEmail())){
-                                        //판매자 아이디 저장
-                                        seller_id = ds.getKey().substring(8);
                                         //판매자의 부자재 가져오기
                                         String material = ds.child("material").getValue().toString();
                                         material = material.replaceFirst(item.getUnique_number(), "");
