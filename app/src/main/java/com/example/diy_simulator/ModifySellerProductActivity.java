@@ -1,5 +1,6 @@
 package com.example.diy_simulator;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -38,6 +39,7 @@ public class ModifySellerProductActivity extends AppCompatActivity {
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference("부자재");
+    ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,6 +200,8 @@ public class ModifySellerProductActivity extends AppCompatActivity {
     // 디비의 부자재 정보 변경
     private void UpdateMaterialDB(){
 
+        showProgress();
+
         name = mname.getText().toString();
         price = mprice.getText().toString();
         width = mwidth.getText().toString();
@@ -232,6 +236,7 @@ public class ModifySellerProductActivity extends AppCompatActivity {
                 myRef.child(dataSnapshot.getKey()).child("stock").setValue(stock);
                 myRef.child(dataSnapshot.getKey()).child("keyword").setValue(keyword);
                 myRef.child(dataSnapshot.getKey()).child("category").setValue(category);
+                hideProgress();
                 //액티비티 종료
                 finish();
                 overridePendingTransition(R.anim.fade_in, R.anim.exit_to_right);
@@ -249,10 +254,27 @@ public class ModifySellerProductActivity extends AppCompatActivity {
     private String getSelectedCategory(CheckBox check, String spinner){
         if(check.isChecked() && !spinner.equals("선택안함")){
             String s_category = check.getText().toString();
-            s_category = s_category + ">" +  spinner;
+            if(s_category.equals("팔찌") || s_category.equals("귀걸이")){
+                s_category = "액세서리>" + s_category + ">" +  spinner;
+            }
+            else s_category = s_category + ">" +  spinner;
             return s_category;
         }
         else return null;
+    }
+
+    // 프로그레스 다이얼로그 보이기
+    public void showProgress() {
+        if( pd == null ) { // 객체를 1회만 생성한다
+            pd = new ProgressDialog(ModifySellerProductActivity.this, R.style.NewDialog); // 생성한다.
+            pd.setCancelable(false); // 백키로 닫는 기능을 제거한다.
+        }
+        pd.show(); // 화면에 띠워라//
+    }
+    public void hideProgress() {
+        if (pd != null && pd.isShowing()) {
+            pd.dismiss();
+        }
     }
 
     @Override

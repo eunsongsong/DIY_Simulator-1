@@ -622,7 +622,10 @@ public class ImageUploadActivity extends AppCompatActivity {
     private String getSelectedCategory(CheckBox check, String spinner){
         if(check.isChecked() && !spinner.equals("선택안함")){
             String s_category = check.getText().toString();
-            s_category = s_category + ">" +  spinner;
+            if(s_category.equals("팔찌") || s_category.equals("귀걸이")){
+                s_category = "액세서리>" + s_category + ">" +  spinner;
+            }
+            else s_category = s_category + ">" +  spinner;
             return s_category;
         }
         else return null;
