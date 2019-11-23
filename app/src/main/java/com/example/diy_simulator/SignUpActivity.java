@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,18 +32,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    public static int TIME_OUT = 1001;
-
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^[a-zA-Z0-9!@.#$%^&*?_~]{4,16}$");
     ProgressDialog dialog;
 
     private EditText email_join, pwd_join, check_pwd_join, name_join, address_join, phone_number_join, store_name_join, delivery_fee_join;
+    private EditText account_join, bank_join;
 
     private TextView check_show; //비밀번호 일치 확인 텍스트
     private TextView password_guide;
@@ -58,6 +60,10 @@ public class SignUpActivity extends AppCompatActivity {
     private String phone_number = "";
     private String store_name = "";
     private String delivery_fee = "";
+    private String userToken = "";
+    private String account_number = "";
+    private String back_name = "";
+
     long count = 0;
     String whois = ""; //판매자 가입인지 고객 가입인지 확인
 
@@ -86,7 +92,9 @@ public class SignUpActivity extends AppCompatActivity {
         phone_number_join = (EditText) findViewById(R.id.phonenumberInput);
         address_join = (EditText) findViewById(R.id.addressInput);
         store_name_join = (EditText) findViewById(R.id.storenameInput);
-        delivery_fee_join = findViewById(R.id.deliveryfeeinput);
+        delivery_fee_join = (EditText) findViewById(R.id.deliveryfeeinput);
+        account_join = (EditText) findViewById(R.id.accountnumberInput);
+        bank_join = (EditText) findViewById(R.id.banknameInput);
 
         check_show = (TextView) findViewById(R.id.checkText);
         password_guide = findViewById(R.id.sign_up_password_guide);
@@ -104,6 +112,22 @@ public class SignUpActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseAuth.useAppLanguage();
+
+        // [START retrieve_current_token]
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("TAG", "getInstanceId failed", task.getException());
+                            return;
+                        }
+                        // Get new Instance ID token
+                        userToken = task.getResult().getToken();
+                        //서비스 시작 (데모용 1분 푸시)
+                    }
+                });
+        // [END retrieve_current_token]
 
         // 비밀번호 형식 안내문구
         pwd_join.addTextChangedListener(new TextWatcher() {
@@ -173,6 +197,8 @@ public class SignUpActivity extends AppCompatActivity {
                     address_join.setText(null);
                     store_name_join.setText(null);
                     delivery_fee_join.setText(null);
+                    account_join.setText(null);
+                    bank_join.setText(null);
                 }
             }
         });
@@ -226,7 +252,7 @@ public class SignUpActivity extends AppCompatActivity {
                                                             count++;
                                                         }
                                                         //구매자 - 유저정보를 디비에 넣는다.
-                                                        Customer customer= new Customer(email, name, phone_number, address);
+                                                        Customer customer= new Customer(email, name, phone_number, address, account_number, back_name);
 
                                                         StringTokenizer st = new StringTokenizer(email, "@");
                                                         if (count >= 9) {
@@ -250,7 +276,7 @@ public class SignUpActivity extends AppCompatActivity {
                                                             count++;
                                                         }
                                                         //판매자 - 유저정보를 디비에 넣는다.
-                                                        Seller seller = new Seller(email, name, phone_number, address, store_name, delivery_fee);
+                                                        Seller seller = new Seller(email, name, phone_number, address, store_name, delivery_fee, account_number, back_name);
 
                                                         StringTokenizer st = new StringTokenizer(email, "@");
                                                         if (count >= 9) {
@@ -291,6 +317,8 @@ public class SignUpActivity extends AppCompatActivity {
         address = address_join.getText().toString();
         store_name = store_name_join.getText().toString();
         delivery_fee = delivery_fee_join.getText().toString();
+        account_number = account_join.getText().toString();
+        back_name = bank_join.getText().toString();
 
         //이메일 입력 칸이 빈칸인 경우 알림
         if (TextUtils.isEmpty(email)) {

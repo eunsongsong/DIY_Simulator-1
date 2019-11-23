@@ -6,23 +6,27 @@ package com.example.diy_simulator;
  */
 public class Seller {
 
-    public String email = "";
-    public String username = "";
-    public String phonenumber = "";
-    public String address = "";
-    public String storename = "";
-    public String order = "";
-    public String material = "";
-    public String delivery_fee = "";
+    private String email;
+    private String username;
+    private String phonenumber;
+    private String address;
+    private String storename;
+    private String material;
+    private String delivery_fee;
+    private String account_number;
+    private String bank_name;
+    private String orderinfo;
 
     //판매자 생성자
-    public Seller(String email, String username, String phonenumber, String address, String storename, String delivery_fee) {
+    public Seller(String email, String username, String phonenumber, String address, String storename, String delivery_fee, String account_number, String bank_name) {
         this.email = email;
         this.username = username;
         this.phonenumber = phonenumber;
         this.address = address;
         this.storename = storename;
         this.delivery_fee = delivery_fee;
+        this.account_number = account_number;
+        this.bank_name = bank_name;
     }
 }
 
