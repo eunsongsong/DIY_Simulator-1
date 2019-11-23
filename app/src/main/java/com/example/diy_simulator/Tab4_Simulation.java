@@ -211,7 +211,7 @@ public class Tab4_Simulation extends Fragment {
                                     }
                                     imageViews.add(imageView1);
                                 }
-                                imageViews.add(imageView);
+                                imageViews.add(0,imageView);
                                 view_order = imageViews;
                                 break;
                             }
@@ -226,17 +226,18 @@ public class Tab4_Simulation extends Fragment {
                             if(imageView == v) {
                                 Log.d("ㅇㅇ","1");
                                 ArrayList<ImageView> imageViews = new ArrayList<>();
-                                imageViews.add(imageView);
-                                for(int i = 0; i < view_order.size(); i++){
+
+                                for(int i = view_order.size(); i > -1; i--){
                                     if( view_order.get(i) == v) {
                                         Log.d("ㅇㅇ", "2");
                                         continue;
                                     }
                                     Log.d("ㅇㅇ","3");
                                     view_order.get(i).bringToFront();
-                                    imageViews.add(view_order.get(i));
+                                    imageViews.add(0,view_order.get(i));
                                 }
                                 Log.d("ㅇㅇ","4");
+                                imageViews.add(imageView);
                                 view_order = imageViews;
                                 break;
                             }
