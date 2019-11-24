@@ -1,8 +1,9 @@
 package com.example.diy_simulator;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Tab3_Cart_Info {
+public class Tab3_Cart_Info implements Serializable {
     private String storename;
     private String delivery_fee;
     private List<Tab3_Cart_In_Item_Info> in_items;
@@ -49,4 +50,6 @@ public class Tab3_Cart_Info {
     public void setAnySelected(boolean anySelected) {
         isAnySelected = anySelected;
     }
+
+
 }

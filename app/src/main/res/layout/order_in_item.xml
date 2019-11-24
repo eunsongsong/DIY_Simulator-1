@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="7dp">
+
+    <ImageView
+        android:id="@+id/order_item_img"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"/>
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/order_item_product_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="50dp"
+            android:textSize="17sp"
+            android:textColor="#000000"
+            android:text="상품 이름"/>
+
+    <TextView
+        android:id="@+id/order_item_price"
+        android:layout_below="@+id/order_item_product_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="10dp"
+        android:textColor="#000000"
+        android:textSize="17sp"
+        android:text="가격"/>
+    <TextView
+        android:id="@+id/order_item_amount"
+        android:layout_below="@+id/order_item_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="10dp"
+        android:textColor="#000000"
+        android:textSize="17sp"
+        android:text="수량"/>
+
+</RelativeLayout>
+
+</LinearLayout>

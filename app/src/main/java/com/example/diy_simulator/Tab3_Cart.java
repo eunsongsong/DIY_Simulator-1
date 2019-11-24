@@ -1,6 +1,7 @@
 package com.example.diy_simulator;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -51,7 +52,7 @@ public class Tab3_Cart extends Fragment {
 
     public RecyclerView cart_recyclerview;
     private List<Tab3_Cart_Info> cart_item = new ArrayList<>();
-    List<Tab3_Cart_In_Item_Info> in_item = new ArrayList<>();
+    private List<Tab3_Cart_In_Item_Info> in_item = new ArrayList<>();
     private final Tab3_Cart_Adapter cartAdapter = new Tab3_Cart_Adapter(getContext(), cart_item, R.layout.tab3_cart_item, Tab3_Cart.this);
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -83,6 +84,30 @@ public class Tab3_Cart extends Fragment {
             @Override
             public void onItemClick(View v, int outer_position, int inner_position) {
                 movetoProductDetail(outer_position, inner_position);
+            }
+        });
+
+        pay_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), OrderActivity.class);
+                ArrayList<Tab3_Cart_Info> orderinfo_arrayList = new ArrayList<>();
+                ArrayList<Tab3_Cart_In_Item_Info> order_in_info = new ArrayList<>();
+
+                for(int a = 0 ; a < cart_item.size(); a++)
+                {
+                    for(int b = 0 ; b  < cart_item.get(a).getIn_items().size() ; b++)
+                    {
+                        if (cart_item.get(a).getIn_items().get(b).getCheckBox()) {
+                            Tab3_Cart_In_Item_Info tab3_cart_in_item_info = cart_item.get(a).getIn_items().get(b);
+                            order_in_info.add(tab3_cart_in_item_info);
+                        }
+                    }
+                    orderinfo_arrayList.add(new Tab3_Cart_Info(cart_item.get(a).getStorename(), cart_item.get(a).getDelivery_fee(),order_in_info));
+                }
+
+                intent.putExtra("order_Info",  orderinfo_arrayList);
+                startActivity(intent);
             }
         });
 

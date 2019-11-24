@@ -1,106 +1,129 @@
 package com.example.diy_simulator;
 
-/**
- * Copyright 2016 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.media.RingtoneManager;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.EditText;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class OrderActivity extends AppCompatActivity {
+    private String FCM_API = "https://fcm.googleapis.com/fcm/send";
+    private String serverKey =
+           "key=" +  " AIzaSyDuojHfyCu4-xWWWjCZje5LKtsXE1XKOLY";
+    private String contentType = "application/json";
+    private static final String TAG = "mFirebaseIIDService";
+    private static final String SUBSCRIBE_TO = "userABC";
 
-    private static final String TAG = "MainActivity";
+    EditText edtTitle;
+    EditText edtMessage;
+    String NOTIFICATION_TITLE;
+    String NOTIFICATION_MESSAGE;
+    String TOPIC;
+    String token;
 
-    private AppCompatActivity appCompatActivity;
-
+    public RecyclerView order_recyclerview;
+    private List<Tab3_Cart_Info> order_item = new ArrayList<>();
+    private List<Tab3_Cart_In_Item_Info> in_item = new ArrayList<>();
+    private OrderInfo_Adapter orderInfoAdapter;
+    //= new Tab3_Cart_Adapter(getContext(), cart_item, R.layout.tab3_cart_item, Tab3_Cart.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_payment);
+        setContentView(R.layout.activity_order);
 
-        String channelId = "channel";
-        String channelName = "Channel Name";
 
-        NotificationManager notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        // Adater에 넣을 값 초기화
+        Intent intent = getIntent();
+        order_item =  (ArrayList<Tab3_Cart_Info> )intent.getSerializableExtra("order_Info");
+        Log.d("ㅇㅇ",order_item.get(0).getStorename());
+        Log.d("ㅇㅇ",order_item.size()+"");
+        Log.d("ㅇㅇ",order_item.get(0).getIn_items().get(0).getName()+"");
 
-        //채널 생성
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel mChannel = new NotificationChannel(channelId, channelName, importance);
-            notifManager.createNotificationChannel(mChannel);
-        }
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId);
-        Intent notificationIntent = new Intent(getApplicationContext(), OrderActivity.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        int requestID = (int) System.currentTimeMillis();
-
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
-                requestID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentTitle("하비게이션")
-                .setContentText("취미 활동은 어떠셨나요?")
-                .setDefaults(Notification.DEFAULT_ALL) // 알림, 사운드 진동 설정
-                .setAutoCancel(true) // 알림 터치시 반응 후 삭제
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                .setSmallIcon(R.mipmap.logo_white_mint) //아이콘 설정
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.logo_white_mint))
-                .setContentIntent(pendingIntent);
-
-        notifManager.notify(0, builder.build());
+        orderInfoAdapter = new OrderInfo_Adapter(getApplicationContext(), order_item, R.layout.order_item);
+        //리사이클러뷰 리니어 레이아웃 매니저 설정 - vertical
+        order_recyclerview = findViewById(R.id.order_recyclerView);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        layoutManager.setOrientation(RecyclerView.VERTICAL);
+        order_recyclerview.setHasFixedSize(true);
+        order_recyclerview.setLayoutManager(layoutManager);
+        order_recyclerview.setAdapter(orderInfoAdapter);
+        orderInfoAdapter.notifyDataSetChanged();
 
         /*
-        // Get token
-        // [START retrieve_current_token]
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TOPIC = "/topics/userABC"; //topic has to match what the receiver subscribed to
+                NOTIFICATION_TITLE = edtTitle.getText().toString();
+                NOTIFICATION_MESSAGE = edtMessage.getText().toString();
+
+                JSONObject notification = new JSONObject();
+                JSONObject notifcationBody = new JSONObject();
+                try {
+                    notifcationBody.put("title", NOTIFICATION_TITLE);
+                    notifcationBody.put("message", NOTIFICATION_MESSAGE);
+
+                    notification.put("to", TOPIC);
+                    notification.put("data", notifcationBody);
+                } catch (JSONException e) {
+                    Log.e(TAG, "onCreate: " + e.getMessage() );
+                }
+                sendNotification(notification);
+            }
+        });
+
+
+         */
+
+
+        String topic = "/topics/Enter_your_topic_name"; //topic has to match what the receiver subscribed to"
+// Get token
+
+    }
+
+    private void sendNotification(JSONObject notification) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
+
+                new com.android.volley.Response.Listener<JSONObject>() {
                     @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "getInstanceId failed", task.getException());
-                            return;
-                        }
-
-                        // Get new Instance ID token
-                        String token = task.getResult().getToken();
-
-                        FirebaseMessaging.getInstance().subscribeToTopic("news");
-                        //서비스 시작 (데모용 1분 푸시)
-
-                        // Log and toast
-                        String msg = getString(R.string.msg_token_fmt, token);
-                        Log.d(TAG, msg);
-                        Toast.makeText(OrderActivity.this, msg, Toast.LENGTH_SHORT).show();
-
-                        Intent intent = new Intent(getApplicationContext(), PushMessage.class);
-                        getApplicationContext().startService(intent);
+                    public void onResponse(JSONObject response) {
+                        Log.i(TAG, "onResponse: " + response.toString());
+                        edtTitle.setText("");
+                        edtMessage.setText("");
                     }
-                });
-        // [END retrieve_current_token]
-        */
-
+                },
+                new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(OrderActivity.this, "Request error", Toast.LENGTH_LONG).show();
+                        Log.i(TAG, "onErrorResponse: Didn't work");
+                    }
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", serverKey);
+                params.put("Content-Type", contentType);
+                return params;
+            }
+        };
+        MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
     }
 }

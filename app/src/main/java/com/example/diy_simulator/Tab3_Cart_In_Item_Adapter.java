@@ -34,7 +34,6 @@ public class Tab3_Cart_In_Item_Adapter extends RecyclerView.Adapter<Tab3_Cart_In
     Context context;
     List<Tab3_Cart_In_Item_Info> items;
     int item_layout;
-    Tab3_Cart tab3;
 
     FirebaseDatabase database= FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("구매자");

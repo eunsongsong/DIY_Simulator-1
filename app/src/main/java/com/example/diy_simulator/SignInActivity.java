@@ -1,11 +1,8 @@
 package com.example.diy_simulator;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -30,7 +27,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 public class SignInActivity extends AppCompatActivity {
@@ -92,7 +91,6 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
-
         //판매자 이메일 전부 가져와서 스트링 배열 sellers에 저장
         myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -113,14 +111,6 @@ public class SignInActivity extends AppCompatActivity {
         });
     }
 
-    @SuppressLint("HandlerLeak")
-    Handler mHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            if (msg.what == TIME_OUT) { // 타임아웃이 발생하면
-                dialog.dismiss(); // ProgressDialog를 종료
-            }
-        }
-    };
 
     /**
      * sign in 버튼 클릭시 실행
@@ -175,6 +165,12 @@ public class SignInActivity extends AppCompatActivity {
 
                                         email_login.setText(null);
                                         pwd_login.setText(null);
+
+                                        // 파이어베이스 메세징 주제 설정
+                                        String topic= mFirebaseUser.getEmail();
+                                        StringTokenizer st = new StringTokenizer(topic, "@");
+                                        FirebaseMessaging.getInstance().subscribeToTopic(st.nextToken() + st.nextToken());
+
 
                                         Log.d("판매자인지?", isSeller+"");
                                         Intent intent = new Intent(getApplicationContext(), MainTabActivity.class);

@@ -1,8 +1,10 @@
 package com.example.diy_simulator;
 
-import java.io.Serializable;
 
-public class Tab3_Cart_In_Item_Info implements Serializable {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Order_In_Info implements Parcelable {
     private String name;
     private String price;
     private String preview_img_url;
@@ -18,8 +20,8 @@ public class Tab3_Cart_In_Item_Info implements Serializable {
     private int amount;
     private boolean checkBox;
 
-    public Tab3_Cart_In_Item_Info(String name, String price, String preview_img_url, String[] img_url, String width, String height, String depth,
-                          String keyword, String stock, String storename, String unique_number, String category, int amount) {
+    public Order_In_Info(String name, String price, String preview_img_url, String[] img_url, String width, String height, String depth,
+                                  String keyword, String stock, String storename, String unique_number, String category, int amount) {
         this.name = name;
         this.price = price;
         this.preview_img_url = preview_img_url;
@@ -35,6 +37,36 @@ public class Tab3_Cart_In_Item_Info implements Serializable {
         this.amount = amount;
         this.checkBox = true;
     }
+
+
+    protected Order_In_Info(Parcel in) {
+        name = in.readString();
+        price = in.readString();
+        preview_img_url = in.readString();
+        img_url = in.createStringArray();
+        width = in.readString();
+        height = in.readString();
+        depth = in.readString();
+        keyword = in.readString();
+        stock = in.readString();
+        storename = in.readString();
+        unique_number = in.readString();
+        category = in.readString();
+        amount = in.readInt();
+        checkBox = in.readByte() != 0;
+    }
+
+    public static final Creator<Order_In_Info> CREATOR = new Creator<Order_In_Info>() {
+        @Override
+        public Order_In_Info createFromParcel(Parcel in) {
+            return new Order_In_Info(in);
+        }
+
+        @Override
+        public Order_In_Info[] newArray(int size) {
+            return new Order_In_Info[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -146,5 +178,28 @@ public class Tab3_Cart_In_Item_Info implements Serializable {
 
     public void setCheckBox(boolean checkBox) {
         this.checkBox = checkBox;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(price);
+        dest.writeString(preview_img_url);
+        dest.writeStringArray(img_url);
+        dest.writeString(width);
+        dest.writeString(height);
+        dest.writeString(depth);
+        dest.writeString(keyword);
+        dest.writeString(stock);
+        dest.writeString(storename);
+        dest.writeString(unique_number);
+        dest.writeString(category);
+        dest.writeInt(amount);
+        dest.writeByte((byte) (checkBox ? 1 : 0));
     }
 }

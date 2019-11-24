@@ -11,9 +11,9 @@ public class Customer {
     private String phonenumber;
     private String address;
     private String cart;
-    private String orderInfo;
     private String account_number;
     private String bank_name;
+    private String orderInfo;
 
     //구매자 생성자
     public Customer(String email, String username, String phonenumber, String address, String account_number, String bank_name) {
@@ -23,6 +23,7 @@ public class Customer {
         this.address = address;
         this.account_number = account_number;
         this.bank_name = bank_name;
+        this.cart = "";
     }
 
     public String getEmail() {
@@ -65,6 +66,29 @@ public class Customer {
         this.cart = cart;
     }
 
+    public String getAccount_number() {
+        return account_number;
+    }
+
+    public void setAccount_number(String account_number) {
+        this.account_number = account_number;
+    }
+
+    public String getBank_name() {
+        return bank_name;
+    }
+
+    public void setBank_name(String bank_name) {
+        this.bank_name = bank_name;
+    }
+
+    public String getOrderInfo() {
+        return orderInfo;
+    }
+
+    public void setOrderInfo(String orderInfo) {
+        this.orderInfo = orderInfo;
+    }
 }
 
 

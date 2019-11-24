@@ -41,21 +41,22 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <!--- 안드로이드 8.0 이상 푸시 처리 추가 코드-->
+        <activity android:name=".OrderActivity"></activity>
+        <!-- - 안드로이드 8.0 이상 푸시 처리 추가 코드 -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/logo"/>
+            android:resource="@drawable/logo" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/colorMint"/>
+            android:resource="@color/colorMint" />
         <meta-data
             android:name="firebase_messaging_auto_init_enabled"
             android:value="false" />
         <meta-data
             android:name="firebase_analytics_collection_enabled"
             android:value="false" />
-        <activity android:name=".ModifySellerProductActivity"/>
-        <activity android:name=".OrderActivity"></activity>
+
+        <activity android:name=".ModifySellerProductActivity" />
         <activity android:name=".ModifySellerActivity" />
         <activity android:name=".ModifyInfoActivity" />
         <activity android:name=".MainTabActivity" />
@@ -83,21 +84,19 @@
         <activity
             android:name=".CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" /> <!-- optional (needed if default theme has no action bar) -->
-
-        <service
-            android:name=".MyFirebaseMessagingService">
+        <service android:name=".MyFirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-<!--
+        <!--
         <service
             android:name=".FirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
-       -->
+        -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

@@ -27,6 +27,87 @@ public class Seller {
         this.delivery_fee = delivery_fee;
         this.account_number = account_number;
         this.bank_name = bank_name;
+        this.material = "";
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPhonenumber() {
+        return phonenumber;
+    }
+
+    public void setPhonenumber(String phonenumber) {
+        this.phonenumber = phonenumber;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getStorename() {
+        return storename;
+    }
+
+    public void setStorename(String storename) {
+        this.storename = storename;
+    }
+
+    public String getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(String material) {
+        this.material = material;
+    }
+
+    public String getDelivery_fee() {
+        return delivery_fee;
+    }
+
+    public void setDelivery_fee(String delivery_fee) {
+        this.delivery_fee = delivery_fee;
+    }
+
+    public String getAccount_number() {
+        return account_number;
+    }
+
+    public void setAccount_number(String account_number) {
+        this.account_number = account_number;
+    }
+
+    public String getBank_name() {
+        return bank_name;
+    }
+
+    public void setBank_name(String bank_name) {
+        this.bank_name = bank_name;
+    }
+
+    public String getOrderinfo() {
+        return orderinfo;
+    }
+
+    public void setOrderinfo(String orderinfo) {
+        this.orderinfo = orderinfo;
     }
 }
 
