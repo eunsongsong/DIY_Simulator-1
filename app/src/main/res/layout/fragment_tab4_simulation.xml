@@ -138,20 +138,31 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                <ImageView
-                    android:id="@+id/no_simul_item"
-                    android:visibility="gone"
-                    android:layout_width="match_parent"
-                    android:layout_centerInParent="true"
-                    android:scaleType="fitCenter"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/simulation_menu_recycler"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    <ImageView
+                        android:id="@+id/no_simul_item"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:scaleType="fitCenter"
+                        android:visibility="gone" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/simulation_menu_recycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
                 </RelativeLayout>
+
+                <Switch
+                    android:id="@+id/all_etc_item_show_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:switchMinWidth="30dp"
+                    android:text="기타 이미지 모두 보이기" />
+
 
             </LinearLayout>
 
@@ -189,7 +200,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/right_black" />
-<!--
+            <!--
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -225,8 +236,8 @@
                 android:layout_marginLeft="215dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:scaleType="fitXY"
-                android:background="@drawable/zoom_in_black" />
+                android:background="@drawable/zoom_in_black"
+                android:scaleType="fitXY" />
 
             <ImageButton
                 android:id="@+id/minimize"
@@ -235,8 +246,8 @@
                 android:layout_marginLeft="270dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:scaleType="fitXY"
-                android:background="@drawable/zoom_out_black" />
+                android:background="@drawable/zoom_out_black"
+                android:scaleType="fitXY" />
 
             <ImageButton
                 android:id="@+id/simulation_menu_button"
@@ -248,24 +259,23 @@
                 android:background="@drawable/menu" />
 
 
-
         </FrameLayout>
 
 
-                <RelativeLayout
-                    android:id="@+id/relative"
-                    android:layout_weight="10"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <ImageView
-                        android:id="@+id/trash"
-                        android:layout_width="70dp"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_alignParentBottom="true"
-                        android:background="@drawable/trash" />
-                </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/relative"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="10">
 
+            <ImageView
+                android:id="@+id/trash"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/trash" />
+        </RelativeLayout>
 
     </LinearLayout>
 

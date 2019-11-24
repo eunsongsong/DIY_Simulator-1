@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,8 +37,8 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
         this.item_layout = item_layout;
     }
     public List<Tab4_Simulation_Item> getFilteredList() {
-        for(int i = 0 ; i < filteredList.size(); i++)
-            Log.d("우람",filteredList.get(i).getUrl());
+        //for(int i = 0 ; i < filteredList.size(); i++)
+          // Log.d("우람",filteredList.get(i).getPreview_url());
         return filteredList;
     }
     public interface OnItemClickListener {
@@ -93,20 +94,20 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
     @Override
     public void onBindViewHolder(@NonNull final com.example.diy_simulator.Tab4_Simulation_Adatper.ViewHolder holder, final int position) {
         final Tab4_Simulation_Item item = filteredList.get(position);
-/*
         //제품 이름, 가격 텍스트 나타내기
         holder.name.setText(item.getName());
+        /*
         holder.price.setText(item.getPrice());
  */
         RequestOptions requestOptions = new RequestOptions();
         requestOptions = requestOptions.placeholder(R.drawable.mungmung);
 
-        if (!TextUtils.isEmpty(item.getUrl())) {
+        if (!TextUtils.isEmpty(item.getPreview_url())) {
             //제품 이미지 url로 나타내기
 
             Glide.with(holder.itemView.getContext())
                     .setDefaultRequestOptions(requestOptions)
-                    .load(item.getUrl())
+                    .load(item.getPreview_url())
                     /*
                     .listener(new RequestListener<Drawable>() {
                         @Override
@@ -141,6 +142,7 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imageView;
+        TextView name;
         // ProgressBar progressBar;
         //DrawableImageViewTarget gifImage;
 
@@ -148,6 +150,7 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.simulation_menu_product_img);
+            name = itemView.findViewById(R.id.simulation_menu_product_name);
             //  imageView2 = imageView.findViewById(R.id.chuchu);
             //progressBar = itemView.findViewById(R.id.progress_circular);
             // gifImage = new DrawableImageViewTarget(imageView2);
