@@ -92,10 +92,11 @@ public class Tab3_Cart extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), OrderActivity.class);
                 ArrayList<Tab3_Cart_Info> orderinfo_arrayList = new ArrayList<>();
-                ArrayList<Tab3_Cart_In_Item_Info> order_in_info = new ArrayList<>();
+
 
                 for(int a = 0 ; a < cart_item.size(); a++)
                 {
+                    ArrayList<Tab3_Cart_In_Item_Info> order_in_info = new ArrayList<>();
                     for(int b = 0 ; b  < cart_item.get(a).getIn_items().size() ; b++)
                     {
                         if (cart_item.get(a).getIn_items().get(b).getCheckBox()) {
@@ -103,7 +104,8 @@ public class Tab3_Cart extends Fragment {
                             order_in_info.add(tab3_cart_in_item_info);
                         }
                     }
-                    orderinfo_arrayList.add(new Tab3_Cart_Info(cart_item.get(a).getStorename(), cart_item.get(a).getDelivery_fee(),order_in_info));
+                    if ( order_in_info.size() != 0)
+                        orderinfo_arrayList.add(new Tab3_Cart_Info(cart_item.get(a).getStorename(), cart_item.get(a).getDelivery_fee(),order_in_info));
                 }
 
                 intent.putExtra("order_Info",  orderinfo_arrayList);
@@ -357,4 +359,6 @@ public class Tab3_Cart extends Fragment {
             pd.dismiss();
         }
     }
+
+
 }

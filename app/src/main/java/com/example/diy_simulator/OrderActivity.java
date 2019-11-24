@@ -52,9 +52,6 @@ public class OrderActivity extends AppCompatActivity {
         // Adater에 넣을 값 초기화
         Intent intent = getIntent();
         order_item =  (ArrayList<Tab3_Cart_Info> )intent.getSerializableExtra("order_Info");
-        Log.d("ㅇㅇ",order_item.get(0).getStorename());
-        Log.d("ㅇㅇ",order_item.size()+"");
-        Log.d("ㅇㅇ",order_item.get(0).getIn_items().get(0).getName()+"");
 
         orderInfoAdapter = new OrderInfo_Adapter(getApplicationContext(), order_item, R.layout.order_item);
         //리사이클러뷰 리니어 레이아웃 매니저 설정 - vertical
@@ -125,5 +122,11 @@ public class OrderActivity extends AppCompatActivity {
             }
         };
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

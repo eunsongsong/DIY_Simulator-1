@@ -58,14 +58,13 @@ public class OrderInfo_Adapter extends  RecyclerView.Adapter<com.example.diy_sim
         holder.in_item_recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false));
         holder.in_item_recyclerView.setAdapter(orderInfo_in_adapter);
         orderInfo_in_adapter.notifyDataSetChanged();
-       // notifyDataSetChanged();
         int sum = 0 ;
         for(int i = 0 ; i < item.getIn_items().size(); i++)
         {
             sum += (Integer.parseInt(item.getIn_items().get(i).getPrice()) * item.getIn_items().get(i).getAmount());
         }
         holder.order_order_money.setText("주문금액 "+ sum+"");
-        holder.order_sum_of_money.setText(Integer.parseInt(item.getDelivery_fee()) + sum+"");
+        holder.order_sum_of_money.setText("총 합계 금액 " + (Integer.parseInt(item.getDelivery_fee()) + sum));
     }
 
     @Override
