@@ -28,12 +28,17 @@ public class ModifySellerActivity extends AppCompatActivity {
     EditText modifySellerPhonenumber;
     EditText modifySellerAddress;
     EditText modifySellerStorename;
+    EditText modifySellerBank;
+    EditText modifySellerAccount;
+    EditText modifySellerDelivery;
 
     String reSellerName;
     String reSellerPhonenumber;
     String reSellerAddress;
     String reSellerStorename;
-
+    String reSellerBank;
+    String reSellerAccount;
+    String reSellerDelivery;
 
     FirebaseAuth firebaseAuth;
     FirebaseUser mFirebaseUser;
@@ -50,6 +55,9 @@ public class ModifySellerActivity extends AppCompatActivity {
         modifySellerStorename = (EditText)findViewById(R.id.modify_storename);
         modifySellerPhonenumber = (EditText)findViewById(R.id.modify_seller_phonenumber);
         modifySellerAddress = (EditText)findViewById(R.id.modify_seller_address);
+        modifySellerBank = (EditText)findViewById(R.id.modify_seller_bank);
+        modifySellerAccount = (EditText)findViewById(R.id.modify_seller_account);
+        modifySellerDelivery = (EditText)findViewById(R.id.modify_seller_delivery);
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseAuth.useAppLanguage();
@@ -58,27 +66,37 @@ public class ModifySellerActivity extends AppCompatActivity {
         modifySellerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ModifyUserInfo();
+                ModifySellerInfo();
 
                 modifySellerName.setText(null);
                 modifySellerStorename.setText(null);
                 modifySellerPhonenumber.setText(null);
                 modifySellerAddress.setText(null);
+                modifySellerBank.setText(null);
+                modifySellerAccount.setText(null);
+                modifySellerDelivery.setText(null);
             }
         });
     }
-    //수정된 사항 유저 DB에 저장
-    public void ModifyUserInfo(){
+
+    //수정된 사항 판매자 DB에 저장
+    public void ModifySellerInfo(){
         reSellerName = modifySellerName.getText().toString();
         reSellerStorename = modifySellerStorename.getText().toString();
         reSellerPhonenumber = modifySellerPhonenumber.getText().toString();
         reSellerAddress = modifySellerAddress.getText().toString();
+        reSellerBank = modifySellerBank.getText().toString();
+        reSellerAccount = modifySellerAccount.getText().toString();
+        reSellerDelivery = modifySellerDelivery.getText().toString();
 
         firebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = firebaseAuth.getCurrentUser();
 
         //변경사항이 없을 때 - 메세지만 띄우기
-        if ((TextUtils.isEmpty(reSellerName)) && (TextUtils.isEmpty(reSellerStorename)) && (TextUtils.isEmpty(reSellerPhonenumber)) && (TextUtils.isEmpty(reSellerAddress))) {
+        if ((TextUtils.isEmpty(reSellerName)) && (TextUtils.isEmpty(reSellerStorename))
+                && (TextUtils.isEmpty(reSellerPhonenumber)) && (TextUtils.isEmpty(reSellerAddress)
+                && (TextUtils.isEmpty(reSellerBank) && (TextUtils.isEmpty(reSellerAccount))
+                && (TextUtils.isEmpty(reSellerDelivery))))) {
             Toast.makeText(this, "변경사항이 없습니다.", Toast.LENGTH_SHORT).show();
         }
         //변경사항이 있을 때 - DB 업데이트
@@ -111,6 +129,21 @@ public class ModifySellerActivity extends AppCompatActivity {
                                     StringTokenizer st = new StringTokenizer(mFirebaseUser.getEmail(), "@");
                                     StringTokenizer st_two = new StringTokenizer(ds.getKey(), ":");
                                     myRef2.child(st_two.nextToken() + ":" + st.nextToken()).child("address").setValue(reSellerAddress);
+                                }
+                                if (!(TextUtils.isEmpty(reSellerBank))) {
+                                    StringTokenizer st = new StringTokenizer(mFirebaseUser.getEmail(), "@");
+                                    StringTokenizer st_two = new StringTokenizer(ds.getKey(), ":");
+                                    myRef2.child(st_two.nextToken() + ":" + st.nextToken()).child("bank_name").setValue(reSellerBank);
+                                }
+                                if (!(TextUtils.isEmpty(reSellerAccount))) {
+                                    StringTokenizer st = new StringTokenizer(mFirebaseUser.getEmail(), "@");
+                                    StringTokenizer st_two = new StringTokenizer(ds.getKey(), ":");
+                                    myRef2.child(st_two.nextToken() + ":" + st.nextToken()).child("account_number").setValue(reSellerAccount);
+                                }
+                                if (!(TextUtils.isEmpty(reSellerDelivery))) {
+                                    StringTokenizer st = new StringTokenizer(mFirebaseUser.getEmail(), "@");
+                                    StringTokenizer st_two = new StringTokenizer(ds.getKey(), ":");
+                                    myRef2.child(st_two.nextToken() + ":" + st.nextToken()).child("delivery_fee").setValue(reSellerDelivery);
                                 }
 
 

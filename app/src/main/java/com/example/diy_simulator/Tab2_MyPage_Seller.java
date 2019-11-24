@@ -28,6 +28,9 @@ public class Tab2_MyPage_Seller extends Fragment {
     TextView sellerEmail;
     TextView sellerAddress;
     TextView sellerPhonenumber;
+    TextView sellerBank;
+    TextView sellerAccount;
+    TextView sellerDelivery;
 
     Button sellerSignout;
     Button sellerModify;
@@ -46,6 +49,9 @@ public class Tab2_MyPage_Seller extends Fragment {
         sellerEmail = (TextView)rootview.findViewById(R.id.mypage_sellerEmail);
         sellerPhonenumber = (TextView)rootview.findViewById(R.id.mypage_sellerPhonenumber);
         sellerAddress = (TextView)rootview.findViewById(R.id.mypage_sellerAddress);
+        sellerBank = (TextView)rootview.findViewById(R.id.mypage_sellerBank);
+        sellerAccount = (TextView)rootview.findViewById(R.id.mypage_sellerAccount);
+        sellerDelivery = (TextView)rootview.findViewById(R.id.mypage_sellerDelivery);
 
         sellerSignout = rootview.findViewById(R.id.mypage_seller_signout);
         sellerModify = rootview.findViewById(R.id.mypage_seller_modify);
@@ -66,6 +72,12 @@ public class Tab2_MyPage_Seller extends Fragment {
                                 sellerPhonenumber.setText(target);
                                 target = ds.child("address").getValue().toString();
                                 sellerAddress.setText(target);
+                                target = ds.child("bank_name").getValue().toString();
+                                sellerBank.setText(target);
+                                target = ds.child("account_number").getValue().toString();
+                                sellerAccount.setText(target);
+                                target = ds.child("delivery_fee").getValue().toString();
+                                sellerDelivery.setText(target);
                             }
                         }
                         return;
@@ -81,7 +93,7 @@ public class Tab2_MyPage_Seller extends Fragment {
         }
 
         // 회원정보 수정
-        //회원정보 수정은 ModifyInfo액티비티에서 진행
+        //회원정보 수정은 ModifySeller액티비티에서 진행
         sellerModify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

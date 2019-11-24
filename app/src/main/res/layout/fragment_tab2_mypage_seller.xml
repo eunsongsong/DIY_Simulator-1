@@ -56,10 +56,34 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:layout_below="@+id/mypage_sellerPhonenumber"
         android:layout_marginLeft="40dp"
-        android:textSize="18dp"
         android:text="주소"
-        android:layout_below="@+id/mypage_sellerPhonenumber"/>
+        android:textSize="18dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/mypage_sellerAddress"
+        android:layout_marginLeft="40dp"
+        android:text="은행명"
+        android:textSize="18dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/mypage_sellerBank"
+        android:layout_marginLeft="40dp"
+        android:text="계좌번호"
+        android:textSize="18dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/mypage_sellerAccount"
+        android:layout_marginLeft="40dp"
+        android:text="배송비"
+        android:textSize="18dp" />
 
     <TextView
         android:id="@+id/mypage_sellerId"
@@ -102,12 +126,36 @@
         android:textSize="18dp"
         android:layout_below="@+id/mypage_sellerPhonenumber"/>
 
+    <TextView
+        android:id="@+id/mypage_sellerBank"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="120dp"
+        android:textSize="18dp"
+        android:layout_below="@+id/mypage_sellerAddress"/>
+
+    <TextView
+        android:id="@+id/mypage_sellerAccount"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="120dp"
+        android:textSize="18dp"
+        android:layout_below="@+id/mypage_sellerBank"/>
+
+    <TextView
+        android:id="@+id/mypage_sellerDelivery"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="120dp"
+        android:textSize="18dp"
+        android:layout_below="@+id/mypage_sellerAccount"/>
+
     <Button
         android:id="@+id/mypage_seller_modify"
         android:layout_marginTop="10dp"
         android:layout_width="150dp"
         android:layout_height="40dp"
-        android:layout_below="@+id/mypage_sellerAddress"
+        android:layout_below="@+id/mypage_sellerDelivery"
         android:layout_marginLeft="40dp"
         android:layout_marginRight="20dp"
         android:background="#EEEEEE"
@@ -119,7 +167,7 @@
         android:layout_marginTop="10dp"
         android:layout_width="150dp"
         android:layout_height="40dp"
-        android:layout_below="@+id/mypage_sellerAddress"
+        android:layout_below="@+id/mypage_sellerDelivery"
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@+id/mypage_seller_modify"
         android:background="#EEEEEE"

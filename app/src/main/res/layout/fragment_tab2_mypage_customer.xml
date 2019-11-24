@@ -120,7 +120,7 @@
     android:layout_below="@+id/mypage_customer_modify"
     android:layout_marginTop="15dp"
     android:layout_marginBottom="20dp"
-    android:text="주문/배송 조회" />
+    android:text="주문 내역 조회" />
 
 
 
