@@ -96,12 +96,15 @@ public class Tab4_Simulation extends Fragment {
 
     private int touch_cnt;
 
-
+    private int _xDelta;
+    private int _yDelta;
     //싱글 터치
     private View.OnTouchListener touchListener = new View.OnTouchListener() {
         @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onTouch(View v, MotionEvent event) {
+            final int X = (int) event.getRawX();
+            final int Y = (int) event.getRawY();
             switch (MOVE) {
 
                 case 1: // 기본움직임
@@ -111,32 +114,47 @@ public class Tab4_Simulation extends Fragment {
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
                         // 뷰 누름
 
-                        oldXvalue = event.getX();
-                        oldYvalue = event.getY();
-                        Log.d("viewTest", "oldXvalue : " + oldXvalue + " oldYvalue : " + oldYvalue);    // View 내부에서 터치한 지점의 상대 좌표값.
+                        //oldXvalue = event.getX();
+                        //oldYvalue = event.getY();
+                        _xDelta = (int) (X - v.getTranslationX());
+                        _yDelta = (int) (Y - v.getTranslationY());
                         Log.d("viewTest", "v.getX() : " + v.getX());    // View 의 좌측 상단이 되는 지점의 절대 좌표값.
-                        Log.d("viewTest", "RawX : " + event.getRawX() + " RawY : " + event.getRawY());    // View 를 터치한 지점의 절대 좌표값.
-                        Log.d("viewTest", "v.getHeight : " + v.getHeight() + " v.getWidth : " + v.getWidth());    // View 의 Width, Height
+                        Log.d("viewTest", "v.getY() : " + v.getY());    // View 의 좌측 상단이 되는 지점의 절대 좌표값.
+
 
                     } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
                         // 뷰 이동 중
-                        Log.d("viewTest", "v.getX() : " + v.getX());    // View 의 좌측 상단이 되는 지점의 절대 좌표값.
-                        Log.d("viewTest22", "v.getY() : " + v.getY());    // View 의 좌측 상단이 되는 지점의 절대 좌표값.
+                        //RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) v.getLayoutParams();
+
+                        v.setTranslationX(X - _xDelta);
+                        v.setTranslationY(Y - _yDelta);
 
                         int[] location = new int[2];
                         v.getLocationOnScreen(location);
-                        v.setX(v.getX() + (float)((event.getX() - oldXvalue) * Math.pow(1.5, touch_cnt)));
-                        v.setY(v.getY() + (float)((event.getY() - oldYvalue) * Math.pow(1.5, touch_cnt)));
 
-
-                        Log.d("오니~", parentHeight+"");
-                        Log.d("오니~", trash_height+"");
-                        Log.d("오니~",  location[1]+"");
                         if (parentHeight - (parentHeight - trash_height) <= location[1]){
                             trashView.setImageDrawable(getResources().getDrawable(R.drawable.trash_mint));
                         }
                         else
                             trashView.setImageDrawable(getResources().getDrawable(R.drawable.trash));
+                        break;
+                        /*
+                        Log.d("viewTest", "v.getX() : " + v.getX());    // View 의 좌측 상단이 되는 지점의 절대 좌표값.
+                        Log.d("viewTest22", "v.getY() : " + v.getY());    // View 의 좌측 상단이 되는 지점의 절대 좌표값.
+
+
+
+                        Log.d("왜이리커",(float)((event.getX() - oldXvalue) * Math.pow(1.5, touch_cnt))+"");
+                        v.setX(v.getX() + (float)((event.getX() - oldXvalue) * Math.pow(1.5, touch_cnt)));
+                        v.setY(v.getY() + (float)((event.getY() - oldYvalue) * Math.pow(1.5, touch_cnt)));
+
+                        Log.d("오니~", parentHeight+"");
+                        Log.d("오니~", trash_height+"");
+                        Log.d("오니~",  location[1]+"");
+                        */
+
+
+
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
                         // 뷰에서 손을
                         Log.d("현재위치", v.getX() + "x " + v.getY());
@@ -180,6 +198,8 @@ public class Tab4_Simulation extends Fragment {
                     break;
                 case 2:
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        Log.d("전",v.getX()+"");
+                        Log.d("전",v.getY()+"");
 
                     } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
 
@@ -189,11 +209,15 @@ public class Tab4_Simulation extends Fragment {
                     break;
                 case 3:
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
-
+                        Log.d("전",v.getX()+"");
+                        Log.d("전",v.getY()+"");
                     } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
 
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
                         v.setRotation(v.getRotation() + angle);
+                        // Create an animation instance
+                        Log.d("후",v.getX()+"");
+                        Log.d("후",v.getY()+"");
                     }
                     break;
                 case 4: // 하나 앞으로
