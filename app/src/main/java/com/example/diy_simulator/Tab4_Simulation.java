@@ -2,7 +2,6 @@ package com.example.diy_simulator;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -15,15 +14,11 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
-import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -201,54 +196,130 @@ public class Tab4_Simulation extends Fragment {
                     break;
                 case 4:
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        v.bringToFront();
-
-                        for(ImageView imageView : view_order)
-                        {
+                        // 하나 앞으로
+                        for(ImageView imageView : view_order) {
                             if(imageView == v) {
                                 Log.d("ㅇㅇ","1");
                                 ArrayList<ImageView> imageViews = new ArrayList<>();
-                                for(ImageView imageView1 : view_order)
-                                {
-                                    Log.d("ㅇㅇ","2");
-                                    if( imageView1 == v)
-                                    {
-                                        Log.d("ㅇㅇ","3");
+                                int a = view_order.indexOf(v);
+                                Log.d("dd", "인덱스"+view_order.indexOf(v));
+                                Log.d("사이즈","?"+view_order.size());
+
+                                for(int i = 0; i < view_order.size(); i++) {
+                                    if (a == i && i == view_order.size()-1){
+                                        view_order.get(i).bringToFront();
+                                        imageViews.add(view_order.get(i));
+                                        Log.d("oo","마지막 앞으로");
                                         continue;
                                     }
-                                    imageViews.add(imageView1);
+                                    if (i == a) {
+                                        view_order.get(i+1).bringToFront();
+                                        imageViews.add(view_order.get(i+1));
+                                        view_order.get(i).bringToFront();
+                                        imageViews.add(view_order.get(i));
+                                        continue;
+                                    }
+                                    if (i == a+1) {
+                                        continue;
+                                    }
+                                    Log.d("ㅇㅇ", "앞으로!!" + view_order.indexOf(view_order.get(i)));
+                                    view_order.get(i).bringToFront();
+                                    imageViews.add(view_order.get(i));
                                 }
-                                imageViews.add(0,imageView);
+                                Log.d("ㅇㅇ","4");
+
                                 view_order = imageViews;
                                 break;
                             }
                         }
+
+                        // 맨 앞으로
+//                        v.bringToFront();
+//                        for(ImageView imageView : view_order) {
+//                            if(imageView == v) {
+//                                Log.d("ㅇㅇ","1");
+//                                ArrayList<ImageView> imageViews = new ArrayList<>();
+//                                for(ImageView imageView1 : view_order)
+//                                {
+//                                    Log.d("ㅇㅇ","2");
+//                                    if( imageView1 == v)
+//                                    {
+//                                        Log.d("ㅇㅇ","3");
+//                                        continue;
+//                                    }
+//                                    imageViews.add(imageView1);
+//                                }
+//                                imageViews.add(0, imageView);
+//                                view_order = imageViews;
+//                                break;
+//                            }
+//                        }
                     }
                     break;
                 case 5:
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
-
-                        for(ImageView imageView : view_order)
-                        {
+                        // 하나 뒤로
+                        for(ImageView imageView : view_order) {
                             if(imageView == v) {
                                 Log.d("ㅇㅇ","1");
                                 ArrayList<ImageView> imageViews = new ArrayList<>();
+                                int a = view_order.indexOf(v);
+                                Log.d("dd", "인덱스"+view_order.indexOf(v));
+                                Log.d("사이즈","?"+view_order.size());
 
-                                for(int i = view_order.size(); i > -1; i--){
-                                    if( view_order.get(i) == v) {
-                                        Log.d("ㅇㅇ", "2");
+                                for(int i = 0; i < view_order.size(); i++) {
+                                    if (a == i && i == 0){
+                                        imageViews.add(view_order.get(0));
                                         continue;
                                     }
-                                    Log.d("ㅇㅇ","3");
+                                    if (i == a - 1) {
+                                        Log.d("ㅇㅇ", "넘어가고");
+                                        continue;
+                                    }
+                                    if (i == a) {
+                                        view_order.get(i).bringToFront();
+                                        imageViews.add(view_order.get(i));
+                                        Log.d("00", "하나만뒤로" + a);
+                                        view_order.get(i - 1).bringToFront();
+                                        imageViews.add(view_order.get(i - 1));
+                                        Log.d("00", "그다음");
+                                        continue;
+                                    }
+                                    Log.d("ㅇㅇ", "앞으로!!" + view_order.indexOf(view_order.get(i)));
                                     view_order.get(i).bringToFront();
-                                    imageViews.add(0,view_order.get(i));
+                                    imageViews.add(view_order.get(i));
                                 }
                                 Log.d("ㅇㅇ","4");
-                                imageViews.add(imageView);
+
                                 view_order = imageViews;
                                 break;
                             }
                         }
+
+                        // 맨 뒤로
+//                        for(ImageView imageView : view_order)
+//                        {
+//                            if(imageView == v) {
+//                                Log.d("ㅇㅇ","1");
+//                                ArrayList<ImageView> imageViews = new ArrayList<>();
+//                                imageViews.add(imageView);
+//                                Log.d("사이즈","?"+view_order.size());
+//                                Log.d("dd", "인덱스"+view_order.indexOf(v));
+//                                for(int i = 0; i < view_order.size(); i++){
+//                                    if( view_order.get(i) == v) {
+//                                        Log.d("ㅇㅇ", "2");
+//                                        continue;
+//                                    }
+//                                    Log.d("ㅇㅇ","3");
+//                                    view_order.get(i).bringToFront();
+//                                    imageViews.add(view_order.get(i));
+//                                }
+//                                Log.d("ㅇㅇ","4");
+//
+//                                view_order = imageViews;
+//                                break;
+//                            }
+//                        }
                     }
                     break;
 
