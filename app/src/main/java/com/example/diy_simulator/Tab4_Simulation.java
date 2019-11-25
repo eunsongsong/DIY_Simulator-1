@@ -279,7 +279,7 @@ public class Tab4_Simulation extends Fragment {
                     break;
                 case 6: // 맨 앞으로
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
-
+                        Log.d("dd","ddd"+view_order.indexOf(v));
                         v.bringToFront();
                         for(ImageView imageView : view_order) {
                             if(imageView == v) {
@@ -295,8 +295,10 @@ public class Tab4_Simulation extends Fragment {
                                     }
                                     imageViews.add(imageView1);
                                 }
-                                imageViews.add(0, imageView);
+                                //imageViews.add(0, imageView);
+                                imageViews.add(imageView);
                                 view_order = imageViews;
+                                Log.d("dd","ddd"+view_order.indexOf(v));
                                 break;
                             }
                         }
