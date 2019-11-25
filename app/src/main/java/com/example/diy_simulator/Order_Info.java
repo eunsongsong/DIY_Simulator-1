@@ -7,6 +7,8 @@ import android.os.Parcelable;
 public class Order_Info  implements Parcelable {
     private String storename;
     private String delivery_fee;
+    private String account_number;
+    private String bank_name;
 
     public Order_Info() {
     }

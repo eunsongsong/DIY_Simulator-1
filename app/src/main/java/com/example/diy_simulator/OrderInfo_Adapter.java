@@ -26,7 +26,7 @@ public class OrderInfo_Adapter extends  RecyclerView.Adapter<com.example.diy_sim
     }
 
     public interface OnItemClickListener {
-        void onItemClick(View v, int position, String item_name);
+        void onItemClick(View v, int position);
     }
 
     // 리스너 객체 참조를 저장하는 변수
@@ -65,6 +65,13 @@ public class OrderInfo_Adapter extends  RecyclerView.Adapter<com.example.diy_sim
         }
         holder.order_order_money.setText("주문금액 "+ sum+"");
         holder.order_sum_of_money.setText("총 합계 금액 " + (Integer.parseInt(item.getDelivery_fee()) + sum));
+
+        holder.order_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onItemClick(v, position);
+            }
+        });
     }
 
     @Override

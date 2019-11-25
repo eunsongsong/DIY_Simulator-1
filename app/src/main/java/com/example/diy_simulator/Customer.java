@@ -24,6 +24,7 @@ public class Customer {
         this.account_number = account_number;
         this.bank_name = bank_name;
         this.cart = "";
+        this.orderInfo = "";
     }
 
     public String getEmail() {

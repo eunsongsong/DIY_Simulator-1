@@ -28,6 +28,7 @@ public class Seller {
         this.account_number = account_number;
         this.bank_name = bank_name;
         this.material = "";
+        this.orderinfo = "";
     }
 
     public String getEmail() {

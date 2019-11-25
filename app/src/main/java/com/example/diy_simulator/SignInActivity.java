@@ -168,18 +168,26 @@ public class SignInActivity extends AppCompatActivity {
 
                                         // 파이어베이스 메세징 주제 설정
                                         String topic= mFirebaseUser.getEmail();
+                                        Log.d("이메일",topic);
                                         StringTokenizer st = new StringTokenizer(topic, "@");
-                                        FirebaseMessaging.getInstance().subscribeToTopic(st.nextToken() + st.nextToken());
+                                        FirebaseMessaging.getInstance().subscribeToTopic(st.nextToken() + st.nextToken())
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                Log.d("판매자인지?", isSeller+"");
+                                                if(task.isSuccessful()) {
+                                                    Intent intent = new Intent(getApplicationContext(), MainTabActivity.class);
+                                                    PreferenceUtil.getInstance(getApplicationContext()).putBooleanExtra("isSeller", isSeller);
+                                                    //로그인 이전 액티비티 스택을 비운다
+                                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                    dialog.dismiss();
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            }
+                                        });
 
 
-                                        Log.d("판매자인지?", isSeller+"");
-                                        Intent intent = new Intent(getApplicationContext(), MainTabActivity.class);
-                                        PreferenceUtil.getInstance(getApplicationContext()).putBooleanExtra("isSeller",isSeller);
-                                        //로그인 이전 액티비티 스택을 비운다
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        dialog.dismiss();
-                                        startActivity(intent);
-                                        finish();
                                     }
                                 }
                             } else {
