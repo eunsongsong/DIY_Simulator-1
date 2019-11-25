@@ -75,6 +75,8 @@ public class Tab4_Simulation extends Fragment {
 
     private ImageButton left_rotate;
     private ImageButton right_rotate;
+    private ImageButton order_front_1;
+    private ImageButton order_back_1;
     private ImageButton order_front;
     private ImageButton order_back;
     private ImageButton magnify_btn;
@@ -194,9 +196,8 @@ public class Tab4_Simulation extends Fragment {
                         v.setRotation(v.getRotation() + angle);
                     }
                     break;
-                case 4:
+                case 4: // 하나 앞으로
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        // 하나 앞으로
                         for(ImageView imageView : view_order) {
                             if(imageView == v) {
                                 Log.d("ㅇㅇ","1");
@@ -233,32 +234,10 @@ public class Tab4_Simulation extends Fragment {
                             }
                         }
 
-                        // 맨 앞으로
-//                        v.bringToFront();
-//                        for(ImageView imageView : view_order) {
-//                            if(imageView == v) {
-//                                Log.d("ㅇㅇ","1");
-//                                ArrayList<ImageView> imageViews = new ArrayList<>();
-//                                for(ImageView imageView1 : view_order)
-//                                {
-//                                    Log.d("ㅇㅇ","2");
-//                                    if( imageView1 == v)
-//                                    {
-//                                        Log.d("ㅇㅇ","3");
-//                                        continue;
-//                                    }
-//                                    imageViews.add(imageView1);
-//                                }
-//                                imageViews.add(0, imageView);
-//                                view_order = imageViews;
-//                                break;
-//                            }
-//                        }
                     }
                     break;
-                case 5:
+                case 5: // 하나 뒤로
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        // 하나 뒤로
                         for(ImageView imageView : view_order) {
                             if(imageView == v) {
                                 Log.d("ㅇㅇ","1");
@@ -296,30 +275,59 @@ public class Tab4_Simulation extends Fragment {
                             }
                         }
 
-                        // 맨 뒤로
-//                        for(ImageView imageView : view_order)
-//                        {
-//                            if(imageView == v) {
-//                                Log.d("ㅇㅇ","1");
-//                                ArrayList<ImageView> imageViews = new ArrayList<>();
-//                                imageViews.add(imageView);
-//                                Log.d("사이즈","?"+view_order.size());
-//                                Log.d("dd", "인덱스"+view_order.indexOf(v));
-//                                for(int i = 0; i < view_order.size(); i++){
-//                                    if( view_order.get(i) == v) {
-//                                        Log.d("ㅇㅇ", "2");
-//                                        continue;
-//                                    }
-//                                    Log.d("ㅇㅇ","3");
-//                                    view_order.get(i).bringToFront();
-//                                    imageViews.add(view_order.get(i));
-//                                }
-//                                Log.d("ㅇㅇ","4");
-//
-//                                view_order = imageViews;
-//                                break;
-//                            }
-//                        }
+                    }
+                    break;
+                case 6: // 맨 앞으로
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+
+                        v.bringToFront();
+                        for(ImageView imageView : view_order) {
+                            if(imageView == v) {
+                                Log.d("ㅇㅇ","1");
+                                ArrayList<ImageView> imageViews = new ArrayList<>();
+                                for(ImageView imageView1 : view_order)
+                                {
+                                    Log.d("ㅇㅇ","2");
+                                    if( imageView1 == v)
+                                    {
+                                        Log.d("ㅇㅇ","3");
+                                        continue;
+                                    }
+                                    imageViews.add(imageView1);
+                                }
+                                imageViews.add(0, imageView);
+                                view_order = imageViews;
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                case 7: // 맨 뒤로
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+
+                        for(ImageView imageView : view_order)
+                        {
+                            if(imageView == v) {
+                                Log.d("ㅇㅇ","1");
+                                ArrayList<ImageView> imageViews = new ArrayList<>();
+                                imageViews.add(imageView);
+                                Log.d("사이즈","?"+view_order.size());
+                                Log.d("dd", "인덱스"+view_order.indexOf(v));
+                                for(int i = 0; i < view_order.size(); i++){
+                                    if( view_order.get(i) == v) {
+                                        Log.d("ㅇㅇ", "2");
+                                        continue;
+                                    }
+                                    Log.d("ㅇㅇ","3");
+                                    view_order.get(i).bringToFront();
+                                    imageViews.add(view_order.get(i));
+                                }
+                                Log.d("ㅇㅇ","4");
+
+                                view_order = imageViews;
+                                break;
+                            }
+                        }
                     }
                     break;
 
@@ -334,6 +342,8 @@ public class Tab4_Simulation extends Fragment {
 
         left_rotate = (ImageButton) rootview.findViewById(R.id.left_rotate);
         right_rotate = (ImageButton) rootview.findViewById(R.id.right_rotate);
+        order_front_1 = (ImageButton) rootview.findViewById(R.id.order_front_1);
+        order_back_1 = (ImageButton) rootview.findViewById(R.id.order_back_1);
         order_front = (ImageButton) rootview.findViewById(R.id.order_front);
         order_back = (ImageButton) rootview.findViewById(R.id.order_back);
         magnify_btn  = (ImageButton) rootview.findViewById(R.id.magnify);
@@ -578,6 +588,8 @@ public class Tab4_Simulation extends Fragment {
                     MOVE = 2;
                     left_rotate.setBackground(getResources().getDrawable(R.drawable.left_mint));
                     right_rotate.setBackground(getResources().getDrawable(R.drawable.right_black));
+                    order_front_1.setBackground(getResources().getDrawable(R.drawable.front_black_1));
+                    order_back_1.setBackground(getResources().getDrawable(R.drawable.back_black_1));
                     order_front.setBackground(getResources().getDrawable(R.drawable.front_black));
                     order_back.setBackground(getResources().getDrawable(R.drawable.back_black));
                 }
@@ -595,6 +607,8 @@ public class Tab4_Simulation extends Fragment {
                     MOVE = 3;
                     right_rotate.setBackground(getResources().getDrawable(R.drawable.right_mint));
                     left_rotate.setBackground(getResources().getDrawable(R.drawable.left_black));
+                    order_front_1.setBackground(getResources().getDrawable(R.drawable.front_black_1));
+                    order_back_1.setBackground(getResources().getDrawable(R.drawable.back_black_1));
                     order_front.setBackground(getResources().getDrawable(R.drawable.front_black));
                     order_back.setBackground(getResources().getDrawable(R.drawable.back_black));
                 }
@@ -605,11 +619,51 @@ public class Tab4_Simulation extends Fragment {
             }
         });
 
-        order_front.setOnClickListener(new View.OnClickListener() {
+        order_front_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(MOVE != 4){
                     MOVE = 4;
+                    order_front_1.setBackground(getResources().getDrawable(R.drawable.front_mint_1));
+                    order_back_1.setBackground(getResources().getDrawable(R.drawable.back_black_1));
+                    order_front.setBackground(getResources().getDrawable(R.drawable.front_black));
+                    order_back.setBackground(getResources().getDrawable(R.drawable.back_black));
+                    left_rotate.setBackground(getResources().getDrawable(R.drawable.left_black));
+                    right_rotate.setBackground(getResources().getDrawable(R.drawable.right_black));
+                }
+                else{
+                    MOVE = 1;
+                    order_front_1.setBackground(getResources().getDrawable(R.drawable.front_black_1));
+                }
+            }
+        });
+
+        order_back_1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(MOVE != 5){
+                    MOVE = 5;
+                    order_front_1.setBackground(getResources().getDrawable(R.drawable.front_black_1));
+                    order_back_1.setBackground(getResources().getDrawable(R.drawable.back_mint_1));
+                    order_front.setBackground(getResources().getDrawable(R.drawable.front_black));
+                    order_back.setBackground(getResources().getDrawable(R.drawable.back_black));
+                    left_rotate.setBackground(getResources().getDrawable(R.drawable.left_black));
+                    right_rotate.setBackground(getResources().getDrawable(R.drawable.right_black));
+                }
+                else{
+                    MOVE = 1;
+                    order_back_1.setBackground(getResources().getDrawable(R.drawable.back_black_1));
+                }
+            }
+        });
+
+        order_front.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(MOVE != 6){
+                    MOVE = 6;
+                    order_front_1.setBackground(getResources().getDrawable(R.drawable.front_black_1));
+                    order_back_1.setBackground(getResources().getDrawable(R.drawable.back_black_1));
                     order_front.setBackground(getResources().getDrawable(R.drawable.front_mint));
                     order_back.setBackground(getResources().getDrawable(R.drawable.back_black));
                     left_rotate.setBackground(getResources().getDrawable(R.drawable.left_black));
@@ -625,10 +679,12 @@ public class Tab4_Simulation extends Fragment {
         order_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(MOVE != 5){
-                    MOVE = 5;
-                    order_back.setBackground(getResources().getDrawable(R.drawable.back_mint));
+                if(MOVE != 7){
+                    MOVE = 7;
+                    order_front_1.setBackground(getResources().getDrawable(R.drawable.front_black_1));
+                    order_back_1.setBackground(getResources().getDrawable(R.drawable.back_black_1));
                     order_front.setBackground(getResources().getDrawable(R.drawable.front_black));
+                    order_back.setBackground(getResources().getDrawable(R.drawable.back_mint));
                     left_rotate.setBackground(getResources().getDrawable(R.drawable.left_black));
                     right_rotate.setBackground(getResources().getDrawable(R.drawable.right_black));
                 }

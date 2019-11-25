@@ -185,18 +185,18 @@
 
             <ImageButton
                 android:id="@+id/left_rotate"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="15dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="12dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/left_black" />
 
             <ImageButton
                 android:id="@+id/right_rotate"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="60dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="54dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/right_black" />
@@ -210,30 +210,47 @@
                 android:textSize="25sp"
                 android:textStyle="italic" />
                 -->
+            <ImageButton
+                android:id="@+id/order_front_1"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="96dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/front_black_1" />
+
+            <ImageButton
+                android:id="@+id/order_back_1"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="138dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/back_black_1" />
 
             <ImageButton
                 android:id="@+id/order_front"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="105dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="180dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/front_black" />
 
             <ImageButton
                 android:id="@+id/order_back"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="160dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="222dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/back_black" />
 
             <ImageButton
                 android:id="@+id/magnify"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="215dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="264dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/zoom_in_black"
@@ -241,9 +258,9 @@
 
             <ImageButton
                 android:id="@+id/minimize"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="270dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="306dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/zoom_out_black"
@@ -251,9 +268,9 @@
 
             <ImageButton
                 android:id="@+id/simulation_menu_button"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="350dp"
+                android:layout_width="37dp"
+                android:layout_height="37dp"
+                android:layout_marginLeft="356dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/menu" />
