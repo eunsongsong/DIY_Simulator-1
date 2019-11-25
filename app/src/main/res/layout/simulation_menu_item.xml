@@ -29,24 +29,27 @@
             android:adjustViewBounds="true"
             android:layout_width="170dp"
             android:layout_height="170dp"/>
-        <!--   android:src="@drawable/photo_outline"
         <TextView
             android:id="@+id/simulation_menu_product_name"
             android:layout_width="170dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:maxLines="2"
+            android:textColor="#222222"
+            android:textAlignment="center"
             android:layout_below="@+id/simulation_menu_product_img"
             android:text="제품 이름"/>
-        <TextView
-            android:id="@+id/simulation_menu_product_price"
-            android:layout_width="170dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:maxLines="2"
-            android:layout_below="@+id/simulation_menu_product_name"
-            android:text="제품 가격"/>
-            -->
+        <!--   android:src="@drawable/photo_outline"
+
+            <TextView
+                android:id="@+id/simulation_menu_product_price"
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:maxLines="2"
+                android:layout_below="@+id/simulation_menu_product_name"
+                android:text="제품 가격"/>
+                -->
     </RelativeLayout>
 
 </FrameLayout>

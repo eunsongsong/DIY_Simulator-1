@@ -109,6 +109,7 @@
             android:id="@+id/cart_pay_button"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
+            android:text="구 매 하 기"
             android:background="#3DC1AB"/>
     </LinearLayout>
 </LinearLayout>

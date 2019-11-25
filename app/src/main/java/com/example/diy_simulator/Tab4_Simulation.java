@@ -2,6 +2,7 @@ package com.example.diy_simulator;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -14,10 +15,15 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -43,6 +49,7 @@ public class Tab4_Simulation extends Fragment {
     private LinearLayout blur;
     private View view;
     Animation animation;
+    Switch all_etc_item_show;
 
     float oldXvalue;
     float oldYvalue;
@@ -262,6 +269,7 @@ public class Tab4_Simulation extends Fragment {
         minimize_btn  = (ImageButton) rootview.findViewById(R.id.minimize);
 
         relativeLayout = (RelativeLayout) rootview.findViewById(R.id.relative);
+        all_etc_item_show = rootview.findViewById(R.id.all_etc_item_show_checkbox);
 
         firebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = firebaseAuth.getCurrentUser();
@@ -378,7 +386,6 @@ public class Tab4_Simulation extends Fragment {
                 });
             }
         }
-        // 로그인 안되어 있을 경우
 
         ImageButton menubtn = rootview.findViewById(R.id.simulation_menu_button);
         ImageButton x_btn = rootview.findViewById(R.id.x_button);
@@ -443,7 +450,6 @@ public class Tab4_Simulation extends Fragment {
         menubtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 DisplayMetrics dm = getContext().getResources().getDisplayMetrics();
                 //    Log.d("촉",cart);
                 int width = dm.widthPixels;
@@ -465,48 +471,7 @@ public class Tab4_Simulation extends Fragment {
 
                 blur.setVisibility(View.GONE);
 
-                // 시뮬레이션 아이템 불러오기
-
-                if(!TextUtils.isEmpty(cart)) {
-
-                    showProgress();
-
-                    empty_item.setVisibility(View.GONE);
-                    cart_arr = cart.split("#");
-                    myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            // Log.d("제발잠좀","자게해줘"+dataSnapshot.getValue().toString());
-                            //String url = dataSnapshot.child("image_RB_url").child(d.getKey()).getValue().toString();
-                            simulation_items.clear();
-                            int i = 0;
-                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                if ( i == cart_arr.length)
-                                    break;
-                                if(cart_arr[i].equals(ds.getKey())){
-                                    Log.d("궁금 " + ds.getKey(),ds.child("image_url").getChildrenCount()+"");
-                                    String url = ds.child("image_RB_url").child(Integer.parseInt(ds.getKey()) + (int) ds.child("image_url").getChildrenCount()+"").getValue().toString();
-                                    int width = Integer.parseInt(ds.child("size_width").getValue().toString());
-                                    int height = Integer.parseInt(ds.child("size_height").getValue().toString());
-                                    String category = ds.child("category").getValue().toString();
-                                    addItemToRecyclerView(url, width, height, category);
-                                    i++;
-                                    continue;
-                                }
-                            }
-                            simulationAdatper.getFilter().filter("");
-                            simulation_items = simulationAdatper.getFilteredList();
-                            simulationAdatper.getFilter().filter("");
-                            simulation_items = simulationAdatper.getFilteredList();
-                            hideProgress();
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-                }
+                loadSimulationItems(all_etc_item_show.isChecked());
             }
         });
 
@@ -524,6 +489,14 @@ public class Tab4_Simulation extends Fragment {
                 simul_menu_layout.setVisibility(View.GONE);
                 simul_menu_layout.setAnimation(animation);
                 blur.setVisibility(View.VISIBLE);
+            }
+        });
+
+        //기타 이미지 보이기 스위치 버튼
+        all_etc_item_show.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    CheckChangedListener();
             }
         });
 
@@ -656,13 +629,12 @@ public class Tab4_Simulation extends Fragment {
         return rootview;
 
     }
-    //부자재 정보 번들에 담아서 상품 상세 페이지로 이동
+
     @SuppressLint("ClickableViewAccessibility")
     public void inflate(int position) {
-        //상품 상세 페이지 정보 가져오기
         double width = simulation_items.get(position).getWidth();
         double height = simulation_items.get(position).getHeight();
-        String url = simulation_items.get(position).getUrl();
+        String preview = simulation_items.get(position).getPreview_url();
         ImageView iv = new ImageView(getContext());  // 새로 추가할 imageView 생성
 
         double randomValue = Math.random();
@@ -674,7 +646,7 @@ public class Tab4_Simulation extends Fragment {
         iv.setY( intValue * parentHeight / 16 * (float)Math.pow(1.5,-Math.abs(touch_cnt)));
 
         Glide.with(getContext())
-                .load(url)
+                .load(preview)
                 .into(iv);
         iv.setOnTouchListener(touchListener);
         iv.buildDrawingCache();
@@ -695,10 +667,89 @@ public class Tab4_Simulation extends Fragment {
 
     }
 
-    public void addItemToRecyclerView(String url, int width, int height, String category){
-        Tab4_Simulation_Item item = new Tab4_Simulation_Item(url, width, height, category);
+    public void addItemToRecyclerView(String preview, String[] url, int width, int height, String category, String name){
+        Tab4_Simulation_Item item = new Tab4_Simulation_Item(preview, url, width, height, category, name);
         simulation_items.add(item);
         simulationAdatper.notifyDataSetChanged();
+    }
+
+    //시뮬레이션 아이템 불러오기
+    private void loadSimulationItems(final boolean show_all){
+        // 시뮬레이션 아이템 불러오기
+        if(!TextUtils.isEmpty(cart)) {
+
+            Log.i("시뮬 로드합니다", show_all+"" +simulation_items.size() + " 사이즈");
+
+            showProgress();
+
+            empty_item.setVisibility(View.GONE);
+            cart_arr = cart.split("#");
+            myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    // Log.d("제발잠좀","자게해줘"+dataSnapshot.getValue().toString());
+                    //String url = dataSnapshot.child("image_RB_url").child(d.getKey()).getValue().toString();
+                    simulation_items.clear();
+                    int i = 0;
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        if ( i == cart_arr.length)
+                            break;
+                        if(cart_arr[i].equals(ds.getKey())){
+
+                            String[] url = new String[(int)ds.child("image_RB_url").getChildrenCount()];
+                            int k = 0 ;
+                            for(DataSnapshot ds2 : ds.child("image_RB_url").getChildren()) {
+                                url[k] = ds2.getValue().toString();
+                                k++;
+                            }
+                            String preview_url = url[0];
+                            //Log.d("궁금 " + ds.getKey(),ds.child("image_url").getChildrenCount()+"");
+                            //String url = ds.child("image_RB_url").child(Integer.parseInt(ds.getKey()) + (int) ds.child("image_url").getChildrenCount()+"").getValue().toString();
+                            int width = Integer.parseInt(ds.child("size_width").getValue().toString());
+                            int height = Integer.parseInt(ds.child("size_height").getValue().toString());
+                            String name = ds.child("material_name").getValue().toString();
+                            String category = ds.child("category").getValue().toString();
+                            if(show_all){
+                                for (int m = 0; m < url.length; m++) {
+                                    addItemToRecyclerView(url[m], url, width, height, category, name+" - "+(m+1));
+                                    Log.i("트루일때", simulation_items.get(m).getName()+" ㅂㄴ"+m);
+                                }
+                            }
+                            else{
+                                addItemToRecyclerView(preview_url, url, width, height, category, name);
+                            }
+                            i++;
+                            continue;
+                        }
+                    }
+                    hideProgress();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
+    private void CheckChangedListener(){
+        if(all_etc_item_show.isChecked()) {
+            Log.i("켜졌습니다", "ㅛ4ㄷ");
+            loadSimulationItems(true);
+            simulationAdatper.getFilter().filter("");
+            simulation_items = simulationAdatper.getFilteredList();
+            simulationAdatper.getFilter().filter("");
+            simulation_items = simulationAdatper.getFilteredList();
+        }
+        else{
+            Log.d("꺼졌다", "ㅛ4ㄷ");
+            loadSimulationItems(false);
+            simulationAdatper.getFilter().filter("");
+            simulation_items = simulationAdatper.getFilteredList();
+            simulationAdatper.getFilter().filter("");
+            simulation_items = simulationAdatper.getFilteredList();
+        }
     }
 
     @Override
