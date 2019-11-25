@@ -48,27 +48,59 @@
             android:layout_marginLeft="310dp"
             android:background="@drawable/question" />
 
-        <CheckedTextView
-            android:id="@+id/check_remove"
-            android:text="배경 제거하기"
-            android:layout_below="@+id/image_recyclerview"
-            android:layout_marginTop="20dp"
-            android:layout_centerHorizontal="true"
-            android:background="#00ff0000"
-            android:layout_width="300dp"
+        <LinearLayout
+            android:id="@+id/image_rb_check_tv"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:checkMark="?android:attr/listChoiceIndicatorSingle"
-            android:textAppearance="?android:attr/textAppearanceListItemSmall"
-            android:paddingTop="5dp"
-            android:textAlignment="textEnd"
-            android:clickable="true"
-            android:focusable="true"
-            android:ellipsize="end"
-            android:textColor="#555555"/>
+            android:layout_marginTop="20dp"
+            android:layout_below="@+id/image_recyclerview"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="배경 제거하기: "
+                android:textColor="#555555"
+                android:paddingStart="30dp"
+                android:textSize="17sp"/>
+
+            <CheckedTextView
+                android:id="@+id/check_remove"
+                android:text="정면/후면"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkMark="?android:attr/listChoiceIndicatorSingle"
+                android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                android:paddingTop="5dp"
+                android:paddingStart="15dp"
+                android:textAlignment="textEnd"
+                android:clickable="true"
+                android:focusable="true"
+                android:ellipsize="end"
+                android:textColor="#555555"/>
+
+            <CheckedTextView
+                android:id="@+id/check_remove_side"
+                android:text="측면"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkMark="?android:attr/listChoiceIndicatorSingle"
+                android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                android:paddingTop="5dp"
+                android:paddingStart="15dp"
+                android:textAlignment="textEnd"
+                android:clickable="true"
+                android:focusable="true"
+                android:ellipsize="end"
+                android:textColor="#555555"/>
+        </LinearLayout>
+
 
         <TextView
             android:id="@+id/name_guide"
-            android:layout_below="@+id/check_remove"
+            android:layout_below="@+id/image_rb_check_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"

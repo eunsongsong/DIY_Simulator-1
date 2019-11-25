@@ -705,11 +705,16 @@ public class Tab4_Simulation extends Fragment {
     public void inflate(int position) {
         double width = simulation_items.get(position).getWidth();
         double height = simulation_items.get(position).getHeight();
+        double depth = simulation_items.get(position).getDepth();
         String preview = simulation_items.get(position).getPreview_url();
         ImageView iv = new ImageView(getContext());  // 새로 추가할 imageView 생성
 
         double randomValue = Math.random();
         int intValue = (int) (randomValue * 4) + 2;
+
+        if(simulation_items.get(position).isSide()){
+            width = depth;
+        }
 
         iv.setX( intValue * parentWidth / 9 * (float)Math.pow(1.5, -Math.abs(touch_cnt)));
         randomValue = Math.random();
@@ -738,8 +743,8 @@ public class Tab4_Simulation extends Fragment {
 
     }
 
-    public void addItemToRecyclerView(String preview, String[] url, int width, int height, String category, String name){
-        Tab4_Simulation_Item item = new Tab4_Simulation_Item(preview, url, width, height, category, name);
+    public void addItemToRecyclerView(String preview, String[] url, int width, int height, int depth, String category, String name, boolean isSide){
+        Tab4_Simulation_Item item = new Tab4_Simulation_Item(preview, url, width, height, depth, category, name, isSide);
         simulation_items.add(item);
         simulationAdatper.notifyDataSetChanged();
     }
@@ -773,21 +778,35 @@ public class Tab4_Simulation extends Fragment {
                                 url[k] = ds2.getValue().toString();
                                 k++;
                             }
+
+                            String[] url_side = new String[(int)ds.child("image_RB_SIDE_url").getChildrenCount()];
+                            k = 0 ;
+                            for(DataSnapshot ds2 : ds.child("image_RB_SIDE_url").getChildren()) {
+                                url_side[k] = ds2.getValue().toString();
+                                Log.i("사이드", url_side[k] + " 얍");
+                                k++;
+                            }
+
                             String preview_url = url[0];
                             //Log.d("궁금 " + ds.getKey(),ds.child("image_url").getChildrenCount()+"");
                             //String url = ds.child("image_RB_url").child(Integer.parseInt(ds.getKey()) + (int) ds.child("image_url").getChildrenCount()+"").getValue().toString();
                             int width = Integer.parseInt(ds.child("size_width").getValue().toString());
                             int height = Integer.parseInt(ds.child("size_height").getValue().toString());
+                            int depth = Integer.parseInt(ds.child("size_depth").getValue().toString());
                             String name = ds.child("material_name").getValue().toString();
                             String category = ds.child("category").getValue().toString();
                             if(show_all){
-                                for (int m = 0; m < url.length; m++) {
-                                    addItemToRecyclerView(url[m], url, width, height, category, name+" - "+(m+1));
-                                    Log.i("트루일때", simulation_items.get(m).getName()+" ㅂㄴ"+m);
+                                int m;
+                                for (m = 0; m < url.length; m++) {
+                                    addItemToRecyclerView(url[m], url, width, height, depth, category, name+" - "+(m+1), false);
+                                }
+                                for (int n = 0; n < url_side.length; n++) { //측면
+                                    addItemToRecyclerView(url_side[n], url, width, height, depth, category, name+" - "+(m+1), true);
+                                    m++;
                                 }
                             }
                             else{
-                                addItemToRecyclerView(preview_url, url, width, height, category, name);
+                                addItemToRecyclerView(preview_url, url, width, height, depth, category, name, false);
                             }
                             i++;
                             continue;

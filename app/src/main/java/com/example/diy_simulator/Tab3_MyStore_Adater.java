@@ -142,6 +142,7 @@ public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adat
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 img_num = (int)dataSnapshot.child("image_url").getChildrenCount();
                                 img_num = img_num + (int)dataSnapshot.child("image_RB_url").getChildrenCount();
+                                img_num = img_num + (int)dataSnapshot.child("image_RB_SIDE_url").getChildrenCount();
                                 Log.i("개수", img_num + "");
 
                                 for(int i=0; i<img_num ;i++){

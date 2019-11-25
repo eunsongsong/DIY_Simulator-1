@@ -95,9 +95,11 @@ public class ImageUploadActivity extends AppCompatActivity {
     private String imagePath;
     ArrayList<byte[]> data_arr;
     ArrayList<byte[]> rm_data_arr;
+    ArrayList<byte[]> rm_side_data_arr;
     int count = 0;  //DB의 부자재 개수
 
     private CheckedTextView checkedTextView;
+    private CheckedTextView checkedTextView_side;
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference("부자재");
@@ -119,12 +121,14 @@ public class ImageUploadActivity extends AppCompatActivity {
         setContentView(R.layout.activity_image_upload);
         data_arr = new ArrayList<>();
         rm_data_arr = new ArrayList<>();
+        rm_side_data_arr = new ArrayList<>();
         if (!OpenCVLoader.initDebug()) {
             // Handle initialization error
             finish();
         } getMyFinalMaterialNumber();
         //사진 찍어서 or 갤러리에서 가져온 사진 나타내는 이미지뷰
         checkedTextView = (CheckedTextView) findViewById(R.id.check_remove);
+        checkedTextView_side = findViewById(R.id.check_remove_side);
         //imageView = (ImageView) findViewById(R.id.preview);
         upload_btn = (Button) findViewById(R.id.upload_btn); //업로드 버튼
         //부자재 정보 - 판매자 입력
@@ -265,11 +269,28 @@ public class ImageUploadActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!checkedTextView.isChecked()) {
                     checkedTextView.setChecked(true);
+                    checkedTextView_side.setChecked(false);
                     checkedTextView.setTextColor(Color.parseColor("#FF0000"));
+                    checkedTextView_side.setTextColor(Color.parseColor("#555555"));
                 }
                 else {
                     checkedTextView.setChecked(false);
                     checkedTextView.setTextColor(Color.parseColor("#555555"));
+                }
+            }
+        });
+        checkedTextView_side.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!checkedTextView_side.isChecked()) {
+                    checkedTextView_side.setChecked(true);
+                    checkedTextView.setChecked(false);
+                    checkedTextView_side.setTextColor(Color.parseColor("#FF0000"));
+                    checkedTextView.setTextColor(Color.parseColor("#555555"));
+                }
+                else {
+                    checkedTextView_side.setChecked(false);
+                    checkedTextView_side.setTextColor(Color.parseColor("#555555"));
                 }
             }
         });
@@ -292,7 +313,7 @@ public class ImageUploadActivity extends AppCompatActivity {
                 upload_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(data_arr == null || rm_data_arr == null) {
+                        if(data_arr == null || rm_data_arr == null || rm_side_data_arr == null) {
                             Toast.makeText(ImageUploadActivity.this, "데이터가 없습니다.", Toast.LENGTH_SHORT).show();
                         }
                         else{
@@ -326,7 +347,7 @@ public class ImageUploadActivity extends AppCompatActivity {
             upload_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(data_arr == null || rm_data_arr == null) {
+                    if(data_arr == null || rm_data_arr == null || rm_side_data_arr == null) {
                         Toast.makeText(ImageUploadActivity.this, "데이터가 없습니다.", Toast.LENGTH_SHORT).show();
                     }
                     else{
@@ -366,7 +387,7 @@ public class ImageUploadActivity extends AppCompatActivity {
                 float new_width = 0.0f;
                 float new_ratio = 0.0f;
                 float new_height = 0.0f;
-                if(checkedTextView.isChecked()) {
+                if(checkedTextView.isChecked() || checkedTextView_side.isChecked()) {
                     if (bitmap.getWidth() >= bitmap.getHeight() && bitmap.getWidth() > 600) {
                         new_width = 600.0f; // 축소시킬 너비
                         new_ratio = (float) bitmap.getWidth() / 600.0f;
@@ -384,15 +405,24 @@ public class ImageUploadActivity extends AppCompatActivity {
                     //여기서 500대 500이됨
                     baos = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-                    rm_data_arr.add(baos.toByteArray());
                     Preview_Image_Info item;
-                    item = new Preview_Image_Info(bitmap,rm_data_arr.get(rm_data_arr.size() - 1));
+                    if(checkedTextView.isChecked()){
+                        rm_data_arr.add(baos.toByteArray());
+                        item = new Preview_Image_Info(bitmap,rm_data_arr.get(rm_data_arr.size() - 1));
+                    }
+                    //측면
+                    else{
+                        rm_side_data_arr.add(baos.toByteArray());
+                        item = new Preview_Image_Info(bitmap,rm_side_data_arr.get(rm_side_data_arr.size() - 1));
+                    }
+
                     if( preview_image_infos.size() == 1)
                         preview_image_infos.add(0,item);
                     else
                         preview_image_infos.add(preview_image_infos.size() - 1, item);
                     Log.d("ddd", preview_image_infos.size()+"");
                     checkedTextView.setChecked(false);
+                    checkedTextView_side.setChecked(false);
                 }
                 else{ //여기가 기본사진
                     baos = new ByteArrayOutputStream();
@@ -519,7 +549,7 @@ public class ImageUploadActivity extends AppCompatActivity {
                     mountainImagesRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            Add_URL_Info(uri, target, false, (int) (target + fi));
+                            Add_URL_Info(uri, target, false, false, (int) (target + fi));
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -558,7 +588,48 @@ public class ImageUploadActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Uri uri) {
 
-                            Add_URL_Info(uri, target, true, (int) (target + data_arr.size()  + fi));
+                            Add_URL_Info(uri, target, true, false, (int) (target + data_arr.size()  + fi));
+
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getApplicationContext(), "다운로드 실패", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    // 성공!
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                }
+            });
+        }
+        //측면 배경 제거 사진 업로드
+        for(int i = 0; i < rm_side_data_arr.size(); i++){
+            final int fi = i;
+            Log.d("ddd","측면");
+
+            mountainImagesRef2 = storageRef.child(id + "-" + target + "-"+ (data_arr.size() + rm_data_arr.size() + fi) +"");
+            uploadTask = mountainImagesRef2.putBytes(rm_side_data_arr.get(i));
+            // Handle unsuccessful uploads
+            uploadTask.addOnFailureListener( new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.d("----ddd----","업로드 실패");
+                    Toast.makeText(ImageUploadActivity.this, "업로드를 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                    // 실패!
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Log.d("2번",count+"");
+                    // Alternatively way to get download URL
+                    //Url을 다운받기
+                    mountainImagesRef2 = storageRef.child(id + "-" + target + "-"+ (data_arr.size()+ rm_data_arr.size() + fi) +"");
+                    mountainImagesRef2.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+
+                            Add_URL_Info(uri, target, false, true, (int) (target + data_arr.size() + rm_data_arr.size()  + fi));
 
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -632,7 +703,7 @@ public class ImageUploadActivity extends AppCompatActivity {
     }
 
     //디비에 부자재 URL 넣기
-    private void Add_URL_Info(final Uri uri, final int target, final boolean check, final int number) {
+    private void Add_URL_Info(final Uri uri, final int target, final boolean check, final boolean side_check, final int number) {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -640,6 +711,8 @@ public class ImageUploadActivity extends AppCompatActivity {
                     if(ds.getKey().equals(target+"")){
                         if(check)
                             myRef.child(target+"").child("image_RB_url").child(number+"").setValue(uri+"");
+                        else if(side_check)
+                            myRef.child(target+"").child("image_RB_SIDE_url").child(number+"").setValue(uri+"");
                         else
                             myRef.child(target+"").child("image_url").child(number+"").setValue(uri+"");
                     }
@@ -799,7 +872,9 @@ public class ImageUploadActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 int a  = (int) dataSnapshot.child("image_RB_url").getChildrenCount();
                 int b  = (int) dataSnapshot.child("image_url").getChildrenCount();
-                if( a + b  == rm_data_arr.size() + data_arr.size()) {
+                int c  = (int) dataSnapshot.child("image_RB_SIDE_url").getChildrenCount();
+
+                if( a + b + c  == rm_data_arr.size() + data_arr.size() + rm_side_data_arr.size()) {
                     hideProgress();
                     finish();
                 }

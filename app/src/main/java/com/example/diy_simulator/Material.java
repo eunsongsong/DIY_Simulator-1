@@ -13,6 +13,7 @@ public class Material {
     public String size_depth = "";
     public String image_url = "";
     public String image_RB_url = "";
+    public String image_RB_SIDE_url = "";
     public String stock = "";
     public String keyword = "";
     public String storename = "";
@@ -85,6 +86,14 @@ public class Material {
 
     public void setImage_RB_url(String image_RB_url) {
         this.image_RB_url = image_RB_url;
+    }
+
+    public String getImage_RB_SIDE_url() {
+        return image_RB_SIDE_url;
+    }
+
+    public void setImage_RB_SIDE_url(String image_RB_SIDE_url) {
+        this.image_RB_SIDE_url = image_RB_SIDE_url;
     }
 
     public String getStock() {
