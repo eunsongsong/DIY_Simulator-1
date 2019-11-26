@@ -58,7 +58,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="주문자 이름: "
+                    android:text="수령인 이름: "
                     android:textColor="#000000"
                     android:textSize="17sp" />
 
@@ -232,6 +232,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/copy" />
+        <ImageButton
+            android:id="@+id/message_btn"
+            android:layout_marginTop="40dp"
+            android:layout_below="@+id/copy_btn"
+            android:layout_toRightOf="@+id/order_account_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/logo" />
     </RelativeLayout>
     <!--주문 진행 되고 계좌번호 보이는 화면 -->
 </RelativeLayout>
