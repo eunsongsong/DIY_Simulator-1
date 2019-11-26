@@ -11,13 +11,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class Tab2_MyPage_Oder_Adapter extends RecyclerView.Adapter<Tab2_MyPage_Oder_Adapter.ViewHolder>  {
+public class Tab2_MyPage_Order_Adapter extends RecyclerView.Adapter<Tab2_MyPage_Order_Adapter.ViewHolder>  {
 
     Context context;
     List<Order_Info> items;
     int item_layout;
 
-    public Tab2_MyPage_Oder_Adapter(Context context, List<Order_Info> items, int item_layout) {
+    public Tab2_MyPage_Order_Adapter(Context context, List<Order_Info> items, int item_layout) {
         this.context = context;
         this.items = items;
         this.item_layout = item_layout;
@@ -28,10 +28,10 @@ public class Tab2_MyPage_Oder_Adapter extends RecyclerView.Adapter<Tab2_MyPage_O
     }
 
     // 리스너 객체 참조를 저장하는 변수
-    private Tab2_MyPage_Oder_Adapter.OnItemClickListener mListener = null ;
+    private Tab2_MyPage_Order_Adapter.OnItemClickListener mListener = null ;
 
     // OnItemClickListener 리스너 객체 참조를 어댑터에 전달하는 메서드
-    public void setOnItemClickListener(Tab2_MyPage_Oder_Adapter.OnItemClickListener listener) {
+    public void setOnItemClickListener(Tab2_MyPage_Order_Adapter.OnItemClickListener listener) {
         this.mListener = listener ;
     }
 

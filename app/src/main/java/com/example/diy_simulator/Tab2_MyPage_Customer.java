@@ -45,7 +45,7 @@ public class Tab2_MyPage_Customer extends Fragment {
 
     public RecyclerView mypage_order_recyclerview;
     public static List<Order_Info> mypage_order_item = new ArrayList<>();
-    private final Tab2_MyPage_Oder_Adapter myPageOderAdapter = new Tab2_MyPage_Oder_Adapter(getContext(), mypage_order_item, R.layout.mypage_orderlist_item);
+    private final Tab2_MyPage_Order_Adapter myPageOderAdapter = new Tab2_MyPage_Order_Adapter(getContext(), mypage_order_item, R.layout.mypage_orderlist_item);
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_tab2_mypage_customer, container, false);
@@ -53,7 +53,6 @@ public class Tab2_MyPage_Customer extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = firebaseAuth.getCurrentUser();
 
-        mypage_order_item.clear();
 
         //리사이클러뷰 레이아웃 매니저 설정
         mypage_order_recyclerview = rootview.findViewById(R.id.customer_myPage_order_recyclerView);
@@ -74,9 +73,10 @@ public class Tab2_MyPage_Customer extends Fragment {
         //Current 유저 찾아서 DB에 저장된 정보 화면에 띄우기
         if (FirebaseDatabase.getInstance().getReference() != null) {
             if (mFirebaseUser != null) {
-                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                myRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        mypage_order_item.clear();
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
                             if (ds.child("email").getValue().toString().equals(mFirebaseUser.getEmail())) {
                                 String target = ds.child("username").getValue().toString();
@@ -86,8 +86,10 @@ public class Tab2_MyPage_Customer extends Fragment {
                                 target = ds.child("address").getValue().toString();
                                 customerAddress.setText(target);
                                 if(!TextUtils.isEmpty(ds.child("orderinfo").getValue().toString())){
-                                    Order_Info order1 = ds.child("orderinfo").child("20191126175841rolday").getValue(Order_Info.class);
-                                    mypage_order_item.add(order1);
+                                    for(DataSnapshot ds2 : ds.child("orderinfo").getChildren()){
+                                        Order_Info order1 = ds2.getValue(Order_Info.class);
+                                        mypage_order_item.add(order1);
+                                    }
                                     myPageOderAdapter.notifyDataSetChanged();
                                 }
                                 break;
@@ -129,7 +131,7 @@ public class Tab2_MyPage_Customer extends Fragment {
             }
         });
 
-        myPageOderAdapter.setOnItemClickListener(new Tab2_MyPage_Oder_Adapter.OnItemClickListener() {
+        myPageOderAdapter.setOnItemClickListener(new Tab2_MyPage_Order_Adapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
                 Intent intent = new Intent(getContext(), OrderDetailActivity.class);
