@@ -289,4 +289,11 @@ public class ModifySellerProductActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+        overridePendingTransition(R.anim.fade_in, R.anim.exit_to_right);
+    }
 }

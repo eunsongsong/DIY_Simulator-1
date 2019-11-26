@@ -1,10 +1,14 @@
 package com.example.diy_simulator;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -31,6 +35,13 @@ public class OrderDetailActivity extends AppCompatActivity {
         order_detail_recyclerView.setHasFixedSize(true);
         order_detail_recyclerView.setLayoutManager(layoutManager);
         order_detail_recyclerView.setAdapter(oderDetailAdapter);
+
+        //툴바 설정
+        Toolbar tb = findViewById(R.id.order_detail_toolbar) ;
+        setSupportActionBar(tb) ;
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
 
         TextView order_number = findViewById(R.id.order_detail_order_number);
         TextView storename = findViewById(R.id.order_detail_order_storename);
@@ -62,5 +73,25 @@ public class OrderDetailActivity extends AppCompatActivity {
         memo.setText("배송 메모 " + mypage_order_item.get(position).getDelivery_memo());
 
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:{ //toolbar의 back키 눌렀을 때 동작
+                //super.onBackPressed();
+                finish();
+                overridePendingTransition(R.anim.fade_in, R.anim.exit_to_right);
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+        overridePendingTransition(R.anim.fade_in, R.anim.exit_to_right);
     }
 }
