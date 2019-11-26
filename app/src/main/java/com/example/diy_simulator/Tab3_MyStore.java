@@ -207,7 +207,7 @@ public class Tab3_MyStore extends Fragment {
         //번들에 부자재 상세정보 담아서 가게 상세 페이지 프래그먼트로 보내기
         Bundle bundle = new Bundle();
         bundle.putString("name", name);
-        bundle.putString("price", price);
+        bundle.putString("price", price + " 원");
         bundle.putStringArray("url", url);
         bundle.putString("width", width);
         bundle.putString("height", height);

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -33,6 +34,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +57,8 @@ public class OrderActivity extends AppCompatActivity {
 
     public RecyclerView order_recyclerview;
     private List<Tab3_Cart_Info> order_item = new ArrayList<>();
+    private Order_Info order_confirm_info;
+    private List<Order_Product_Info> order_confirm_product_info = new ArrayList<>();
     private OrderInfo_Adapter orderInfoAdapter;
 
     private LinearLayout linearLayout;
@@ -65,9 +69,11 @@ public class OrderActivity extends AppCompatActivity {
     private TextView bank_tv;
     private TextView account_number_tv;
     private ImageButton copy_btn;
+    private EditText ename, eaddr, ephone, ememo;
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference("판매자");
+    private DatabaseReference myRef_customer = database.getReference("구매자");
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
 
@@ -83,6 +89,10 @@ public class OrderActivity extends AppCompatActivity {
         seller_tv  = findViewById(R.id.order_seller_name);
         bank_tv = findViewById(R.id.order_bank_name);
         account_number_tv = findViewById(R.id.order_account_number);
+        ename = findViewById(R.id.order_delivery_orderer_name);
+        eaddr = findViewById(R.id.order_delivery_address);
+        ephone = findViewById(R.id.order_delivery_phone_number);
+        ememo = findViewById(R.id.order_delivery_memo);
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
@@ -118,7 +128,7 @@ public class OrderActivity extends AppCompatActivity {
                 relativeLayout.setVisibility(View.VISIBLE);
                 showProgress();
 
-                myRef.addValueEventListener(new ValueEventListener() {
+                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for(DataSnapshot ds : dataSnapshot.getChildren())
@@ -128,10 +138,28 @@ public class OrderActivity extends AppCompatActivity {
                                 if(ds.child("storename").getValue().toString()
                                         .equals(order_item.get(position).getStorename()))
                                 {
+                                    int order_price = 0;
+                                    for(int k = 0; k<order_item.get(position).getIn_items().size(); k++){
+                                        Order_Product_Info order_product_info
+                                                = new Order_Product_Info(order_item.get(position).getIn_items().get(k).getName(),
+                                                order_item.get(position).getIn_items().get(k).getPrice(),
+                                                String.valueOf(order_item.get(position).getIn_items().get(k).getAmount()),
+                                                order_item.get(position).getIn_items().get(k).getPreview_img_url() );
+
+                                        order_price = order_price + Integer.parseInt(order_item.get(position).getIn_items().get(k).getPrice())
+                                                        * order_item.get(position).getIn_items().get(k).getAmount();
+                                        order_confirm_product_info.add(order_product_info);
+                                    }
+
                                     bank_tv.setText( "은행 : " + ds.child("bank_name").getValue().toString());
                                     storename_tv.setText("가게이름 : "+ ds.child("storename").getValue().toString());
                                     account_number_tv.setText(ds.child("account_number").getValue().toString());
                                     seller_tv.setText("판매자 이름 : " + ds.child("username").getValue().toString());
+
+                                    order_confirm_info = new Order_Info(order_item.get(position).getStorename(),
+                                            order_item.get(position).getDelivery_fee(), String.valueOf(order_price), ds.child("account_number").getValue().toString(),
+                                            ds.child("bank_name").getValue().toString(), ename.getText().toString(), eaddr.getText().toString(),
+                                            ephone.getText().toString(), ememo.getText().toString(), "주문완료", order_confirm_product_info);
 
                                     StringTokenizer st = new StringTokenizer(ds.child("email").getValue().toString(), "@");
 
@@ -139,6 +167,32 @@ public class OrderActivity extends AppCompatActivity {
                                     TOPIC = "/topics/" + st.nextToken() + st.nextToken();
                                     NOTIFICATION_TITLE = "주문요청";
                                     NOTIFICATION_MESSAGE = firebaseUser.getEmail()+"님이 주문을 요청하였어요!";
+
+                                    final String user_id = firebaseUser.getEmail().substring(0, firebaseUser.getEmail().indexOf("@"));
+                                    SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmss");
+                                    final String format_time1 = format1.format (System.currentTimeMillis());
+                                    final String order_number = format_time1 + user_id;
+                                    Log.i("주문번호", format_time1 + user_id);
+
+                                    //판매자 DB에 주문 정보 저장
+                                    myRef.child(ds.getKey()).child("orderinfo").child(order_number).setValue(order_confirm_info);
+                                    //구매자 DB에 주문 정보 저장
+                                    myRef_customer.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            for(DataSnapshot ds : dataSnapshot.getChildren()){
+                                                if(ds.child("email").getValue().toString().equals(firebaseUser.getEmail())){
+                                                    myRef_customer.child(ds.getKey()).child("orderinfo").child(order_number).setValue(order_confirm_info);
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+
                                     Log.d("ㅇㅇ",ds.child("email").getValue().toString());
                                     Log.d("ㅇㅇ", TOPIC);
                                     JSONObject notification = new JSONObject();

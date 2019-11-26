@@ -1,39 +1,34 @@
 package com.example.diy_simulator;
 
+import java.util.List;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-public class Order_Info  implements Parcelable {
+public class Order_Info {
     private String storename;
     private String delivery_fee;
+    private String order_price;
     private String account_number;
     private String bank_name;
+    private String delivery_recipient;
+    private String delivery_destination;
+    private String delivery_phone;
+    private String delivery_memo;
+    private String order_state;
+    private List<Order_Product_Info> order_items;
 
-    public Order_Info() {
-    }
-
-    public Order_Info(String storename, String delivery_fee) {
+    public Order_Info(String storename, String delivery_fee, String order_price, String account_number, String bank_name,
+                      String delivery_recipient, String delivery_destination, String delivery_phone, String delivery_memo, String order_state, List<Order_Product_Info> order_items) {
         this.storename = storename;
         this.delivery_fee = delivery_fee;
+        this.order_price = order_price;
+        this.account_number = account_number;
+        this.bank_name = bank_name;
+        this.delivery_recipient = delivery_recipient;
+        this.delivery_destination = delivery_destination;
+        this.delivery_phone = delivery_phone;
+        this.delivery_memo = delivery_memo;
+        this.order_state = order_state;
+        this.order_items = order_items;
     }
-
-    protected Order_Info(Parcel in) {
-        storename = in.readString();
-        delivery_fee = in.readString();
-    }
-
-    public static final Creator<Order_Info> CREATOR = new Creator<Order_Info>() {
-        @Override
-        public Order_Info createFromParcel(Parcel in) {
-            return new Order_Info(in);
-        }
-
-        @Override
-        public Order_Info[] newArray(int size) {
-            return new Order_Info[size];
-        }
-    };
 
     public String getStorename() {
         return storename;
@@ -51,15 +46,75 @@ public class Order_Info  implements Parcelable {
         this.delivery_fee = delivery_fee;
     }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getOrder_price() {
+        return order_price;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(storename);
-        dest.writeString(delivery_fee);
+    public void setOrder_price(String order_price) {
+        this.order_price = order_price;
+    }
+
+    public String getAccount_number() {
+        return account_number;
+    }
+
+    public void setAccount_number(String account_number) {
+        this.account_number = account_number;
+    }
+
+    public String getBank_name() {
+        return bank_name;
+    }
+
+    public void setBank_name(String bank_name) {
+        this.bank_name = bank_name;
+    }
+
+    public String getDelivery_recipient() {
+        return delivery_recipient;
+    }
+
+    public void setDelivery_recipient(String delivery_recipient) {
+        this.delivery_recipient = delivery_recipient;
+    }
+
+    public String getDelivery_destination() {
+        return delivery_destination;
+    }
+
+    public void setDelivery_destination(String delivery_destination) {
+        this.delivery_destination = delivery_destination;
+    }
+
+    public String getDelivery_phone() {
+        return delivery_phone;
+    }
+
+    public void setDelivery_phone(String delivery_phone) {
+        this.delivery_phone = delivery_phone;
+    }
+
+    public String getDelivery_memo() {
+        return delivery_memo;
+    }
+
+    public void setDelivery_memo(String delivery_memo) {
+        this.delivery_memo = delivery_memo;
+    }
+
+    public String getOrder_state() {
+        return order_state;
+    }
+
+    public void setOrder_state(String order_state) {
+        this.order_state = order_state;
+    }
+
+    public List<Order_Product_Info> getOrder_items() {
+        return order_items;
+    }
+
+    public void setOrder_items(List<Order_Product_Info> order_items) {
+        this.order_items = order_items;
     }
 }
