@@ -63,8 +63,8 @@ public class OrderInfo_Adapter extends  RecyclerView.Adapter<com.example.diy_sim
         {
             sum += (Integer.parseInt(item.getIn_items().get(i).getPrice()) * item.getIn_items().get(i).getAmount());
         }
-        holder.order_order_money.setText("주문금액 "+ sum+"");
-        holder.order_sum_of_money.setText("총 합계 금액 " + (Integer.parseInt(item.getDelivery_fee()) + sum));
+        holder.order_order_money.setText("주문금액 "+ sum+" 원");
+        holder.order_sum_of_money.setText("총 합계 금액 " + (Integer.parseInt(item.getDelivery_fee()) + sum) + " 원");
 
         holder.order_btn.setOnClickListener(new View.OnClickListener() {
             @Override

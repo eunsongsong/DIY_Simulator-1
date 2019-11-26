@@ -132,7 +132,7 @@ public class Tab4_Simulation extends Fragment {
                         int[] location = new int[2];
                         v.getLocationOnScreen(location);
 
-                        if (parentHeight - (parentHeight - trash_height) <= v.getY()){
+                        if (parentHeight - (parentHeight - trash_height) <= v.getY() + 250){
                             trashView.setImageDrawable(getResources().getDrawable(R.drawable.trash_mint));
                         }
                         else
@@ -163,7 +163,7 @@ public class Tab4_Simulation extends Fragment {
                         int[] location = new int[2];
                         v.getLocationOnScreen(location);
 
-                        if (parentHeight - (parentHeight - trash_height)  <= v.getY()){
+                        if (parentHeight - (parentHeight - trash_height)  <= v.getY() + 250){
                             int find_idx = 0;
                             for(ImageView imageView : view_order)
                             {
@@ -183,7 +183,7 @@ public class Tab4_Simulation extends Fragment {
                             v.setX(0);
                             Log.d("11월19일",v.getWidth()+"");
                             Log.d("11월19일",v.getScaleX()+"");
-                        } else if ( v.getX() + (v.getWidth() * v.getScaleX()) > parentWidth) {
+                        } else if ( v.getX() + (v.getWidth()) > parentWidth) {
                             v.setX(parentWidth - v.getWidth());
                             Log.d("ㅇㅇ","지금");
                         }
