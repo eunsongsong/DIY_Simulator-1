@@ -111,6 +111,15 @@
         android:text="로그아웃"
         android:textColor="#777777" />
 
+
+    <View
+        android:id="@+id/line_mypage"
+        android:layout_marginTop="25dp"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/mypage_customer_signout"
+        android:layout_height="10dp"
+        android:background="#EEEEEE"/>
+<!--
     <Button
     android:id="@+id/mypage_orderInfo"
     android:layout_width="330dp"
@@ -121,8 +130,23 @@
     android:layout_marginTop="15dp"
     android:layout_marginBottom="20dp"
     android:text="주문 내역 조회" />
+-->
+    <TextView
+        android:id="@+id/just_order_txt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="주문 내역"
+        android:layout_marginTop="20dp"
+        android:paddingStart="40dp"
+        android:layout_below="@+id/line_mypage"
+        android:textColor="#000000"
+        android:textSize="17sp"/>
 
-
-
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/customer_myPage_order_recyclerView"
+        android:layout_below="@+id/just_order_txt"
+        android:layout_marginTop="10dp"/>
 
 </RelativeLayout>

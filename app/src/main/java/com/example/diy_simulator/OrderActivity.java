@@ -174,6 +174,8 @@ public class OrderActivity extends AppCompatActivity {
                                     final String order_number = format_time1 + user_id;
                                     Log.i("주문번호", format_time1 + user_id);
 
+                                    order_confirm_info.setOrder_number(order_number);
+
                                     //판매자 DB에 주문 정보 저장
                                     myRef.child(ds.getKey()).child("orderinfo").child(order_number).setValue(order_confirm_info);
                                     //구매자 DB에 주문 정보 저장

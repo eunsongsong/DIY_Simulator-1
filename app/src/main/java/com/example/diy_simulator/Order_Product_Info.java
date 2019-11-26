@@ -1,10 +1,16 @@
 package com.example.diy_simulator;
 
-public class Order_Product_Info {
+import java.io.Serializable;
+
+public class Order_Product_Info implements Serializable {
     private String product_name;
     private String product_price;
     private String product_amount;
     private String product_url;
+
+    public Order_Product_Info(){
+
+    }
 
     public Order_Product_Info(String product_name, String product_price, String product_amount, String product_url) {
         this.product_name = product_name;

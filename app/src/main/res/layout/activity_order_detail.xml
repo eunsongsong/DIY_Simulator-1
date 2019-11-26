@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".OrderDetailActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/order_detail_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#EEEEEE"
+            android:minHeight="?attr/actionBarSize">
+            <TextView
+                android:id="@+id/order_detail_toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="주문 상세"
+                android:textColor="#222222"
+                android:textSize="20sp"/>
+        </androidx.appcompat.widget.Toolbar>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/order_detail_order_number"
+            android:paddingTop="10dp"
+            android:paddingStart="20dp"
+            android:textSize="15sp"
+            android:textColor="#222222"/>
+
+        <View
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#EEEEEE"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="주문 상품 정보"
+            android:textSize="17sp"
+            android:textColor="#000000"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/order_detail_order_storename"
+            android:paddingTop="5dp"
+            android:paddingStart="20dp"
+            android:textSize="15sp"
+            android:textColor="#222222"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/order_detail_items_recyclerView"
+            android:textSize="15sp"
+            android:textColor="#222222"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/order_detail_order_price"
+            android:paddingTop="5dp"
+            android:paddingStart="20dp"
+            android:textSize="15sp"
+            android:textColor="#222222"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/order_detail_order_delivery_fee"
+            android:paddingTop="5dp"
+            android:paddingStart="20dp"
+            android:textSize="15sp"
+            android:textColor="#222222"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/order_detail_order_state"
+            android:paddingTop="5dp"
+            android:paddingStart="20dp"
+            android:textSize="15sp"
+            android:textColor="#222222"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/order_detail_order_bank"
+            android:paddingTop="5dp"
+            android:paddingStart="20dp"
+            android:textSize="15sp"
+            android:textColor="#222222"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/order_detail_order_account"
+            android:paddingTop="5dp"
+            android:paddingStart="50dp"
+            android:textSize="15sp"
+            android:textColor="#222222"/>
+        <View
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:paddingTop="5dp"
+            android:layout_height="1dp"
+            android:background="#EEEEEE"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="배송 정보"
+            android:textSize="17sp"
+            android:textColor="#000000"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/order_detail_order_recipient"
+            android:paddingTop="5dp"
+            android:paddingStart="20dp"
+            android:textSize="15sp"
+            android:textColor="#222222" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/order_detail_order_destination"
+            android:paddingTop="5dp"
+            android:paddingStart="20dp"
+            android:textSize="15sp"
+            android:textColor="#222222"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/order_detail_order_phone"
+            android:paddingTop="5dp"
+            android:paddingStart="20dp"
+            android:textSize="15sp"
+            android:textColor="#222222"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/order_detail_order_delivery_memo"
+            android:paddingTop="5dp"
+            android:paddingStart="20dp"
+            android:textSize="15sp"
+            android:textColor="#222222"/>
+
+    </LinearLayout>
+
+</ScrollView>

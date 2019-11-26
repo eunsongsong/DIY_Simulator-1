@@ -41,8 +41,8 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".OrderActivity"></activity>
-        <!-- - 안드로이드 8.0 이상 푸시 처리 추가 코드 -->
+        <activity android:name=".OrderDetailActivity"></activity>
+        <activity android:name=".OrderActivity" /> <!-- - 안드로이드 8.0 이상 푸시 처리 추가 코드 -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/logo" />

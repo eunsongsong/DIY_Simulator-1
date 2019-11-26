@@ -1,8 +1,9 @@
 package com.example.diy_simulator;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Order_Info {
+public class Order_Info implements Serializable {
     private String storename;
     private String delivery_fee;
     private String order_price;
@@ -14,6 +15,10 @@ public class Order_Info {
     private String delivery_memo;
     private String order_state;
     private List<Order_Product_Info> order_items;
+    private String order_number;
+
+    public Order_Info(){
+    }
 
     public Order_Info(String storename, String delivery_fee, String order_price, String account_number, String bank_name,
                       String delivery_recipient, String delivery_destination, String delivery_phone, String delivery_memo, String order_state, List<Order_Product_Info> order_items) {
@@ -116,5 +121,13 @@ public class Order_Info {
 
     public void setOrder_items(List<Order_Product_Info> order_items) {
         this.order_items = order_items;
+    }
+
+    public String getOrder_number() {
+        return order_number;
+    }
+
+    public void setOrder_number(String order_number) {
+        this.order_number = order_number;
     }
 }
