@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/mypage_seller_toolbar"
@@ -197,7 +201,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/seller_myPage_order_recyclerView"
+        android:nestedScrollingEnabled="false"
         android:layout_below="@+id/just_order_txt"
         android:layout_marginTop="10dp"/>
 
-</RelativeLayout>
+    </RelativeLayout>
+</androidx.core.widget.NestedScrollView>
