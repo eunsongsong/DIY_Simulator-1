@@ -98,6 +98,7 @@ public class Tab4_Simulation extends Fragment {
 
     private int _xDelta;
     private int _yDelta;
+    // The ‘active pointer’ is the one currently moving our object.
     //싱글 터치
     private View.OnTouchListener touchListener = new View.OnTouchListener() {
         @SuppressLint("ClickableViewAccessibility")
@@ -114,8 +115,8 @@ public class Tab4_Simulation extends Fragment {
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
                         // 뷰 누름
 
-                        //oldXvalue = event.getX();
-                        //oldYvalue = event.getY();
+                        oldXvalue = event.getX();
+                        oldYvalue = event.getY();
                         _xDelta = (int) (X - v.getTranslationX());
                         _yDelta = (int) (Y - v.getTranslationY());
                         Log.d("viewTest", "v.getX() : " + v.getX());    // View 의 좌측 상단이 되는 지점의 절대 좌표값.
@@ -128,11 +129,10 @@ public class Tab4_Simulation extends Fragment {
 
                         v.setTranslationX(X - _xDelta);
                         v.setTranslationY(Y - _yDelta);
-
                         int[] location = new int[2];
                         v.getLocationOnScreen(location);
 
-                        if (parentHeight - (parentHeight - trash_height) <= location[1]){
+                        if (parentHeight - (parentHeight - trash_height) <= v.getY()){
                             trashView.setImageDrawable(getResources().getDrawable(R.drawable.trash_mint));
                         }
                         else
@@ -163,7 +163,7 @@ public class Tab4_Simulation extends Fragment {
                         int[] location = new int[2];
                         v.getLocationOnScreen(location);
 
-                        if (parentHeight - (parentHeight - trash_height)  <= location[1]){
+                        if (parentHeight - (parentHeight - trash_height)  <= v.getY()){
                             int find_idx = 0;
                             for(ImageView imageView : view_order)
                             {
@@ -179,21 +179,24 @@ public class Tab4_Simulation extends Fragment {
                             trashView.setImageDrawable(getResources().getDrawable(R.drawable.trash));
                         }
 
-                        if ( location[0] < 0) {
+                        if ( v.getX() < 0) {
                             v.setX(0);
                             Log.d("11월19일",v.getWidth()+"");
                             Log.d("11월19일",v.getScaleX()+"");
-                        } else if ( location[0] + (v.getWidth() * v.getScaleX()) > parentWidth) {
+                        } else if ( v.getX() + (v.getWidth() * v.getScaleX()) > parentWidth) {
                             v.setX(parentWidth - v.getWidth());
+                            Log.d("ㅇㅇ","지금");
                         }
 
-                        if ( location[1] < 0) {
+                        if ( v.getY() < 0) {
                             v.setY(0);
-
-                        } else if ( location[1] + (v.getHeight() *v.getScaleY()) > parentHeight) {
+                        }
+                        /* 삭제 했어야함
+                        else if ( location[1] + (v.getHeight() *v.getScaleY()) > parentHeight) {
                             v.setY(parentHeight - v.getHeight());
 
                         }
+                         */
                     }
                     break;
                 case 2:
