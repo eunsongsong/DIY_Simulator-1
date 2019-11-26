@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.diy_simulator.Tab2_MyPage_Customer.mypage_order_item;
+import static com.example.diy_simulator.Tab2_MyPage_Seller.mypage_seller_order_item;
 
 public class OrderDetailActivity extends AppCompatActivity {
 
@@ -55,23 +56,43 @@ public class OrderDetailActivity extends AppCompatActivity {
         TextView phone = findViewById(R.id.order_detail_order_phone);
         TextView memo = findViewById(R.id.order_detail_order_delivery_memo);
 
-        int position = getIntent().getIntExtra("position",0);
-        for(int i=0; i<mypage_order_item.get(position).getOrder_items().size(); i++)
-            in_order_item.add(mypage_order_item.get(position).getOrder_items().get(i));
-        oderDetailAdapter.notifyDataSetChanged();
+        boolean isSeller = PreferenceUtil.getInstance(OrderDetailActivity.this).getBooleanExtra("isSeller");
+        if(isSeller){
+            int position = getIntent().getIntExtra("position",0);
+            for(int i=0; i<mypage_seller_order_item.get(position).getOrder_items().size(); i++)
+                in_order_item.add(mypage_seller_order_item.get(position).getOrder_items().get(i));
+            oderDetailAdapter.notifyDataSetChanged();
 
-        order_number.setText("주문번호 " + mypage_order_item.get(position).getOrder_number());
-        storename.setText("상점 " + mypage_order_item.get(position).getStorename());
-        price.setText("주문 금액 " + mypage_order_item.get(position).getOrder_price());
-        fee.setText("배송비 " + mypage_order_item.get(position).getDelivery_fee());
-        state.setText("주문 상태 " + mypage_order_item.get(position).getOrder_state());
-        bank.setText("계좌 정보 " + mypage_order_item.get(position).getBank_name());
-        account.setText(mypage_order_item.get(position).getAccount_number());
-        recipient.setText("수령인 " + mypage_order_item.get(position).getDelivery_recipient());
-        des.setText("배송지 " + mypage_order_item.get(position).getDelivery_destination());
-        phone.setText("전화번호 " + mypage_order_item.get(position).getDelivery_phone());
-        memo.setText("배송 메모 " + mypage_order_item.get(position).getDelivery_memo());
+            order_number.setText("주문번호 " + mypage_seller_order_item.get(position).getOrder_number());
+            storename.setText("상점 " + mypage_seller_order_item.get(position).getStorename());
+            price.setText("주문 금액 " + mypage_seller_order_item.get(position).getOrder_price());
+            fee.setText("배송비 " + mypage_seller_order_item.get(position).getDelivery_fee());
+            state.setText("주문 상태 " + mypage_seller_order_item.get(position).getOrder_state());
+            bank.setText("계좌 정보 " + mypage_seller_order_item.get(position).getBank_name());
+            account.setText(mypage_seller_order_item.get(position).getAccount_number());
+            recipient.setText("수령인 " + mypage_seller_order_item.get(position).getDelivery_recipient());
+            des.setText("배송지 " + mypage_seller_order_item.get(position).getDelivery_destination());
+            phone.setText("전화번호 " + mypage_seller_order_item.get(position).getDelivery_phone());
+            memo.setText("배송 메모 " + mypage_seller_order_item.get(position).getDelivery_memo());
+        }
+        else{
+            int position = getIntent().getIntExtra("position",0);
+            for(int i=0; i<mypage_order_item.get(position).getOrder_items().size(); i++)
+                in_order_item.add(mypage_order_item.get(position).getOrder_items().get(i));
+            oderDetailAdapter.notifyDataSetChanged();
 
+            order_number.setText("주문번호 " + mypage_order_item.get(position).getOrder_number());
+            storename.setText("상점 " + mypage_order_item.get(position).getStorename());
+            price.setText("주문 금액 " + mypage_order_item.get(position).getOrder_price());
+            fee.setText("배송비 " + mypage_order_item.get(position).getDelivery_fee());
+            state.setText("주문 상태 " + mypage_order_item.get(position).getOrder_state());
+            bank.setText("계좌 정보 " + mypage_order_item.get(position).getBank_name());
+            account.setText(mypage_order_item.get(position).getAccount_number());
+            recipient.setText("수령인 " + mypage_order_item.get(position).getDelivery_recipient());
+            des.setText("배송지 " + mypage_order_item.get(position).getDelivery_destination());
+            phone.setText("전화번호 " + mypage_order_item.get(position).getDelivery_phone());
+            memo.setText("배송 메모 " + mypage_order_item.get(position).getDelivery_memo());
+        }
 
     }
 

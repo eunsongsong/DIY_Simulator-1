@@ -2,6 +2,7 @@ package com.example.diy_simulator;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -22,6 +25,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class Tab2_MyPage_Seller extends Fragment {
@@ -43,11 +48,23 @@ public class Tab2_MyPage_Seller extends Fragment {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("판매자");
 
+    public RecyclerView mypage_order_recyclerview;
+    public static List<Order_Info> mypage_seller_order_item = new ArrayList<>();
+    private final Tab2_MyPage_Order_Adapter myPageOderAdapter = new Tab2_MyPage_Order_Adapter(getContext(), mypage_seller_order_item, R.layout.mypage_orderlist_item);
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_tab2_mypage_seller, container, false);
 
         firebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = firebaseAuth.getCurrentUser();
+
+        //리사이클러뷰 레이아웃 매니저 설정
+        mypage_order_recyclerview = rootview.findViewById(R.id.seller_myPage_order_recyclerView);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setOrientation(RecyclerView.VERTICAL);
+        mypage_order_recyclerview.setHasFixedSize(true);
+        mypage_order_recyclerview.setLayoutManager(layoutManager);
+        mypage_order_recyclerview.setAdapter(myPageOderAdapter);
 
         sellerName = (TextView)rootview.findViewById(R.id.mypage_sellerId);
         sellerStorename = (TextView)rootview.findViewById(R.id.mypage_sellerStorename);
@@ -67,6 +84,7 @@ public class Tab2_MyPage_Seller extends Fragment {
                 myRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        mypage_seller_order_item.clear();
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
                             if (ds.child("email").getValue().toString().equals(mFirebaseUser.getEmail())) {
                                 String target = ds.child("username").getValue().toString();
@@ -83,6 +101,14 @@ public class Tab2_MyPage_Seller extends Fragment {
                                 sellerAccount.setText(target);
                                 target = ds.child("delivery_fee").getValue().toString();
                                 sellerDelivery.setText(target);
+                                if(!TextUtils.isEmpty(ds.child("orderinfo").getValue().toString())){
+                                    for(DataSnapshot ds2 : ds.child("orderinfo").getChildren()){
+                                        Order_Info order1 = ds2.getValue(Order_Info.class);
+                                        mypage_seller_order_item.add(order1);
+                                    }
+                                    myPageOderAdapter.notifyDataSetChanged();
+                                }
+                                break;
                             }
                         }
                         return;
@@ -131,6 +157,15 @@ public class Tab2_MyPage_Seller extends Fragment {
             }
         });
 
+        myPageOderAdapter.setOnItemClickListener(new Tab2_MyPage_Order_Adapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                Intent intent = new Intent(getContext(), OrderDetailActivity.class);
+                intent.putExtra("position", position);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.enter_from_right, R.anim.fade_out);
+            }
+        });
 
         return rootview;
     }
