@@ -2,6 +2,7 @@ package com.example.diy_simulator;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -21,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -70,8 +72,6 @@ public class Tab4_Simulation extends Fragment {
     private String cart;
     String[] cart_arr;
     private ImageView trashView, empty_item;
-    private int trash_width;
-    private int trash_height;
 
     private ImageButton left_rotate;
     private ImageButton right_rotate;
@@ -91,9 +91,6 @@ public class Tab4_Simulation extends Fragment {
     private ImageButton acc_btn;
     private ImageButton etc_btn;
 
-    private float loX;
-    private float loy;
-
     private int touch_cnt;
 
     private int _xDelta;
@@ -103,29 +100,42 @@ public class Tab4_Simulation extends Fragment {
     private int paw;
     private int pah;
     private int tra;
+    private View dashline_var;
+
     // The ‘active pointer’ is the one currently moving our object.
     //싱글 터치
     private View.OnTouchListener touchListener = new View.OnTouchListener() {
+        @RequiresApi(api = Build.VERSION_CODES.M)
         @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             final int X = (int) event.getRawX();
             final int Y = (int) event.getRawY();
+
             switch (MOVE) {
 
                 case 1: // 기본움직임
                     int parentWidth = ((ViewGroup) v.getParent()).getWidth();    // 부모 View 의 Width
-                    int parentHeight = ((ViewGroup) v.getParent()).getHeight();    // 부모 View 의 Height
+                    //int parentHeight = ((ViewGroup) v.getParent()).getHeight();    // 부모 View 의 Height
                     // View 내부에서 터치한 지점의 상대 좌표값.
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
                         // 뷰 누름
+                        View dashline = new View(getContext()); // 새로 추가할 대시 라인
+                        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams( v.getWidth(),v.getHeight());
 
-                        oldXvalue = event.getX();
-                        oldYvalue = event.getY();
                         _xDelta = (int) (X - v.getTranslationX());
                         _yDelta = (int) (Y - v.getTranslationY());
                         Log.d("viewTest", "v.getX() : " + v.getX());    // View 의 좌측 상단이 되는 지점의 절대 좌표값.
                         Log.d("viewTest", "v.getY() : " + v.getY());    // View 의 좌측 상단이 되는 지점의 절대 좌표값.
+                        dashline.setX(X - _xDelta);
+                        dashline.setY(Y - _yDelta);
+                        dashline.setScaleX(v.getScaleX());
+                        dashline.setScaleY(v.getScaleY());
+                        dashline.setLayoutParams(layoutParams);
+                        dashline.setBackground(getResources().getDrawable(R.drawable.view_line_dotted));
+                        dashline.setRotation(v.getRotation());
+                        relativeLayout.addView(dashline);
+                        dashline_var = dashline;
 
 
                     } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
@@ -134,6 +144,10 @@ public class Tab4_Simulation extends Fragment {
 
                         v.setTranslationX(X - _xDelta);
                         v.setTranslationY(Y - _yDelta);
+                        dashline_var.setTranslationX(X - _xDelta);
+                        dashline_var.setTranslationY(Y - _yDelta);
+
+
                         int[] location = new int[2];
                         v.getLocationOnScreen(location);
 
@@ -143,16 +157,12 @@ public class Tab4_Simulation extends Fragment {
                         else
                             trashView.setImageDrawable(getResources().getDrawable(R.drawable.trash));
                         break;
-                        /*
-                        Log.d("왜이리커",(float)((event.getX() - oldXvalue) * Math.pow(1.5, touch_cnt))+"");
-                        v.setX(v.getX() + (float)((event.getX() - oldXvalue) * Math.pow(1.5, touch_cnt)));
-                        v.setY(v.getY() + (float)((event.getY() - oldYvalue) * Math.pow(1.5, touch_cnt)));
-                        */
+
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
                         // 뷰에서 손을
                         int[] location = new int[2];
                         v.getLocationOnScreen(location);
-
+                        relativeLayout.removeView(dashline_var);
                         if (pa - (pa - tra) <= location[1] + v.getHeight() / 10){
                             int find_idx = 0;
                             for(ImageView imageView : view_order)
@@ -519,10 +529,8 @@ public class Tab4_Simulation extends Fragment {
                 if(check) {
                     parentWidth = relativeLayout.getWidth();    // 부모 View 의 Width
                     parentHeight = relativeLayout.getHeight();    // 부모 View 의 Height
-                    loX = relativeLayout.getX();
-                    loy = relativeLayout.getY();
-                    trash_width = (int) trashView.getX();
-                    trash_height =(int) trashView.getY();
+
+
                     int[] location = new int[2];
                     relativeLayout.getLocationOnScreen(location);
                     pa = location[1] + parentHeight / 2;
@@ -534,8 +542,6 @@ public class Tab4_Simulation extends Fragment {
                     check = false;
                     Log.d("상대레이아웃 넓이",parentWidth+"");
                     Log.d("상대레이아웃 높이",parentHeight+"");
-                    Log.d("상대레이아웃 X",loX+"");
-                    Log.d("상대레이아웃 Y",loy+"");
                 }
             }
         };
