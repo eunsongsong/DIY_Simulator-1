@@ -53,7 +53,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="30dp"
-            android:textStyle="bold"
             android:text="주문 상태"/>
     </LinearLayout>
 

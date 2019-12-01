@@ -33,6 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="가게이름 : "
+                android:paddingBottom="3dp"
                 android:textColor="#000000"
                 android:textSize="17sp" />
 
@@ -41,6 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="판매자 이름 : "
+                android:paddingBottom="3dp"
                 android:textColor="#000000"
                 android:textSize="17sp" />
 
@@ -49,6 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="판매자 전화번호:"
+                android:paddingBottom="3dp"
                 android:textColor="#000000"
                 android:textSize="17sp" />
 
@@ -57,6 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="금액 : "
+                android:paddingBottom="3dp"
                 android:textColor="#000000"
                 android:textSize="17sp" />
 
@@ -65,13 +69,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="은행 : "
+                android:paddingBottom="3dp"
                 android:textColor="#000000"
                 android:textSize="17sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingBottom="3dp">
 
                 <TextView
                     android:id="@+id/account_tv"

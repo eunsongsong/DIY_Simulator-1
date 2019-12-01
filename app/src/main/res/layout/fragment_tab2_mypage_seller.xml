@@ -186,24 +186,36 @@
         android:layout_height="10dp"
         android:background="#EEEEEE"/>
 
-    <TextView
-        android:id="@+id/just_order_txt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="주문 내역"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
-        android:drawableLeft="@drawable/order_mint"
-        android:layout_below="@+id/line_mypage_seller"
-        android:textColor="#000000"
-        android:textSize="17sp"/>
+        <LinearLayout
+            android:id="@+id/order_list_txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@+id/line_mypage_seller">
 
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/order_mint"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="30dp"/>
+            <TextView
+                android:id="@+id/just_order_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="주문 내역"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:textColor="#000000"
+                android:textSize="17sp"/>
+        </LinearLayout>
+        
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/seller_myPage_order_recyclerView"
         android:nestedScrollingEnabled="false"
-        android:layout_below="@+id/just_order_txt"
+        android:layout_below="@+id/order_list_txt"
         android:layout_marginTop="10dp"/>
 
     </RelativeLayout>
