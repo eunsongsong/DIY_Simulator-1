@@ -51,6 +51,8 @@ public class OrderActivity extends AppCompatActivity {
     private static final String TAG = "mFirebaseIIDService";
     private static final String SUBSCRIBE_TO = "userABC";
 
+    String order_number;
+
     String NOTIFICATION_TITLE;
     String NOTIFICATION_MESSAGE;
     String TOPIC;
@@ -58,10 +60,8 @@ public class OrderActivity extends AppCompatActivity {
 
     public RecyclerView order_recyclerview;
     private List<Tab3_Cart_Info> order_item = new ArrayList<>();
-    private Order_Info order_confirm_info;
-    private Order_Info customer_order_confirm_info;
-    private List<Order_Product_Info> order_confirm_product_info = new ArrayList<>();
-    private List<Order_Product_Info> customer_order_confirm_product_info = new ArrayList<>();
+    private List<Order_Info> order_confirm_info  = new ArrayList<>();
+    private List<Order_Product_Info> order_confirm_product_info;
     private OrderInfo_Adapter orderInfoAdapter;
 
     public RecyclerView order_complete_recyclerview;
@@ -182,11 +182,11 @@ public class OrderActivity extends AppCompatActivity {
                         {
                             if(!TextUtils.isEmpty(ds.child("storename").getValue().toString()))
                             {
+                                if(position >= order_item.size()) break;
                                 if(order_item.get(position).getStorename()
                                         .equals(ds.child("storename").getValue().toString()))
                                 {
-
-                                    order_confirm_product_info.clear();
+                                    order_confirm_product_info = new ArrayList<>();
                                     int order_price = 0;
                                     for(int k = 0; k<order_item.get(position).getIn_items().size(); k++){
                                         Order_Product_Info order_product_info
@@ -198,7 +198,6 @@ public class OrderActivity extends AppCompatActivity {
                                         order_price = order_price + Integer.parseInt(order_item.get(position).getIn_items().get(k).getPrice())
                                                 * order_item.get(position).getIn_items().get(k).getAmount();
                                         order_confirm_product_info.add(order_product_info);
-                                        customer_order_confirm_product_info.add(order_product_info);
                                     }
 
                                     Order_Complete_Info item = new Order_Complete_Info(ds.child("storename").getValue().toString(),
@@ -208,15 +207,19 @@ public class OrderActivity extends AppCompatActivity {
                                     complete_item.add(item);
                                     completeAdapter.notifyDataSetChanged();
 
-                                    order_confirm_info = new Order_Info(order_item.get(position).getStorename(),
+                                    Order_Info order_info = new Order_Info(order_item.get(position).getStorename(),
                                             order_item.get(position).getDelivery_fee(), String.valueOf(order_price), ds.child("account_number").getValue().toString(),
                                             ds.child("bank_name").getValue().toString(), ename.getText().toString(), eaddr.getText().toString(),
                                             ephone.getText().toString(), ememo.getText().toString(), "주문완료(입금대기)", order_confirm_product_info);
+                                    order_confirm_info.add(order_info);
 
+                                    /*
                                     customer_order_confirm_info = new Order_Info(order_item.get(position).getStorename(),
                                         order_item.get(position).getDelivery_fee(), String.valueOf(order_price), ds.child("account_number").getValue().toString(),
                                         ds.child("bank_name").getValue().toString(), ename.getText().toString(), eaddr.getText().toString(),
                                         ephone.getText().toString(), ememo.getText().toString(), "주문완료(입금대기)", customer_order_confirm_product_info);
+
+                                     */
 
                                     StringTokenizer st = new StringTokenizer(ds.child("email").getValue().toString(), "@");
 
@@ -228,30 +231,13 @@ public class OrderActivity extends AppCompatActivity {
                                     final String user_id = firebaseUser.getEmail().substring(0, firebaseUser.getEmail().indexOf("@"));
                                     SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmss");
                                     final String format_time1 = format1.format (System.currentTimeMillis());
-                                    final String order_number = format_time1 + user_id;
+                                    order_number = format_time1 + user_id;
                                     Log.i("주문번호", format_time1 + user_id);
 
-                                    order_confirm_info.setOrder_number(order_number);
-                                    customer_order_confirm_info.setOrder_number(order_number);
+                                    order_confirm_info.get(position).setOrder_number(order_number+position);
 
                                     //판매자 DB에 주문 정보 저장
-                                    myRef.child(ds.getKey()).child("orderinfo").child(order_number).setValue(order_confirm_info);
-                                    //구매자 DB에 주문 정보 저장
-                                    myRef_customer.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            for(DataSnapshot ds : dataSnapshot.getChildren()){
-                                                if(ds.child("email").getValue().toString().equals(firebaseUser.getEmail())){
-                                                    myRef_customer.child(ds.getKey()).child("orderinfo").child(order_number).setValue(customer_order_confirm_info);
-                                                }
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                        }
-                                    });
+                                    myRef.child(ds.getKey()).child("orderinfo").child(order_number+position).setValue(order_confirm_info.get(position));
 
                                     Log.d("ㅇㅇ",ds.child("email").getValue().toString());
                                     Log.d("ㅇㅇ", TOPIC);
@@ -271,6 +257,7 @@ public class OrderActivity extends AppCompatActivity {
                                 }
                             }
                         }
+                        customerOrderInfo();
                         hideProgress();
                     }
 
@@ -311,6 +298,29 @@ public class OrderActivity extends AppCompatActivity {
         };
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
     }
+
+
+    private void customerOrderInfo() {
+        //구매자 DB에 주문 정보 저장
+        myRef_customer.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    if (ds.child("email").getValue().toString().equals(firebaseUser.getEmail())) {
+                        for(int i = 0; i<position; i++){
+                            myRef_customer.child(ds.getKey()).child("orderinfo").child(order_number + i).setValue(order_confirm_info.get(i));
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
     @Override
     public void onBackPressed() {

@@ -49,7 +49,10 @@ public class Tab2_MyPage_Order_Adapter extends RecyclerView.Adapter<Tab2_MyPage_
 
         holder.order_number.setText("주문 번호 " + item.getOrder_number());
         holder.storename.setText("주문 상점 : " + item.getStorename());
-        String str = "주문 상품 : " +  item.getOrder_items().get(0).getProduct_name() + " 외";
+        String str = "주문 상품 : " +  item.getOrder_items().get(0).getProduct_name();
+        if(item.getOrder_items().size()-1 != 0){
+            str = str + " 외 " + (item.getOrder_items().size()-1) + " 건";
+        }
         holder.order_items.setText(str);
         holder.price.setText("주문 금액 : " + item.getOrder_price());
         holder.delivery_fee.setText("배송비 : " + item.getDelivery_fee());
