@@ -761,7 +761,6 @@ public class Tab4_Simulation extends Fragment {
                 }
             }
         });
-
         magnify_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -780,31 +779,10 @@ public class Tab4_Simulation extends Fragment {
                     minimize_btn.setImageDrawable(getResources().getDrawable(R.drawable.zoom_out_black));
                 }
 
-
                 for(int i = 0; i < view_order.size(); i++)
                 {
-                    if(parentWidth / 2 >= view_order.get(i).getX() + view_order.get(i).getWidth() / 2) {
-                        int a = (int) (Math.abs(parentWidth / 2 - (view_order.get(i).getX() + view_order.get(i).getWidth() / 2)));
-                        // a == 2
-                        view_order.get(i).setScaleX((float) (view_order.get(i).getScaleX() * 1.5));
-                        view_order.get(i).setScaleY((float) (view_order.get(i).getScaleY() * 1.5));
-                        //
-                        view_order.get(i).setX((float) (view_order.get(i).getX() + (a - a / 1.5)));
-                        int b = (int) (Math.abs(parentWidth / 2 - (view_order.get(i).getX() + view_order.get(i).getWidth() / 2)));
-                        Log.d(i + "왼쪽", a + "    " + b);
-                    }
-                    else
-                    {
-                        int a = (int) (Math.abs(parentWidth / 2 - (view_order.get(i).getX() + view_order.get(i).getWidth() / 2)));
-                        // a == 2
-                        view_order.get(i).setScaleX((float) (view_order.get(i).getScaleX() * 1.5));
-                        view_order.get(i).setScaleY((float) (view_order.get(i).getScaleY() * 1.5));
-                        //
-                        view_order.get(i).setX((float) (view_order.get(i).getX() - (a - a / 1.5)));
-                        int b = (int) (Math.abs(parentWidth / 2 - (view_order.get(i).getX() + view_order.get(i).getWidth() / 2)));
-                        Log.d(i + "오른쪽", a + "    " + b);
-                    }
-
+                    view_order.get(i).setScaleX((float) (view_order.get(i).getScaleX() * 1.5));
+                    view_order.get(i).setScaleY((float) (view_order.get(i).getScaleY() * 1.5));
                 }
             }
         });
@@ -825,14 +803,8 @@ public class Tab4_Simulation extends Fragment {
                 }
                 for(int i = 0; i < view_order.size(); i++)
                 {
-                    Log.d("이전1",view_order.get(i).getScaleX()+"");
-                    Log.d("이전2",view_order.get(i).getScaleY()+"");
                     view_order.get(i).setScaleX( (float)(view_order.get(i).getScaleX() / 1.5));
                     view_order.get(i).setScaleY((float) (view_order.get(i).getScaleY() / 1.5) );
-
-
-                    Log.d("이후1",view_order.get(i).getScaleX()+"");
-                    Log.d("이후2",view_order.get(i).getScaleY()+"");
                 }
             }
         });
