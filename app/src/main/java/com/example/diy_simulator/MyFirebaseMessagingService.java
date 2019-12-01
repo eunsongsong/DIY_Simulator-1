@@ -57,7 +57,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     // 메시지 수신
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        final Intent intent = new Intent(this, OrderActivity.class);
+        final Intent intent = new Intent(this, MainTabActivity.class);
         NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         int notificationID = new Random().nextInt(3000);
 
@@ -69,7 +69,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             setupChannels(notificationManager);
         }
 
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this , 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
@@ -108,7 +109,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
-        Intent notificationIntent = new Intent(this, OrderActivity.class);
+        Intent notificationIntent = new Intent(this, MainTabActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         int requestID = (int) System.currentTimeMillis();
 
