@@ -156,7 +156,7 @@ public class OrderDetailActivity extends AppCompatActivity {
                                 for(DataSnapshot ds2 : ds1.getChildren()) {
                                     if (ds2.getKey().equals(order_name)) {
                                         myRef_seller.child(ds.getKey()).child(ds1.getKey()).child(ds2.getKey()).child("order_state").setValue("입금 확인 완료");
-                                        state.setText("입금 확인 완료");
+                                        state.setText("주문 상태 입금 확인 완료");
                                     }
 
                                         //myRef_seller.child(ds.getKey()).child(ds1.getKey()).child("orderinfo").child(order_name).child("order_state").setValue("입금 확인 완료");
