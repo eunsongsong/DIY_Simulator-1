@@ -99,7 +99,8 @@ public class Tab4_Simulation extends Fragment {
     private int pa;
     private int paw;
     private int pah;
-    private int tra;
+    private int tra_w;
+    private int tra_h;
     private View dashline_var;
 
     // The ‘active pointer’ is the one currently moving our object.
@@ -147,11 +148,10 @@ public class Tab4_Simulation extends Fragment {
                         dashline_var.setTranslationX(X - _xDelta);
                         dashline_var.setTranslationY(Y - _yDelta);
 
-
                         int[] location = new int[2];
                         v.getLocationOnScreen(location);
-
-                        if (pa - (pa - tra) <= location[1] + v.getHeight() / 10){
+                        //pa - (pa - tra) <= location[1] + v.getHeight() / 10
+                        if ( parentHeight -  tra_h < v.getY() + v.getHeight() / 2 ){
                             trashView.setImageDrawable(getResources().getDrawable(R.drawable.trash_mint));
                         }
                         else
@@ -163,7 +163,7 @@ public class Tab4_Simulation extends Fragment {
                         int[] location = new int[2];
                         v.getLocationOnScreen(location);
                         relativeLayout.removeView(dashline_var);
-                        if (pa - (pa - tra) <= location[1] + v.getHeight() / 10){
+                        if ( parentHeight - tra_h < v.getY() + v.getHeight() / 2 ){
                             int find_idx = 0;
                             for(ImageView imageView : view_order)
                             {
@@ -529,15 +529,14 @@ public class Tab4_Simulation extends Fragment {
                 if(check) {
                     parentWidth = relativeLayout.getWidth();    // 부모 View 의 Width
                     parentHeight = relativeLayout.getHeight();    // 부모 View 의 Height
-
-
+                    tra_w = trashView.getWidth();
+                    tra_h= trashView.getHeight();
                     int[] location = new int[2];
                     relativeLayout.getLocationOnScreen(location);
                     pa = location[1] + parentHeight / 2;
                     paw = location[0];
                     pah = location[1];
                     trashView.getLocationOnScreen(location);
-                    tra = location[1] + trashView.getHeight() / 2;
 
                     check = false;
                     Log.d("상대레이아웃 넓이",parentWidth+"");
