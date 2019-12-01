@@ -192,7 +192,8 @@
         android:layout_height="wrap_content"
         android:text="주문 내역"
         android:layout_marginTop="20dp"
-        android:paddingStart="40dp"
+        android:layout_marginLeft="20dp"
+        android:drawableLeft="@drawable/order_mint"
         android:layout_below="@+id/line_mypage_seller"
         android:textColor="#000000"
         android:textSize="17sp"/>
