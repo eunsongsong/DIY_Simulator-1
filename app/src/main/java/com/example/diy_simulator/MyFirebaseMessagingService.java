@@ -71,6 +71,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("page_num",1);
         PendingIntent pendingIntent = PendingIntent.getActivity(this , 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
