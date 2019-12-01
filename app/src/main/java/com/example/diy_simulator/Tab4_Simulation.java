@@ -105,6 +105,30 @@ public class Tab4_Simulation extends Fragment {
 
     // The ‘active pointer’ is the one currently moving our object.
     //싱글 터치
+
+    //View dashline  // 새로 추가할 대시 라인
+
+
+
+    private View.OnTouchListener touchListener_rel = new View.OnTouchListener() {
+        @RequiresApi(api = Build.VERSION_CODES.M)
+        @SuppressLint("ClickableViewAccessibility")
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                dashline_var.setVisibility(View.GONE);
+                Log.d("나와랑","ㄴkdhk");
+            } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+
+            } else if (event.getAction() == MotionEvent.ACTION_UP) {
+
+            }
+
+            return true;
+        }
+    };
+
+
     private View.OnTouchListener touchListener = new View.OnTouchListener() {
         @RequiresApi(api = Build.VERSION_CODES.M)
         @SuppressLint("ClickableViewAccessibility")
@@ -121,23 +145,10 @@ public class Tab4_Simulation extends Fragment {
                     // View 내부에서 터치한 지점의 상대 좌표값.
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
                         // 뷰 누름
-                        View dashline = new View(getContext()); // 새로 추가할 대시 라인
-                        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams( v.getWidth(),v.getHeight());
-
                         _xDelta = (int) (X - v.getTranslationX());
                         _yDelta = (int) (Y - v.getTranslationY());
-                        Log.d("viewTest", "v.getX() : " + v.getX());    // View 의 좌측 상단이 되는 지점의 절대 좌표값.
-                        Log.d("viewTest", "v.getY() : " + v.getY());    // View 의 좌측 상단이 되는 지점의 절대 좌표값.
-                        dashline.setX(X - _xDelta);
-                        dashline.setY(Y - _yDelta);
-                        dashline.setScaleX(v.getScaleX());
-                        dashline.setScaleY(v.getScaleY());
-                        dashline.setLayoutParams(layoutParams);
-                        dashline.setBackground(getResources().getDrawable(R.drawable.view_line_dotted));
-                        dashline.setRotation(v.getRotation());
-                        relativeLayout.addView(dashline);
-                        dashline_var = dashline;
-
+                        addGuideView(v, X, Y, _xDelta, _yDelta);
+                       // dashline_var = dashline;
 
                     } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
                         // 뷰 이동 중
@@ -147,6 +158,7 @@ public class Tab4_Simulation extends Fragment {
                         v.setTranslationY(Y - _yDelta);
                         dashline_var.setTranslationX(X - _xDelta);
                         dashline_var.setTranslationY(Y - _yDelta);
+
 
                         int[] location = new int[2];
                         v.getLocationOnScreen(location);
@@ -162,7 +174,7 @@ public class Tab4_Simulation extends Fragment {
                         // 뷰에서 손을
                         int[] location = new int[2];
                         v.getLocationOnScreen(location);
-                        relativeLayout.removeView(dashline_var);
+
                         if ( parentHeight - tra_h < v.getY() + v.getHeight() / 2 ){
                             int find_idx = 0;
                             for(ImageView imageView : view_order)
@@ -197,40 +209,43 @@ public class Tab4_Simulation extends Fragment {
                             v.setY(0);
                             Log.d("4",parentWidth+"");
                         }
-                        /* 삭제 했어야함
-                        else if ( location[1] + (v.getHeight() *v.getScaleY()) > parentHeight) {
-                            v.setY(parentHeight - v.getHeight());
-
-                        }
-                         */
                     }
                     break;
                 case 2:
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        Log.d("전",v.getX()+"");
-                        Log.d("전",v.getY()+"");
+                        _xDelta = (int) (X - v.getTranslationX());
+                        _yDelta = (int) (Y - v.getTranslationY());
+                        addGuideView(v, X, Y, _xDelta, _yDelta);
 
                     } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
 
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
                         v.setRotation(v.getRotation() - angle);
+                        dashline_var.setRotation(v.getRotation());
                     }
                     break;
                 case 3:
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        Log.d("전",v.getX()+"");
-                        Log.d("전",v.getY()+"");
+                        _xDelta = (int) (X - v.getTranslationX());
+                        _yDelta = (int) (Y - v.getTranslationY());
+                        addGuideView(v, X, Y, _xDelta, _yDelta);
+
                     } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
 
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
                         v.setRotation(v.getRotation() + angle);
+                        dashline_var.setRotation(v.getRotation());
                         // Create an animation instance
-                        Log.d("후",v.getX()+"");
-                        Log.d("후",v.getY()+"");
+
                     }
                     break;
                 case 4: // 하나 앞으로
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
+
+                        _xDelta = (int) (X - v.getTranslationX());
+                        _yDelta = (int) (Y - v.getTranslationY());
+                        addGuideView(v, X, Y, _xDelta, _yDelta);
+
                         for(ImageView imageView : view_order) {
                             if(imageView == v) {
                                 Log.d("ㅇㅇ","1");
@@ -271,6 +286,11 @@ public class Tab4_Simulation extends Fragment {
                     break;
                 case 5: // 하나 뒤로
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
+
+                        _xDelta = (int) (X - v.getTranslationX());
+                        _yDelta = (int) (Y - v.getTranslationY());
+                        addGuideView(v, X, Y, _xDelta, _yDelta);
+
                         for(ImageView imageView : view_order) {
                             if(imageView == v) {
                                 Log.d("ㅇㅇ","1");
@@ -307,12 +327,15 @@ public class Tab4_Simulation extends Fragment {
                                 break;
                             }
                         }
-
                     }
                     break;
                 case 6: // 맨 앞으로
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        Log.d("dd","ddd"+view_order.indexOf(v));
+
+                        _xDelta = (int) (X - v.getTranslationX());
+                        _yDelta = (int) (Y - v.getTranslationY());
+                        addGuideView(v, X, Y, _xDelta, _yDelta);
+
                         v.bringToFront();
                         for(ImageView imageView : view_order) {
                             if(imageView == v) {
@@ -339,6 +362,10 @@ public class Tab4_Simulation extends Fragment {
                     break;
                 case 7: // 맨 뒤로
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
+
+                        _xDelta = (int) (X - v.getTranslationX());
+                        _yDelta = (int) (Y - v.getTranslationY());
+                        addGuideView(v, X, Y, _xDelta, _yDelta);
 
                         for(ImageView imageView : view_order)
                         {
@@ -529,6 +556,7 @@ public class Tab4_Simulation extends Fragment {
                 if(check) {
                     parentWidth = relativeLayout.getWidth();    // 부모 View 의 Width
                     parentHeight = relativeLayout.getHeight();    // 부모 View 의 Height
+                    relativeLayout.setOnTouchListener(touchListener_rel);
                     tra_w = trashView.getWidth();
                     tra_h= trashView.getHeight();
                     int[] location = new int[2];
@@ -537,10 +565,13 @@ public class Tab4_Simulation extends Fragment {
                     paw = location[0];
                     pah = location[1];
                     trashView.getLocationOnScreen(location);
-
                     check = false;
-                    Log.d("상대레이아웃 넓이",parentWidth+"");
-                    Log.d("상대레이아웃 높이",parentHeight+"");
+
+                    dashline_var = new View(getContext());
+                    dashline_var.setVisibility(View.GONE);
+                    relativeLayout.addView(dashline_var);
+                    dashline_var.setBackground(getResources().getDrawable(R.drawable.view_line_dotted));
+
                 }
             }
         };
@@ -736,6 +767,8 @@ public class Tab4_Simulation extends Fragment {
             @Override
             public void onClick(View v) {
                 touch_cnt++;
+                dashline_var.setScaleX((float)(dashline_var.getScaleX() * 1.5));
+                dashline_var.setScaleY((float)(dashline_var.getScaleY() * 1.5));
                 if(touch_cnt > 0) {
                     magnify_btn.setImageDrawable(getResources().getDrawable(R.drawable.zoom_in_mint));
                     minimize_btn.setImageDrawable(getResources().getDrawable(R.drawable.zoom_out_black));
@@ -760,6 +793,8 @@ public class Tab4_Simulation extends Fragment {
             @Override
             public void onClick(View v) {
                 touch_cnt--;
+                dashline_var.setScaleX((float)(dashline_var.getScaleX() / 1.5));
+                dashline_var.setScaleY((float)(dashline_var.getScaleY() / 1.5));
                 if(touch_cnt < 0) {
                     magnify_btn.setImageDrawable(getResources().getDrawable(R.drawable.zoom_in_black));
                     minimize_btn.setImageDrawable(getResources().getDrawable(R.drawable.zoom_out_mint));
@@ -953,5 +988,18 @@ public class Tab4_Simulation extends Fragment {
         if( pd != null && pd.isShowing() ){
             pd.dismiss();
         }
+    }
+
+    private void addGuideView(View v, int X, int Y,int _xDelta, int _yDelta)
+    {
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams( v.getWidth(), v.getHeight());
+        dashline_var.setX(X - _xDelta);
+        dashline_var.setY(Y - _yDelta);
+        dashline_var.setScaleX(v.getScaleX());
+        dashline_var.setScaleY(v.getScaleY());
+        dashline_var.setLayoutParams(layoutParams);
+        dashline_var.setRotation(v.getRotation());
+        dashline_var.bringToFront();
+        dashline_var.setVisibility(View.VISIBLE);
     }
 }
