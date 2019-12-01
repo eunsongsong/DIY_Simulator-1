@@ -475,9 +475,10 @@ public class Tab4_Simulation extends Fragment {
         if(mFirebaseUser != null){
             showProgress();
 
+            cart= "";
             // 판매자일 경우 내 가게 상품 목록 불러오기
             if(isSeller){
-                myRef_seller.addListenerForSingleValueEvent(new ValueEventListener() {
+                myRef_seller.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
