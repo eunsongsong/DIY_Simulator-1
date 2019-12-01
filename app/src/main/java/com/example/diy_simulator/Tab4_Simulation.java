@@ -2,6 +2,7 @@ package com.example.diy_simulator;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -21,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -70,8 +72,6 @@ public class Tab4_Simulation extends Fragment {
     private String cart;
     String[] cart_arr;
     private ImageView trashView, empty_item;
-    private int trash_width;
-    private int trash_height;
 
     private ImageButton left_rotate;
     private ImageButton right_rotate;
@@ -91,36 +91,52 @@ public class Tab4_Simulation extends Fragment {
     private ImageButton acc_btn;
     private ImageButton etc_btn;
 
-    private float loX;
-    private float loy;
-
     private int touch_cnt;
 
     private int _xDelta;
     private int _yDelta;
+
+    private int pa;
+    private int paw;
+    private int pah;
+    private int tra_w;
+    private int tra_h;
+    private View dashline_var;
+
     // The ‘active pointer’ is the one currently moving our object.
     //싱글 터치
     private View.OnTouchListener touchListener = new View.OnTouchListener() {
+        @RequiresApi(api = Build.VERSION_CODES.M)
         @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             final int X = (int) event.getRawX();
             final int Y = (int) event.getRawY();
+
             switch (MOVE) {
 
                 case 1: // 기본움직임
                     int parentWidth = ((ViewGroup) v.getParent()).getWidth();    // 부모 View 의 Width
-                    int parentHeight = ((ViewGroup) v.getParent()).getHeight();    // 부모 View 의 Height
-                    Log.d("vie3123wTest", "oldXva123123213lue : " + v.getScaleX() + " oldY12312value : " + v.getScaleY());    // View 내부에서 터치한 지점의 상대 좌표값.
+                    //int parentHeight = ((ViewGroup) v.getParent()).getHeight();    // 부모 View 의 Height
+                    // View 내부에서 터치한 지점의 상대 좌표값.
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
                         // 뷰 누름
+                        View dashline = new View(getContext()); // 새로 추가할 대시 라인
+                        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams( v.getWidth(),v.getHeight());
 
-                        oldXvalue = event.getX();
-                        oldYvalue = event.getY();
                         _xDelta = (int) (X - v.getTranslationX());
                         _yDelta = (int) (Y - v.getTranslationY());
                         Log.d("viewTest", "v.getX() : " + v.getX());    // View 의 좌측 상단이 되는 지점의 절대 좌표값.
                         Log.d("viewTest", "v.getY() : " + v.getY());    // View 의 좌측 상단이 되는 지점의 절대 좌표값.
+                        dashline.setX(X - _xDelta);
+                        dashline.setY(Y - _yDelta);
+                        dashline.setScaleX(v.getScaleX());
+                        dashline.setScaleY(v.getScaleY());
+                        dashline.setLayoutParams(layoutParams);
+                        dashline.setBackground(getResources().getDrawable(R.drawable.view_line_dotted));
+                        dashline.setRotation(v.getRotation());
+                        relativeLayout.addView(dashline);
+                        dashline_var = dashline;
 
 
                     } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
@@ -129,41 +145,25 @@ public class Tab4_Simulation extends Fragment {
 
                         v.setTranslationX(X - _xDelta);
                         v.setTranslationY(Y - _yDelta);
+                        dashline_var.setTranslationX(X - _xDelta);
+                        dashline_var.setTranslationY(Y - _yDelta);
+
                         int[] location = new int[2];
                         v.getLocationOnScreen(location);
-
-                        if (parentHeight - (parentHeight - trash_height) <= v.getY() + 250){
+                        //pa - (pa - tra) <= location[1] + v.getHeight() / 10
+                        if ( parentHeight -  tra_h < v.getY() + v.getHeight() / 2 ){
                             trashView.setImageDrawable(getResources().getDrawable(R.drawable.trash_mint));
                         }
                         else
                             trashView.setImageDrawable(getResources().getDrawable(R.drawable.trash));
                         break;
-                        /*
-                        Log.d("viewTest", "v.getX() : " + v.getX());    // View 의 좌측 상단이 되는 지점의 절대 좌표값.
-                        Log.d("viewTest22", "v.getY() : " + v.getY());    // View 의 좌측 상단이 되는 지점의 절대 좌표값.
-
-
-
-                        Log.d("왜이리커",(float)((event.getX() - oldXvalue) * Math.pow(1.5, touch_cnt))+"");
-                        v.setX(v.getX() + (float)((event.getX() - oldXvalue) * Math.pow(1.5, touch_cnt)));
-                        v.setY(v.getY() + (float)((event.getY() - oldYvalue) * Math.pow(1.5, touch_cnt)));
-
-                        Log.d("오니~", parentHeight+"");
-                        Log.d("오니~", trash_height+"");
-                        Log.d("오니~",  location[1]+"");
-                        */
-
-
 
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
                         // 뷰에서 손을
-                        Log.d("현재위치", v.getX() + "x " + v.getY());
-                        Log.d("타겟", trash_width + "x " + trash_height);
-                 
                         int[] location = new int[2];
                         v.getLocationOnScreen(location);
-
-                        if (parentHeight - (parentHeight - trash_height)  <= v.getY() + 250){
+                        relativeLayout.removeView(dashline_var);
+                        if ( parentHeight - tra_h < v.getY() + v.getHeight() / 2 ){
                             int find_idx = 0;
                             for(ImageView imageView : view_order)
                             {
@@ -178,18 +178,24 @@ public class Tab4_Simulation extends Fragment {
                             relativeLayout.removeView(v);
                             trashView.setImageDrawable(getResources().getDrawable(R.drawable.trash));
                         }
+                        Log.d("1",v.getPivotX()+"");
+                        Log.d("1",v.getPivotY()+"");
+                        Log.d("1",location[0]+"");
+                        Log.d("1",v.getWidth()+"");
+                        Log.d("1",parentWidth+"");
+                        Log.d("1",paw+"");
 
-                        if ( v.getX() < 0) {
+                        if ( v.getX() + v.getWidth() / 2 < 0 ) {
                             v.setX(0);
-                            Log.d("11월19일",v.getWidth()+"");
-                            Log.d("11월19일",v.getScaleX()+"");
-                        } else if ( v.getX() + (v.getWidth()) > parentWidth) {
+                            Log.d("2",parentWidth+"");
+                        } else if (  v.getX() + v.getWidth() / 2  > parentWidth) {
                             v.setX(parentWidth - v.getWidth());
-                            Log.d("ㅇㅇ","지금");
+                            Log.d("3",parentWidth+"");
                         }
 
-                        if ( v.getY() < 0) {
+                        if ( v.getY() + v.getHeight() / 2 < 0) {
                             v.setY(0);
+                            Log.d("4",parentWidth+"");
                         }
                         /* 삭제 했어야함
                         else if ( location[1] + (v.getHeight() *v.getScaleY()) > parentHeight) {
@@ -523,16 +529,18 @@ public class Tab4_Simulation extends Fragment {
                 if(check) {
                     parentWidth = relativeLayout.getWidth();    // 부모 View 의 Width
                     parentHeight = relativeLayout.getHeight();    // 부모 View 의 Height
-                    loX = relativeLayout.getX();
-                    loy = relativeLayout.getY();
-                    trash_width = (int) trashView.getX();
-                    trash_height =(int) trashView.getY();
+                    tra_w = trashView.getWidth();
+                    tra_h= trashView.getHeight();
+                    int[] location = new int[2];
+                    relativeLayout.getLocationOnScreen(location);
+                    pa = location[1] + parentHeight / 2;
+                    paw = location[0];
+                    pah = location[1];
+                    trashView.getLocationOnScreen(location);
 
                     check = false;
                     Log.d("상대레이아웃 넓이",parentWidth+"");
                     Log.d("상대레이아웃 높이",parentHeight+"");
-                    Log.d("상대레이아웃 X",loX+"");
-                    Log.d("상대레이아웃 Y",loy+"");
                 }
             }
         };
