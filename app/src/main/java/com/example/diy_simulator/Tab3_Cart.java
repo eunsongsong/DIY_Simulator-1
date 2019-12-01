@@ -92,7 +92,8 @@ public class Tab3_Cart extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), OrderActivity.class);
                 ArrayList<Tab3_Cart_Info> orderinfo_arrayList = new ArrayList<>();
-
+                String unique_num = "";
+                String amount = "";
 
                 for(int a = 0 ; a < cart_item.size(); a++)
                 {
@@ -101,6 +102,8 @@ public class Tab3_Cart extends Fragment {
                     {
                         if (cart_item.get(a).getIn_items().get(b).getCheckBox()) {
                             Tab3_Cart_In_Item_Info tab3_cart_in_item_info = cart_item.get(a).getIn_items().get(b);
+                            unique_num = unique_num + cart_item.get(a).getIn_items().get(b).getUnique_number() + "#";
+                            amount = amount + cart_item.get(a).getIn_items().get(b).getAmount() + "#";
                             order_in_info.add(tab3_cart_in_item_info);
                         }
                     }
@@ -109,6 +112,8 @@ public class Tab3_Cart extends Fragment {
                 }
 
                 intent.putExtra("order_Info",  orderinfo_arrayList);
+                intent.putExtra("order_material_number", unique_num);
+                intent.putExtra("order_material_amount", amount);
                 startActivity(intent);
             }
         });

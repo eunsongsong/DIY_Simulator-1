@@ -194,10 +194,10 @@
             android:layout_below="@+id/line_mypage_seller">
 
             <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:src="@drawable/order_mint"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginLeft="30dp"/>
             <TextView
                 android:id="@+id/just_order_txt"

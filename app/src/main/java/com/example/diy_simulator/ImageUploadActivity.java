@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -268,12 +267,9 @@ public class ImageUploadActivity extends AppCompatActivity {
                 if(!checkedTextView.isChecked()) {
                     checkedTextView.setChecked(true);
                     checkedTextView_side.setChecked(false);
-                    checkedTextView.setTextColor(Color.parseColor("#FF0000"));
-                    checkedTextView_side.setTextColor(Color.parseColor("#555555"));
                 }
                 else {
                     checkedTextView.setChecked(false);
-                    checkedTextView.setTextColor(Color.parseColor("#555555"));
                 }
             }
         });
@@ -283,12 +279,9 @@ public class ImageUploadActivity extends AppCompatActivity {
                 if(!checkedTextView_side.isChecked()) {
                     checkedTextView_side.setChecked(true);
                     checkedTextView.setChecked(false);
-                    checkedTextView_side.setTextColor(Color.parseColor("#FF0000"));
-                    checkedTextView.setTextColor(Color.parseColor("#555555"));
                 }
                 else {
                     checkedTextView_side.setChecked(false);
-                    checkedTextView_side.setTextColor(Color.parseColor("#555555"));
                 }
             }
         });

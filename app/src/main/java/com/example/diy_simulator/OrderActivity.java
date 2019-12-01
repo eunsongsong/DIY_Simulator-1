@@ -37,6 +37,7 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,7 @@ public class OrderActivity extends AppCompatActivity {
     private static final String SUBSCRIBE_TO = "userABC";
 
     String order_number;
+    String uni_num, amount;
 
     String NOTIFICATION_TITLE;
     String NOTIFICATION_MESSAGE;
@@ -79,6 +81,8 @@ public class OrderActivity extends AppCompatActivity {
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference("판매자");
     private DatabaseReference myRef_customer = database.getReference("구매자");
+    private DatabaseReference myRef_material = database.getReference("부자재");
+
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
 
@@ -111,6 +115,11 @@ public class OrderActivity extends AppCompatActivity {
         // Adater에 넣을 값 초기화
         Intent intent = getIntent();
         order_item =  (ArrayList<Tab3_Cart_Info> )intent.getSerializableExtra("order_Info");
+        // Tab3에서 받아온 order item 의 각 부자재 고유 번호, 수량
+        uni_num = intent.getStringExtra("order_material_number");
+        amount = intent.getStringExtra("order_material_amount");
+        if(uni_num.endsWith("#")) uni_num = uni_num.substring(0, uni_num.length()-1);
+        if(amount.endsWith("#")) amount = amount.substring(0, amount.length()-1);
 
         orderInfoAdapter = new OrderInfo_Adapter(getApplicationContext(), order_item, R.layout.order_item);
         //리사이클러뷰 리니어 레이아웃 매니저 설정 - vertical
@@ -173,6 +182,8 @@ public class OrderActivity extends AppCompatActivity {
                 linearLayout.setVisibility(View.GONE);
                 relativeLayout.setVisibility(View.VISIBLE);
                 showProgress();
+
+                decreaseMaterialStock();
 
                 position = 0;
                 myRef.orderByChild("storename").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -257,7 +268,7 @@ public class OrderActivity extends AppCompatActivity {
                                 }
                             }
                         }
-                        customerOrderInfo();
+                        setCustomerOrderInfo();
                         hideProgress();
                     }
 
@@ -300,8 +311,8 @@ public class OrderActivity extends AppCompatActivity {
     }
 
 
-    private void customerOrderInfo() {
-        //구매자 DB에 주문 정보 저장
+    private void setCustomerOrderInfo() {
+        //구매자 DB에 주문 정보 저장, 장바구니 DB 갱신
         myRef_customer.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -310,6 +321,53 @@ public class OrderActivity extends AppCompatActivity {
                         for(int i = 0; i<position; i++){
                             myRef_customer.child(ds.getKey()).child("orderinfo").child(order_number + i).setValue(order_confirm_info.get(i));
                         }
+                        String cart = ds.child("cart").getValue().toString();
+                        cart = deleteOrderItemFromCart(cart);
+                        myRef_customer.child(ds.getKey()).child("cart").setValue(cart);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    //카트에서 주문한 아이템 삭제
+    private String deleteOrderItemFromCart(String cart){
+        //List<String> cart_list = Arrays.asList(cart.split("#"));
+        String[] cart_arr = cart.split("#");
+        ArrayList<String> cart_list = new ArrayList<>(Arrays.asList(cart_arr));
+        List<String> uni_list = Arrays.asList(uni_num.split("#"));
+        for(int i=0; i<uni_list.size(); i++){
+            cart_list.remove(uni_list.get(i));
+        }
+        String result = "";
+        for(int k=0; k<cart_list.size(); k++){
+            result = result + cart_list.get(k) + "#";
+        }
+        if(result.endsWith("#")) result = result.substring(0, result.length()-1);
+
+        return  result;
+    }
+
+    // 부자재 재고 감소
+    private void decreaseMaterialStock(){
+        final String[] uni_nums = uni_num.split("#");
+        final String[] amount_s = amount.split("#");
+        myRef_material.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int i=0;
+                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                    if(i == uni_nums.length) break;
+                    if(ds.getKey().equals(uni_nums[i])){
+                        int stock = Integer.parseInt(ds.child("stock").getValue().toString());
+                        myRef_material.child(ds.getKey()).child("stock").setValue(String.valueOf(stock - Integer.parseInt(amount_s[i])));
+                        i++;
                     }
                 }
             }
@@ -325,8 +383,12 @@ public class OrderActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        Intent intent = new Intent(OrderActivity.this, MainTabActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
             //처리 필요
-
     }
 
 
