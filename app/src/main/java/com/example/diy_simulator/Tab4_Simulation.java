@@ -188,25 +188,23 @@ public class Tab4_Simulation extends Fragment {
                             }
                             //v.setVisibility(View.GONE);
                             relativeLayout.removeView(v);
+                            dashline_var.setVisibility(View.GONE);
                             trashView.setImageDrawable(getResources().getDrawable(R.drawable.trash));
                         }
-                        Log.d("1",v.getPivotX()+"");
-                        Log.d("1",v.getPivotY()+"");
-                        Log.d("1",location[0]+"");
-                        Log.d("1",v.getWidth()+"");
-                        Log.d("1",parentWidth+"");
-                        Log.d("1",paw+"");
+
 
                         if ( v.getX() + v.getWidth() / 2 < 0 ) {
                             v.setX(0);
+                            dashline_var.setX(0);
                             Log.d("2",parentWidth+"");
                         } else if (  v.getX() + v.getWidth() / 2  > parentWidth) {
                             v.setX(parentWidth - v.getWidth());
+                            dashline_var.setX(parentWidth - v.getWidth());
                             Log.d("3",parentWidth+"");
                         }
-
                         if ( v.getY() + v.getHeight() / 2 < 0) {
                             v.setY(0);
+                            dashline_var.setY(0);
                             Log.d("4",parentWidth+"");
                         }
                     }
@@ -767,7 +765,9 @@ public class Tab4_Simulation extends Fragment {
         magnify_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                touch_cnt++;
+                touch_cnt++; // 터치 수
+
+                //가이드라인 크기
                 dashline_var.setScaleX((float)(dashline_var.getScaleX() * 1.5));
                 dashline_var.setScaleY((float)(dashline_var.getScaleY() * 1.5));
                 if(touch_cnt > 0) {
@@ -779,14 +779,32 @@ public class Tab4_Simulation extends Fragment {
                     magnify_btn.setImageDrawable(getResources().getDrawable(R.drawable.zoom_in_black));
                     minimize_btn.setImageDrawable(getResources().getDrawable(R.drawable.zoom_out_black));
                 }
+
+
                 for(int i = 0; i < view_order.size(); i++)
                 {
-                    Log.d("이전1",view_order.get(i).getScaleX()+"");
-                    Log.d("이전2",view_order.get(i).getScaleY()+"");
-                    view_order.get(i).setScaleX( (float)(view_order.get(i).getScaleX() * 1.5));
-                    view_order.get(i).setScaleY((float) (view_order.get(i).getScaleY() * 1.5));
-                    Log.d("이후1",view_order.get(i).getScaleX()+"");
-                    Log.d("이후2",view_order.get(i).getScaleY()+"");
+                    if(parentWidth / 2 >= view_order.get(i).getX() + view_order.get(i).getWidth() / 2) {
+                        int a = (int) (Math.abs(parentWidth / 2 - (view_order.get(i).getX() + view_order.get(i).getWidth() / 2)));
+                        // a == 2
+                        view_order.get(i).setScaleX((float) (view_order.get(i).getScaleX() * 1.5));
+                        view_order.get(i).setScaleY((float) (view_order.get(i).getScaleY() * 1.5));
+                        //
+                        view_order.get(i).setX((float) (view_order.get(i).getX() + (a - a / 1.5)));
+                        int b = (int) (Math.abs(parentWidth / 2 - (view_order.get(i).getX() + view_order.get(i).getWidth() / 2)));
+                        Log.d(i + "왼쪽", a + "    " + b);
+                    }
+                    else
+                    {
+                        int a = (int) (Math.abs(parentWidth / 2 - (view_order.get(i).getX() + view_order.get(i).getWidth() / 2)));
+                        // a == 2
+                        view_order.get(i).setScaleX((float) (view_order.get(i).getScaleX() * 1.5));
+                        view_order.get(i).setScaleY((float) (view_order.get(i).getScaleY() * 1.5));
+                        //
+                        view_order.get(i).setX((float) (view_order.get(i).getX() - (a - a / 1.5)));
+                        int b = (int) (Math.abs(parentWidth / 2 - (view_order.get(i).getX() + view_order.get(i).getWidth() / 2)));
+                        Log.d(i + "오른쪽", a + "    " + b);
+                    }
+
                 }
             }
         });
