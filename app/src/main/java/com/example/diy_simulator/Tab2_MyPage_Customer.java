@@ -26,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -93,6 +94,7 @@ public class Tab2_MyPage_Customer extends Fragment {
                                         Order_Info order1 = ds2.getValue(Order_Info.class);
                                         mypage_order_item.add(order1);
                                     }
+                                    Collections.reverse(mypage_order_item);
                                     myPageOderAdapter.notifyDataSetChanged();
                                 }
                                 break;

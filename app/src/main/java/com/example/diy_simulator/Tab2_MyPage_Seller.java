@@ -26,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -78,6 +79,7 @@ public class Tab2_MyPage_Seller extends Fragment {
         sellerSignout = rootview.findViewById(R.id.mypage_seller_signout);
         sellerModify = rootview.findViewById(R.id.mypage_seller_modify);
 
+
         //Current 유저 찾아서 DB에 저장된 정보 화면에 띄우기
         if (FirebaseDatabase.getInstance().getReference() != null) {
             if (mFirebaseUser != null) {
@@ -106,6 +108,7 @@ public class Tab2_MyPage_Seller extends Fragment {
                                         Order_Info order1 = ds2.getValue(Order_Info.class);
                                         mypage_seller_order_item.add(order1);
                                     }
+                                    Collections.reverse(mypage_seller_order_item);
                                     myPageOderAdapter.notifyDataSetChanged();
                                 }
                                 break;
