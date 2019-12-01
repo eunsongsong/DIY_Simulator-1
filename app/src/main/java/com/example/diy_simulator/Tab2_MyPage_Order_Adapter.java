@@ -57,7 +57,10 @@ public class Tab2_MyPage_Order_Adapter extends RecyclerView.Adapter<Tab2_MyPage_
         holder.price.setText("주문 금액 : " + item.getOrder_price());
         holder.delivery_fee.setText("배송비 : " + item.getDelivery_fee());
         holder.state.setText(item.getOrder_state());
-        holder.state.setTextColor(Color.parseColor("#FF0000"));
+        if(holder.state.getText().toString().contains("입금대기"))
+            holder.state.setTextColor(Color.RED);
+        else
+            holder.state.setTextColor(Color.BLUE);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
