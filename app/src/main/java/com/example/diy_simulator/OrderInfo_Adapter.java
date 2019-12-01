@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -64,14 +63,7 @@ public class OrderInfo_Adapter extends  RecyclerView.Adapter<com.example.diy_sim
             sum += (Integer.parseInt(item.getIn_items().get(i).getPrice()) * item.getIn_items().get(i).getAmount());
         }
         holder.order_order_money.setText("주문금액 "+ sum+" 원");
-        holder.order_sum_of_money.setText("총 합계 금액 " + (Integer.parseInt(item.getDelivery_fee()) + sum) + " 원");
-
-        holder.order_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onItemClick(v, position);
-            }
-        });
+        holder.order_sum_of_money.setText("합계 금액 " + (Integer.parseInt(item.getDelivery_fee()) + sum) + " 원");
     }
 
     @Override
@@ -85,7 +77,6 @@ public class OrderInfo_Adapter extends  RecyclerView.Adapter<com.example.diy_sim
         private TextView order_order_money;
         private TextView order_sum_of_money;
         private RecyclerView in_item_recyclerView;
-        private Button order_btn;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             store_name = itemView.findViewById(R.id.order_item_store_name);
@@ -93,7 +84,6 @@ public class OrderInfo_Adapter extends  RecyclerView.Adapter<com.example.diy_sim
             order_order_money = itemView.findViewById(R.id.order_order_money_txt);
             order_sum_of_money = itemView.findViewById(R.id.order_sum_of_money_txt);
             in_item_recyclerView = itemView.findViewById(R.id.order_in_recyclerView);
-            order_btn = itemView.findViewById(R.id.order_proceed_btn);
         }
     }
 

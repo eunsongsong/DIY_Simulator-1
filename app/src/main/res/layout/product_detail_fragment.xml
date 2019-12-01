@@ -134,7 +134,7 @@
             android:id="@+id/detail_cart_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#AA3DC1AB"
+            android:background="#3DC1AB"
             android:text="장 바 구 니"
             android:layout_weight="1" />
     </LinearLayout>

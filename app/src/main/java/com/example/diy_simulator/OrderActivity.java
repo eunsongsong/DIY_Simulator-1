@@ -1,22 +1,23 @@
 package com.example.diy_simulator;
 
 import android.app.ProgressDialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -58,18 +59,22 @@ public class OrderActivity extends AppCompatActivity {
     public RecyclerView order_recyclerview;
     private List<Tab3_Cart_Info> order_item = new ArrayList<>();
     private Order_Info order_confirm_info;
+    private Order_Info customer_order_confirm_info;
     private List<Order_Product_Info> order_confirm_product_info = new ArrayList<>();
+    private List<Order_Product_Info> customer_order_confirm_product_info = new ArrayList<>();
     private OrderInfo_Adapter orderInfoAdapter;
+
+    public RecyclerView order_complete_recyclerview;
+    private List<Order_Complete_Info> complete_item = new ArrayList<>();
+    private Order_Complete_Adapter completeAdapter;
 
     private LinearLayout linearLayout;
     private RelativeLayout relativeLayout;
 
-    private TextView storename_tv;
-    private TextView seller_tv;
-    private TextView bank_tv;
-    private TextView account_number_tv;
     private ImageButton copy_btn;
     private EditText ename, eaddr, ephone, ememo;
+    private Button proceed_btn;
+    int position;  //order_item 인덱스
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference("판매자");
@@ -85,17 +90,23 @@ public class OrderActivity extends AppCompatActivity {
         copy_btn = findViewById(R.id.copy_btn);
         linearLayout = findViewById(R.id.order_view);
         relativeLayout = findViewById(R.id.order_confirm_show_account);
-        storename_tv = findViewById(R.id.order_storename);
-        seller_tv  = findViewById(R.id.order_seller_name);
-        bank_tv = findViewById(R.id.order_bank_name);
-        account_number_tv = findViewById(R.id.order_account_number);
         ename = findViewById(R.id.order_delivery_orderer_name);
         eaddr = findViewById(R.id.order_delivery_address);
         ephone = findViewById(R.id.order_delivery_phone_number);
         ememo = findViewById(R.id.order_delivery_memo);
+        proceed_btn = findViewById(R.id.order_proceed_btn);
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
+
+
+        //툴바 뒤로가기 버튼 설정
+        Toolbar tb = findViewById(R.id.order_toolbar) ;
+        setSupportActionBar(tb) ;
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
+
 
         // Adater에 넣을 값 초기화
         Intent intent = getIntent();
@@ -111,6 +122,38 @@ public class OrderActivity extends AppCompatActivity {
         order_recyclerview.setAdapter(orderInfoAdapter);
         orderInfoAdapter.notifyDataSetChanged();
 
+
+        // 구매 완료후 판매자 정보 및 계좌 뜨는 리사이클러뷰
+        completeAdapter = new Order_Complete_Adapter(getApplicationContext(), complete_item, R.layout.order_complete_item);
+        //리사이클러뷰 리니어 레이아웃 매니저 설정 - vertical
+        order_complete_recyclerview = findViewById(R.id.order_complete_recyclerView);
+        LinearLayoutManager layoutManager2 = new LinearLayoutManager(getApplicationContext());
+        layoutManager.setOrientation(RecyclerView.VERTICAL);
+        order_complete_recyclerview.setHasFixedSize(true);
+        order_complete_recyclerview.setLayoutManager(layoutManager2);
+        order_complete_recyclerview.setAdapter(completeAdapter);
+
+
+        // 고객이 회원 가입시 입력한 배송 정보 띄우기
+        myRef_customer.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                    if(ds.child("email").getValue().toString().equals(firebaseUser.getEmail())){
+                        ename.setText(ds.child("username").getValue().toString());
+                        eaddr.setText(ds.child("address").getValue().toString());
+                        ephone.setText(ds.child("phonenumber").getValue().toString());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+/*
+        //계좌번호 복사 버튼
         copy_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,23 +164,29 @@ public class OrderActivity extends AppCompatActivity {
             }
         });
 
-        orderInfoAdapter.setOnItemClickListener(new OrderInfo_Adapter.OnItemClickListener() {
+ */
+
+        //주문 진행
+        proceed_btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(View v, final int position) {
+            public void onClick(View v) {
                 linearLayout.setVisibility(View.GONE);
                 relativeLayout.setVisibility(View.VISIBLE);
                 showProgress();
 
-                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                position = 0;
+                myRef.orderByChild("storename").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for(DataSnapshot ds : dataSnapshot.getChildren())
                         {
                             if(!TextUtils.isEmpty(ds.child("storename").getValue().toString()))
                             {
-                                if(ds.child("storename").getValue().toString()
-                                        .equals(order_item.get(position).getStorename()))
+                                if(order_item.get(position).getStorename()
+                                        .equals(ds.child("storename").getValue().toString()))
                                 {
+
+                                    order_confirm_product_info.clear();
                                     int order_price = 0;
                                     for(int k = 0; k<order_item.get(position).getIn_items().size(); k++){
                                         Order_Product_Info order_product_info
@@ -147,19 +196,27 @@ public class OrderActivity extends AppCompatActivity {
                                                 order_item.get(position).getIn_items().get(k).getPreview_img_url() );
 
                                         order_price = order_price + Integer.parseInt(order_item.get(position).getIn_items().get(k).getPrice())
-                                                        * order_item.get(position).getIn_items().get(k).getAmount();
+                                                * order_item.get(position).getIn_items().get(k).getAmount();
                                         order_confirm_product_info.add(order_product_info);
+                                        customer_order_confirm_product_info.add(order_product_info);
                                     }
 
-                                    bank_tv.setText( "은행 : " + ds.child("bank_name").getValue().toString());
-                                    storename_tv.setText("가게이름 : "+ ds.child("storename").getValue().toString());
-                                    account_number_tv.setText(ds.child("account_number").getValue().toString());
-                                    seller_tv.setText("판매자 이름 : " + ds.child("username").getValue().toString());
+                                    Order_Complete_Info item = new Order_Complete_Info(ds.child("storename").getValue().toString(),
+                                            ds.child("username").getValue().toString(), ds.child("phonenumber").getValue().toString(),
+                                            String.valueOf(order_price + Integer.parseInt(order_item.get(position).getDelivery_fee())),
+                                            ds.child("bank_name").getValue().toString(), ds.child("account_number").getValue().toString());
+                                    complete_item.add(item);
+                                    completeAdapter.notifyDataSetChanged();
 
                                     order_confirm_info = new Order_Info(order_item.get(position).getStorename(),
                                             order_item.get(position).getDelivery_fee(), String.valueOf(order_price), ds.child("account_number").getValue().toString(),
                                             ds.child("bank_name").getValue().toString(), ename.getText().toString(), eaddr.getText().toString(),
-                                            ephone.getText().toString(), ememo.getText().toString(), "주문완료", order_confirm_product_info);
+                                            ephone.getText().toString(), ememo.getText().toString(), "주문완료(입금대기)", order_confirm_product_info);
+
+                                    customer_order_confirm_info = new Order_Info(order_item.get(position).getStorename(),
+                                        order_item.get(position).getDelivery_fee(), String.valueOf(order_price), ds.child("account_number").getValue().toString(),
+                                        ds.child("bank_name").getValue().toString(), ename.getText().toString(), eaddr.getText().toString(),
+                                        ephone.getText().toString(), ememo.getText().toString(), "주문완료(입금대기)", customer_order_confirm_product_info);
 
                                     StringTokenizer st = new StringTokenizer(ds.child("email").getValue().toString(), "@");
 
@@ -175,6 +232,7 @@ public class OrderActivity extends AppCompatActivity {
                                     Log.i("주문번호", format_time1 + user_id);
 
                                     order_confirm_info.setOrder_number(order_number);
+                                    customer_order_confirm_info.setOrder_number(order_number);
 
                                     //판매자 DB에 주문 정보 저장
                                     myRef.child(ds.getKey()).child("orderinfo").child(order_number).setValue(order_confirm_info);
@@ -184,7 +242,7 @@ public class OrderActivity extends AppCompatActivity {
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                             for(DataSnapshot ds : dataSnapshot.getChildren()){
                                                 if(ds.child("email").getValue().toString().equals(firebaseUser.getEmail())){
-                                                    myRef_customer.child(ds.getKey()).child("orderinfo").child(order_number).setValue(order_confirm_info);
+                                                    myRef_customer.child(ds.getKey()).child("orderinfo").child(order_number).setValue(customer_order_confirm_info);
                                                 }
                                             }
                                         }
@@ -209,7 +267,7 @@ public class OrderActivity extends AppCompatActivity {
                                         Log.e(TAG, "onCreate: " + e.getMessage() );
                                     }
                                     sendNotification(notification);
-                                    break;
+                                    position++;
                                 }
                             }
                         }
@@ -223,7 +281,6 @@ public class OrderActivity extends AppCompatActivity {
                 });
             }
         });
-
 // Get token
 
     }
@@ -234,7 +291,7 @@ public class OrderActivity extends AppCompatActivity {
                 new com.android.volley.Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Toast.makeText(OrderActivity.this, "주문 신청이 잘 되었어요~ 마이페이지에서 주문상태를 확인해주세요", Toast.LENGTH_LONG).show();
+                        Toast.makeText(OrderActivity.this, "주문이 완료되었습니다. 마이페이지에서 주문 상태를 확인해주세요.", Toast.LENGTH_LONG).show();
                     }
                 },
                 new com.android.volley.Response.ErrorListener() {
@@ -275,5 +332,17 @@ public class OrderActivity extends AppCompatActivity {
         if (pd != null && pd.isShowing()) {
             pd.dismiss();
         }
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:{ //toolbar의 back키 눌렀을 때 동작
+                finish();
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

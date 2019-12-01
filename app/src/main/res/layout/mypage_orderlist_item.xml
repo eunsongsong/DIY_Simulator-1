@@ -11,6 +11,7 @@
         android:paddingTop="7dp"
         android:layout_marginStart="20dp"
         android:text="주문번호"/>
+
     <TextView
         android:id="@+id/mypage_order_storename"
         android:layout_width="match_parent"
@@ -18,6 +19,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginStart="30dp"
         android:text="상점"/>
+
     <TextView
         android:id="@+id/mypage_order_items"
         android:layout_width="match_parent"
@@ -32,13 +34,28 @@
         android:layout_marginTop="5dp"
         android:layout_marginStart="30dp"
         android:text="주문 금액"/>
-    <TextView
-        android:id="@+id/mypage_order_delivery_fee"
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginStart="30dp"
-        android:text="배송비"/>
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/mypage_order_delivery_fee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:text="배송비" />
+        <TextView
+            android:id="@+id/mypage_order_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="30dp"
+            android:text="주문 상태"/>
+    </LinearLayout>
+
 
     <View
         android:layout_marginTop="8dp"

@@ -1,6 +1,7 @@
 package com.example.diy_simulator;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +53,8 @@ public class Tab2_MyPage_Order_Adapter extends RecyclerView.Adapter<Tab2_MyPage_
         holder.order_items.setText(str);
         holder.price.setText("주문 금액 : " + item.getOrder_price());
         holder.delivery_fee.setText("배송비 : " + item.getDelivery_fee());
+        holder.state.setText(item.getOrder_state());
+        holder.state.setTextColor(Color.parseColor("#FF0000"));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +76,7 @@ public class Tab2_MyPage_Order_Adapter extends RecyclerView.Adapter<Tab2_MyPage_
         TextView order_items;
         TextView price;
         TextView delivery_fee;
+        TextView state;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -81,6 +85,7 @@ public class Tab2_MyPage_Order_Adapter extends RecyclerView.Adapter<Tab2_MyPage_
             order_items = itemView.findViewById(R.id.mypage_order_items);
             price = itemView.findViewById(R.id.mypage_order_price);
             delivery_fee = itemView.findViewById(R.id.mypage_order_delivery_fee);
+            state = itemView.findViewById(R.id.mypage_order_state);
         }
     }
 }

@@ -11,16 +11,16 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="5dp"
+            android:layout_margin="6dp"
             android:background="?android:attr/selectableItemBackground">
 
             <ImageView
                 android:id="@+id/order_item_img"
                 android:padding="3dp"
+                android:layout_marginLeft="5dp"
                 android:scaleType="centerCrop"
-                android:layout_width="120dp"
-                android:layout_height="120dp"/>
+                android:layout_width="110dp"
+                android:layout_height="110dp"/>
             <LinearLayout
                 android:id="@+id/store_and_del"
                 android:layout_width="match_parent"
@@ -33,8 +33,7 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="15dp"
                     android:padding="5dp"
-                    android:textColor="#000000"
-                    />
+                    android:textColor="#000000" />
 
             </LinearLayout>
 
@@ -64,7 +63,7 @@
         </RelativeLayout>
 
         <View
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#EEEEEE"/>

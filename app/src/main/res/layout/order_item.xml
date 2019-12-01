@@ -2,19 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="match_parent">
+    android:padding="5dp"
+    android:layout_height="wrap_content">
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_margin="7dp"
             app:cardCornerRadius="12dp">
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -24,18 +25,15 @@
                     android:id="@+id/order_item_store_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="상점"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="3dp"
+                    android:paddingStart="15dp"
+                    android:paddingTop="10dp"
                     android:textColor="#000000"
                     android:textStyle="bold"
                     android:textSize="20sp" />
-
-
                 </LinearLayout>
-                <androidx.recyclerview.widget.RecyclerView
+
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/order_in_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -50,7 +48,7 @@
             android:text="주문 금액: "
             android:textAlignment="viewEnd"
             android:textColor="#000000"
-            android:textSize="17sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/order_delivery_money_txt"
@@ -61,7 +59,7 @@
             android:text="배송비: "
             android:textAlignment="viewEnd"
             android:textColor="#000000"
-            android:textSize="17sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/order_sum_of_money_txt"
@@ -69,21 +67,11 @@
             android:layout_height="wrap_content"
             android:paddingEnd="20dp"
             android:paddingBottom="5dp"
-            android:text="총 합계 금액: "
+            android:text="합계 금액: "
             android:textAlignment="viewEnd"
             android:textColor="#000000"
-            android:textSize="19sp"
+            android:textSize="15sp"
             android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/order_proceed_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="#3DC1AB"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="주문 진행" />
 
         </LinearLayout>
             </RelativeLayout>
