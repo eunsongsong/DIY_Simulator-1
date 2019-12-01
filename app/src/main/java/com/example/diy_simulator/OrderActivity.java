@@ -386,6 +386,7 @@ public class OrderActivity extends AppCompatActivity {
         Intent intent = new Intent(OrderActivity.this, MainTabActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("page_num",2);
         startActivity(intent);
         finish();
             //처리 필요

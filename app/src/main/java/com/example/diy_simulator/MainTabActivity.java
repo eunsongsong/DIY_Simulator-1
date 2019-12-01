@@ -75,6 +75,7 @@ public class MainTabActivity extends AppCompatActivity {
                 //페이지어답터 설정
                 final MainTabPagerAdapter adapter = new MainTabPagerAdapter(getSupportFragmentManager(), mTabLayout.getTabCount(), isSeller, names);
                 mViewPager.setAdapter(adapter);
+                mViewPager.setCurrentItem(getIntent().getIntExtra("page_num",0));
                 hideProgress();
                 mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
 
