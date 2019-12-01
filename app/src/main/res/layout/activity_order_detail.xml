@@ -53,6 +53,12 @@
             android:text="주문 상품 정보"
             android:textSize="17sp"
             android:textColor="#000000"/>
+            <ImageButton
+                android:id="@+id/send_img_btn"
+                android:layout_width="50dp"
+                android:background="@drawable/send"
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp"/>
          <Button
              android:id="@+id/deposit_btn"
              android:visibility="gone"
