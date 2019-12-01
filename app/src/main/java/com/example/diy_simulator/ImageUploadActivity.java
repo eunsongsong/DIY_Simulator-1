@@ -104,7 +104,6 @@ public class ImageUploadActivity extends AppCompatActivity {
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference("부자재");
     private DatabaseReference myRef2 = database.getReference("판매자");
-    private DatabaseReference myRef3 = database.getReference("카테고리");
 
     private List<Preview_Image_Info> preview_image_infos = new ArrayList<>();
     private Preview_Image_Adapter preview_image_adapter =
@@ -263,7 +262,6 @@ public class ImageUploadActivity extends AppCompatActivity {
         light_button = (ImageButton) findViewById(R.id.light_button);
         light_button.setOnClickListener(light_btnListener);
 
-
         checkedTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -313,8 +311,11 @@ public class ImageUploadActivity extends AppCompatActivity {
                 upload_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(data_arr == null || rm_data_arr == null || rm_side_data_arr == null) {
-                            Toast.makeText(ImageUploadActivity.this, "데이터가 없습니다.", Toast.LENGTH_SHORT).show();
+                        if(data_arr.size() == 0) {
+                            Toast.makeText(ImageUploadActivity.this, "상품 대표 사진이 필요합니다.", Toast.LENGTH_SHORT).show();
+                        }
+                        if(rm_data_arr.size() == 0) {
+                            Toast.makeText(ImageUploadActivity.this, "상품 배경이 지워진 사진이 필요합니다.", Toast.LENGTH_SHORT).show();
                         }
                         else{
                             UploadFile();
@@ -347,8 +348,11 @@ public class ImageUploadActivity extends AppCompatActivity {
             upload_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(data_arr == null || rm_data_arr == null || rm_side_data_arr == null) {
-                        Toast.makeText(ImageUploadActivity.this, "데이터가 없습니다.", Toast.LENGTH_SHORT).show();
+                    if(data_arr.size() == 0) {
+                        Toast.makeText(ImageUploadActivity.this, "상품 대표 사진이 필요합니다.", Toast.LENGTH_SHORT).show();
+                    }
+                    if(rm_data_arr.size() == 0) {
+                        Toast.makeText(ImageUploadActivity.this, "배경이 지워진 사진이 필요합니다.", Toast.LENGTH_SHORT).show();
                     }
                     else{
                         UploadFile();

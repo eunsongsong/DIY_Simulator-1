@@ -108,16 +108,14 @@ public class Tab4_Simulation extends Fragment {
 
     //View dashline  // 새로 추가할 대시 라인
 
-
-
     private View.OnTouchListener touchListener_rel = new View.OnTouchListener() {
         @RequiresApi(api = Build.VERSION_CODES.M)
         @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onTouch(View v, MotionEvent event) {
+
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 dashline_var.setVisibility(View.GONE);
-                Log.d("나와랑","ㄴkdhk");
             } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
 
             } else if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -134,6 +132,7 @@ public class Tab4_Simulation extends Fragment {
         @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onTouch(View v, MotionEvent event) {
+
             final int X = (int) event.getRawX();
             final int Y = (int) event.getRawY();
 
@@ -148,7 +147,6 @@ public class Tab4_Simulation extends Fragment {
                         _xDelta = (int) (X - v.getTranslationX());
                         _yDelta = (int) (Y - v.getTranslationY());
                         addGuideView(v, X, Y, _xDelta, _yDelta);
-                       // dashline_var = dashline;
 
                     } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
                         // 뷰 이동 중
@@ -158,7 +156,6 @@ public class Tab4_Simulation extends Fragment {
                         v.setTranslationY(Y - _yDelta);
                         dashline_var.setTranslationX(X - _xDelta);
                         dashline_var.setTranslationY(Y - _yDelta);
-
 
                         int[] location = new int[2];
                         v.getLocationOnScreen(location);
@@ -186,12 +183,10 @@ public class Tab4_Simulation extends Fragment {
                                 }
                                 find_idx++;
                             }
-                            //v.setVisibility(View.GONE);
                             relativeLayout.removeView(v);
                             dashline_var.setVisibility(View.GONE);
                             trashView.setImageDrawable(getResources().getDrawable(R.drawable.trash));
                         }
-
 
                         if ( v.getX() + v.getWidth() / 2 < 0 ) {
                             v.setX(0);
@@ -234,7 +229,6 @@ public class Tab4_Simulation extends Fragment {
                         v.setRotation(v.getRotation() + angle);
                         dashline_var.setRotation(v.getRotation());
                         // Create an animation instance
-
                     }
                     break;
                 case 4: // 하나 앞으로
