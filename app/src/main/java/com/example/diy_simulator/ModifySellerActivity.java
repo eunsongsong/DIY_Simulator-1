@@ -1,5 +1,6 @@
 package com.example.diy_simulator;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -44,7 +45,10 @@ public class ModifySellerActivity extends AppCompatActivity {
     FirebaseUser mFirebaseUser;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef2 = database.getReference("판매자");
+    private DatabaseReference myRef3 = database.getReference("부자재");
 
+    String before_storename;
+    ProgressDialog pd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +85,7 @@ public class ModifySellerActivity extends AppCompatActivity {
 
     //수정된 사항 판매자 DB에 저장
     public void ModifySellerInfo(){
+        showProgress();
         reSellerName = modifySellerName.getText().toString();
         reSellerStorename = modifySellerStorename.getText().toString();
         reSellerPhonenumber = modifySellerPhonenumber.getText().toString();
@@ -108,7 +113,7 @@ public class ModifySellerActivity extends AppCompatActivity {
                         String target = ds.child("email").getValue().toString();
                         if (mFirebaseUser != null) {
                             if (target.equals(mFirebaseUser.getEmail())) {
-
+                                before_storename = ds.child("storename").getValue().toString();
                                 //변경사항이 있을 때 - Null 아닌 부분만 DB에 저장
                                 if (!(TextUtils.isEmpty(reSellerName))) {
                                     StringTokenizer st = new StringTokenizer(mFirebaseUser.getEmail(), "@");
@@ -146,6 +151,23 @@ public class ModifySellerActivity extends AppCompatActivity {
                                     myRef2.child(st_two.nextToken() + ":" + st.nextToken()).child("delivery_fee").setValue(reSellerDelivery);
                                 }
 
+                                myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        for(DataSnapshot ds : dataSnapshot.getChildren()){
+                                            if(ds.child("storename").getValue().toString().equals(before_storename)){
+                                                myRef3.child(ds.getKey()).child("storename").setValue(reSellerStorename);
+                                            }
+                                        }
+                                        hideProgress();
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
 
                                 //변경 사항이 저장되었음을 알림
                                 Toast.makeText(getApplicationContext(), "변경사항이 저장되었습니다.", Toast.LENGTH_SHORT).show();
@@ -163,4 +185,18 @@ public class ModifySellerActivity extends AppCompatActivity {
         }
 
     }
+    // 프로그레스 다이얼로그 보이기
+    public void showProgress() {
+        if( pd == null ) { // 객체를 1회만 생성한다
+            pd = new ProgressDialog(ModifySellerActivity.this, R.style.NewDialog); // 생성한다.
+            pd.setCancelable(false); // 백키로 닫는 기능을 제거한다.
+        }
+        pd.show(); // 화면에 띠워라//
+    }
+    public void hideProgress() {
+        if (pd != null && pd.isShowing()) {
+            pd.dismiss();
+        }
+    }
+
 }
