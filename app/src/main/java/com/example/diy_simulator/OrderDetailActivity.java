@@ -324,6 +324,7 @@ public class OrderDetailActivity extends AppCompatActivity {
                 }
                 sendNotification(notification);
                 dialog.dismiss();     //닫기
+                showProgress();
                 // Event
             }
         });
@@ -346,6 +347,7 @@ public class OrderDetailActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         Toast.makeText(OrderDetailActivity.this, "메세지가 전송 되었어요~", Toast.LENGTH_LONG).show();
                         setEditAlertDialog(true);
+                        hideProgress();
                     }
                 },
                 new com.android.volley.Response.ErrorListener() {
@@ -353,6 +355,7 @@ public class OrderDetailActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(OrderDetailActivity.this, "Request error", Toast.LENGTH_LONG).show();
                         setEditAlertDialog(true);
+                        hideProgress();
                         Log.i(TAG, "onErrorResponse: Didn't work");
                     }
                 }){
