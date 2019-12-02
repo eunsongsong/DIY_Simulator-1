@@ -144,9 +144,8 @@
                     <ImageView
                         android:id="@+id/no_simul_item"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="150dp"
                         android:layout_centerInParent="true"
-                        android:scaleType="fitCenter"
                         android:visibility="gone" />
 
                     <androidx.recyclerview.widget.RecyclerView
