@@ -307,7 +307,7 @@ public class ImageUploadActivity extends AppCompatActivity {
                         if(data_arr.size() == 0) {
                             Toast.makeText(ImageUploadActivity.this, "상품 대표 사진이 필요합니다.", Toast.LENGTH_SHORT).show();
                         }
-                        if(rm_data_arr.size() == 0) {
+                        else if(rm_data_arr.size() == 0) {
                             Toast.makeText(ImageUploadActivity.this, "상품 배경이 지워진 사진이 필요합니다.", Toast.LENGTH_SHORT).show();
                         }
                         else{
