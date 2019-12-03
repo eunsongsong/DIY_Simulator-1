@@ -631,6 +631,7 @@ public class Tab4_Simulation extends Fragment {
                 simul_menu_layout.setVisibility(View.GONE);
                 simul_menu_layout.setAnimation(animation);
                 blur.setVisibility(View.VISIBLE);
+
             }
         });
 
@@ -925,6 +926,11 @@ public class Tab4_Simulation extends Fragment {
                             continue;
                         }
                     }
+                    simulationAdatper.getFilter().filter("");
+                    simulation_items = simulationAdatper.getFilteredList();
+                    simulationAdatper.getFilter().filter("");
+                    simulation_items = simulationAdatper.getFilteredList();
+                    simulationAdatper.notifyDataSetChanged();
                     hideProgress();
                 }
 
