@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -416,6 +417,8 @@ public class OrderDetailActivity extends AppCompatActivity {
         msg_content_recyclerview.setLayoutManager(layoutManager);
         msg_content_recyclerview.setAdapter(message_adapter);
 
+        final ImageView empty_img = (ImageView) view.findViewById(R.id.empty_img);
+
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -458,7 +461,7 @@ public class OrderDetailActivity extends AppCompatActivity {
                         }
                     }
                 }
-                message_adapter.notifyDataSetChanged();
+
                 // 다이얼로그 생성
                 AlertDialog.Builder listViewDialog = new AlertDialog.Builder(activity);
                 // 리스트뷰 설정된 레이아웃
@@ -469,7 +472,20 @@ public class OrderDetailActivity extends AppCompatActivity {
                 // 아이콘 설정
                 //listViewDialog.setIcon(R.drawable.lo);
                 // 타이틀
-                listViewDialog.setTitle("쪽지함");
+
+
+                message_adapter.notifyDataSetChanged();
+                if(message_infos.size() == 0){
+                    msg_content_recyclerview.setVisibility(View.GONE);
+                    empty_img.setVisibility(View.VISIBLE);
+                    listViewDialog.setTitle("쪽지함이 비어있습니다.");
+                }
+                else {
+                    msg_content_recyclerview.setVisibility(View.VISIBLE);
+                    empty_img.setVisibility(View.GONE);
+                    listViewDialog.setTitle("쪽지함");
+                }
+
                 // 다이얼로그 보기
                 listViewDialog.show();
             }

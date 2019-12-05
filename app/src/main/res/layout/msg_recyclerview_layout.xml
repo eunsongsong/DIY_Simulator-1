@@ -4,10 +4,21 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/msg_recycler"
         android:layout_width="match_parent"
         android:padding="10dp"
         android:layout_height="400dp"/>
+    <ImageView
+        android:id="@+id/empty_img"
+        android:visibility="gone"
+        android:background="@drawable/logo"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"/>
+    </FrameLayout>
+
 </LinearLayout>
 
