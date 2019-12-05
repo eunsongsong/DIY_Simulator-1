@@ -1,6 +1,7 @@
 package com.example.diy_simulator;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,11 @@ public class Message_Adapter extends  RecyclerView.Adapter<com.example.diy_simul
         final Message_Info item = items.get(position);
 
         holder.is_my_tv.setText(item.getWho());
+        if(item.getWho().equals("받은 쪽지"))
+            holder.is_my_tv.setTextColor(Color.parseColor("#3DC1AB"));
+        else
+            holder.is_my_tv.setTextColor(Color.parseColor("#FFC81E"));
+
         holder.msg_content.setText(item.getMsg_content());
         holder.msg_time.setText(item.getTime());
 
