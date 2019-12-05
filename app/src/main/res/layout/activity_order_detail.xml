@@ -59,6 +59,13 @@
                 android:background="@drawable/send"
                 android:layout_height="match_parent"
                 android:layout_marginRight="5dp"/>
+
+            <ImageButton
+                android:id="@+id/message_content_btn"
+                android:layout_width="50dp"
+                android:background="@drawable/message"
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp"/>
          <Button
              android:id="@+id/deposit_btn"
              android:visibility="gone"
