@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center"
     android:paddingTop="2dp"
     android:paddingStart="2dp"
     android:paddingEnd="2dp">
@@ -22,33 +23,33 @@
         android:paddingBottom="5dp"
         android:paddingStart="20dp"
         android:paddingEnd="20dp">
-
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#00ff0000"/>
-        <RelativeLayout
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-        <TextView
-        android:id="@+id/is_my_tv"
-        android:textSize="9pt"
-        android:textColor="#000000"
-        android:text="받은 쪽지"
-            android:layout_alignParentLeft="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
             <TextView
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
+                android:id="@+id/is_my_tv"
+                android:textSize="9pt"
+                android:textColor="#000000"
+                android:text="받은 쪽지"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+            <TextView
                 android:id="@+id/msg_time"
                 android:textSize="5pt"
                 android:textColor="#777777"
+                android:layout_gravity="center_vertical"
                 android:text="시간"
-                android:layout_width="150dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-        </RelativeLayout>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/msg_content_tv"
@@ -56,118 +57,7 @@
             android:textColor="#000000"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-    </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    </LinearLayout>
-<!-->
-LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="10dp"
-    android:paddingStart="10dp"
-    android:paddingEnd="10dp">
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="7dp"
-        app:cardCornerRadius="12dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#00ff0000"/>
-
-            <TextView
-                android:id="@+id/order_complete_storename"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="가게이름 : "
-                android:paddingBottom="3dp"
-                android:textColor="#000000"
-                android:textSize="17sp" />
-
-            <TextView
-                android:id="@+id/order_complete_seller_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="판매자 이름 : "
-                android:paddingBottom="3dp"
-                android:textColor="#000000"
-                android:textSize="17sp" />
-
-            <TextView
-                android:id="@+id/order_complete_seller_phone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="판매자 전화번호:"
-                android:paddingBottom="3dp"
-                android:textColor="#000000"
-                android:textSize="17sp" />
-
-            <TextView
-                android:id="@+id/order_complete_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="금액 : "
-                android:paddingBottom="3dp"
-                android:textColor="#000000"
-                android:textSize="17sp" />
-
-            <TextView
-                android:id="@+id/order_complete_bank_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="은행 : "
-                android:paddingBottom="3dp"
-                android:textColor="#000000"
-                android:textSize="17sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingBottom="3dp">
-
-                <TextView
-                    android:id="@+id/account_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="계좌번호 : "
-                    android:textColor="#000000"
-                    android:textSize="17sp" />
-
-                <TextView
-                    android:id="@+id/order_complete_account_number"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="5dp"
-                    android:textColor="#000000"
-                    android:textSize="17sp" />
-
-                <ImageButton
-                    android:id="@+id/copy_btn"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:background="@drawable/copy" />
-
-            </LinearLayout>
-
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
 </LinearLayout>
--->

@@ -32,21 +32,30 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp">
 
+        <TextView
+            android:id="@+id/upload_attention"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="140dp"
+            android:textColor="#77FF0000"
+            android:text="※ 이미지 업로드시 유의사항 "/>
+
+        <ImageButton
+            android:id="@+id/light_button"
+            android:layout_width="55dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@+id/upload_attention"
+            android:background="@drawable/question" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/image_recyclerview"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="40dp"
             android:layout_centerHorizontal="true"
             android:src="@drawable/photo_outline"
             android:layout_width="match_parent"
             android:layout_height="300dp"/>
-
-        <ImageButton
-            android:id="@+id/light_button"
-            android:layout_width="60dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="310dp"
-            android:background="@drawable/question" />
 
         <LinearLayout
             android:id="@+id/image_rb_check_tv"
