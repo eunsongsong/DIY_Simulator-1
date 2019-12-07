@@ -11,6 +11,11 @@ public class Tab4_Simulation_Item {
     private String name;
     private boolean isSide;
     private boolean isMy;
+    private String unique_number;
+
+    public Tab4_Simulation_Item(){
+        this.isMy = true;
+    }
 
     public Tab4_Simulation_Item(String preview_url, String[] url, int width, int height, int depth, String category, String name, boolean isSide, boolean isMy) {
         this.preview_url = preview_url;
@@ -24,12 +29,21 @@ public class Tab4_Simulation_Item {
         this.isMy = isMy;
     }
 
+
     public boolean isMy() {
         return isMy;
     }
 
     public void setMy(boolean my) {
         isMy = my;
+    }
+
+    public String getUnique_number() {
+        return unique_number;
+    }
+
+    public void setUnique_number(String unique_number) {
+        this.unique_number = unique_number;
     }
 
     public String getPreview_url() {
