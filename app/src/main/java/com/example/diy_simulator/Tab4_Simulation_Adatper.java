@@ -4,12 +4,12 @@ package com.example.diy_simulator;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,14 +27,14 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
     List<Tab4_Simulation_Item> unFilteredlist;
     List<Tab4_Simulation_Item> filteredList;
     int item_layout;
+    boolean isSeller;
 
-
-
-    public Tab4_Simulation_Adatper(Context context, List<Tab4_Simulation_Item> items , int item_layout) {
+    public Tab4_Simulation_Adatper(Context context, List<Tab4_Simulation_Item> items , int item_layout, boolean isSeller ) {
         this.context = context;
         this.unFilteredlist = items;
         this.filteredList = items;
         this.item_layout = item_layout;
+        this.isSeller = isSeller;
     }
     public List<Tab4_Simulation_Item> getFilteredList() {
         //for(int i = 0 ; i < filteredList.size(); i++)
@@ -96,9 +96,12 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
         final Tab4_Simulation_Item item = filteredList.get(position);
         //제품 이름, 가격 텍스트 나타내기
         holder.name.setText(item.getName());
-        /*
-        holder.price.setText(item.getPrice());
- */
+
+        if(isSeller){
+            holder.myitem_modify_btn.setVisibility(View.GONE);
+            holder.myitem_delete_btn.setVisibility(View.GONE);
+        }
+
         RequestOptions requestOptions = new RequestOptions();
         requestOptions = requestOptions.placeholder(R.drawable.mungmung);
 
@@ -108,21 +111,6 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
             Glide.with(holder.itemView.getContext())
                     .setDefaultRequestOptions(requestOptions)
                     .load(item.getPreview_url())
-                    /*
-                    .listener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                          //  holder.progressBar.setVisibility(View.GONE);
-                            return false;
-                        }
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                          //  holder.progressBar.setVisibility(View.GONE);
-                            holder.imageView2.setVisibility(View.GONE);
-                            return false;
-                        }
-                    })
-                     */
                     .into(holder.imageView);
 
         }
@@ -143,17 +131,15 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
 
         ImageView imageView;
         TextView name;
-        // ProgressBar progressBar;
-        //DrawableImageViewTarget gifImage;
-
+        ImageButton myitem_modify_btn;
+        ImageButton myitem_delete_btn;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.simulation_menu_product_img);
             name = itemView.findViewById(R.id.simulation_menu_product_name);
-            //  imageView2 = imageView.findViewById(R.id.chuchu);
-            //progressBar = itemView.findViewById(R.id.progress_circular);
-            // gifImage = new DrawableImageViewTarget(imageView2);
+            myitem_modify_btn = itemView.findViewById(R.id.myitem_modify_btn_btn);
+            myitem_delete_btn = itemView.findViewById(R.id.myitem_delete_btn);
         }
     }
 }

@@ -86,7 +86,7 @@ public class OrderDetailActivity extends AppCompatActivity {
     FirebaseUser firebaseUser;
     ProgressDialog pd;
     private String receiver_email;
-    private final int m_nMaxLengthOfDeviceName = 20;
+    private final int m_nMaxLengthOfDeviceName = 16;
     private int position;
     private boolean isSeller;
     @Override
@@ -293,12 +293,14 @@ public class OrderDetailActivity extends AppCompatActivity {
                 ((ViewGroup) et.getParent()).removeView(et);
                 ad = new AlertDialog.Builder(OrderDetailActivity.this);
                 et = new EditText(OrderDetailActivity.this);
+                et.setHint("16자이내로 전송 가능합니다.");
                 ad.setView(et);
             }
         }
         else{
             ad = new AlertDialog.Builder(OrderDetailActivity.this);
             et = new EditText(OrderDetailActivity.this);
+            et.setHint("16자이내로 전송 가능합니다.");
             ad.setView(et);
         }
 
@@ -468,10 +470,6 @@ public class OrderDetailActivity extends AppCompatActivity {
                 listViewDialog.setView(view);
                 // 확인버튼
                 listViewDialog.setPositiveButton("확인", null);
-
-                // 아이콘 설정
-                //listViewDialog.setIcon(R.drawable.lo);
-                // 타이틀
 
 
                 message_adapter.notifyDataSetChanged();

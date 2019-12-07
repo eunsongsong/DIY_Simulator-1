@@ -70,8 +70,8 @@ public class Tab4_Simulation extends Fragment {
 
     //그리드 리싸이클러뷰
     public RecyclerView simul_recyclerview;
-    private  List<Tab4_Simulation_Item> simulation_items = new ArrayList<>();
-    private final Tab4_Simulation_Adatper simulationAdatper = new Tab4_Simulation_Adatper(getContext(), simulation_items, R.layout.fragment_tab4_simulation);
+    private List<Tab4_Simulation_Item> simulation_items = new ArrayList<>();
+    private Tab4_Simulation_Adatper simulationAdatper;
 
     FirebaseAuth firebaseAuth;
     FirebaseUser mFirebaseUser;
@@ -411,11 +411,15 @@ public class Tab4_Simulation extends Fragment {
         minimize_btn  = (ImageButton) rootview.findViewById(R.id.minimize);
 
         relativeLayout = (RelativeLayout) rootview.findViewById(R.id.relative);
-        all_etc_item_show = rootview.findViewById(R.id.all_etc_item_show_checkbox);
+        all_etc_item_show =(Switch) rootview.findViewById(R.id.all_etc_item_show_checkbox);
+        my_item_show = (Switch) rootview.findViewById(R.id.myitem_checkbox);
+
+        boolean isSeller = PreferenceUtil.getInstance(getContext()).getBooleanExtra("isSeller");
+        simulationAdatper = new Tab4_Simulation_Adatper(getContext(), simulation_items, R.layout.fragment_tab4_simulation, isSeller);
+
 
         firebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = firebaseAuth.getCurrentUser();
-        boolean isSeller = PreferenceUtil.getInstance(getContext()).getBooleanExtra("isSeller");
         trashView = (ImageView) rootview.findViewById(R.id.trash);
         empty_item = rootview.findViewById(R.id.no_simul_item);
         keyring_btn = (ImageButton) rootview.findViewById(R.id.img_but1);
@@ -479,6 +483,8 @@ public class Tab4_Simulation extends Fragment {
             cart= "";
             // 판매자일 경우 내 가게 상품 목록 불러오기
             if(isSeller){
+                add_item_btn.setVisibility(View.GONE);
+                my_item_show.setVisibility(View.GONE);
                 myRef_seller.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -537,7 +543,6 @@ public class Tab4_Simulation extends Fragment {
         simul_menu_layout = rootview.findViewById(R.id.simul_menu_layout);
         view = rootview.findViewById(R.id.side_btn);
         blur = rootview.findViewById(R.id.blur);
-
 
         //그리드 레이아웃으로 한줄에 2개씩 제품 보여주기
         simul_recyclerview = rootview.findViewById(R.id.simulation_menu_recycler);
