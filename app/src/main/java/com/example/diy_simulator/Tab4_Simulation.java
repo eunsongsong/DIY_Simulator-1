@@ -2,6 +2,7 @@ package com.example.diy_simulator;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,11 +36,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,13 +50,6 @@ public class Tab4_Simulation extends Fragment {
     Switch all_etc_item_show;
     Switch my_item_show;
     ImageButton add_item_btn;
-
-    FirebaseStorage storage = FirebaseStorage.getInstance("gs://diy-simulator-607c9.appspot.com");
-    StorageReference storageRef = storage.getReference();
-    StorageReference mountainImagesRef;
-    ArrayList<byte[]> rm_data_arr;
-    UploadTask uploadTask;
-    ByteArrayOutputStream baos;
 
     RelativeLayout relativeLayout;
     int parentWidth;
@@ -415,7 +405,7 @@ public class Tab4_Simulation extends Fragment {
         my_item_show = (Switch) rootview.findViewById(R.id.myitem_checkbox);
 
         boolean isSeller = PreferenceUtil.getInstance(getContext()).getBooleanExtra("isSeller");
-        simulationAdatper = new Tab4_Simulation_Adatper(getContext(), simulation_items, R.layout.fragment_tab4_simulation, isSeller);
+        simulationAdatper = new Tab4_Simulation_Adatper(getContext(), simulation_items, R.layout.fragment_tab4_simulation);
 
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -430,6 +420,13 @@ public class Tab4_Simulation extends Fragment {
 
         view_order = new ArrayList<>();
 
+        add_item_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainIntent = new Intent(getContext(), CustomerImageUploadActivity.class);
+                startActivity(mainIntent);
+            }
+        });
 
         keyring_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -867,8 +864,8 @@ public class Tab4_Simulation extends Fragment {
 
     }
 
-    public void addItemToRecyclerView(String preview, String[] url, int width, int height, int depth, String category, String name, boolean isSide){
-        Tab4_Simulation_Item item = new Tab4_Simulation_Item(preview, url, width, height, depth, category, name, isSide);
+    public void addItemToRecyclerView(String preview, String[] url, int width, int height, int depth, String category, String name, boolean isSide, boolean isMy){
+        Tab4_Simulation_Item item = new Tab4_Simulation_Item(preview, url, width, height, depth, category, name, isSide, isMy);
         simulation_items.add(item);
         simulationAdatper.notifyDataSetChanged();
     }
@@ -922,15 +919,15 @@ public class Tab4_Simulation extends Fragment {
                             if(show_all){
                                 int m;
                                 for (m = 0; m < url.length; m++) {
-                                    addItemToRecyclerView(url[m], url, width, height, depth, category, name+" - "+(m+1), false);
+                                    addItemToRecyclerView(url[m], url, width, height, depth, category, name+" - "+(m+1), false,false);
                                 }
                                 for (int n = 0; n < url_side.length; n++) { //측면
-                                    addItemToRecyclerView(url_side[n], url, width, height, depth, category, name+" - "+(m+1), true);
+                                    addItemToRecyclerView(url_side[n], url, width, height, depth, category, name+" - "+(m+1), true,false);
                                     m++;
                                 }
                             }
                             else{
-                                addItemToRecyclerView(preview_url, url, width, height, depth, category, name, false);
+                                addItemToRecyclerView(preview_url, url, width, height, depth, category, name, false,false);
                             }
                             i++;
                             continue;

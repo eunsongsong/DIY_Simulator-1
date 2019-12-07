@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ImageUploadActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/my_image_upload_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#EEEEEE"
+            android:minHeight="?attr/actionBarSize">
+            <TextView
+                android:id="@+id/my_image_upload_toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="내 아이템 업로드"
+                android:textColor="#777777"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp">
+
+            <TextView
+                android:id="@+id/my_upload_attention"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="140dp"
+                android:textColor="#77FF0000"
+                android:text="※ 이미지 업로드시 유의사항 "/>
+
+            <ImageButton
+                android:id="@+id/my_light_button"
+                android:layout_width="55dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@+id/my_upload_attention"
+                android:background="@drawable/question" />
+
+            <ImageView
+                android:id="@+id/my_image"
+                android:layout_marginTop="30dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/my_upload_attention"
+                android:src="@drawable/photo_outline"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"/>
+
+            <TextView
+                android:id="@+id/my_name_guide"
+                android:layout_below="@+id/my_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="*내 아이템 이름을 입력해주세요."
+                android:textColor="#555555"/>
+
+            <EditText
+                android:id="@+id/my_material_name"
+                android:layout_width="300dp"
+                android:layout_below="@+id/my_name_guide"
+                android:inputType="text"
+                android:hint="내 아이템 명"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/my_size_guide_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/my_material_name"
+                android:layout_marginTop="20dp"
+                android:text="*제품의 크기를 가로, 세로, 두께 순으로 입력해주세요."
+                android:textColor="#555555"/>
+            <EditText
+                android:id="@+id/my_size_width"
+                android:layout_width="120dp"
+                android:layout_below="@+id/my_size_guide_txt"
+                android:inputType="number"
+                android:hint="가로(mm)"
+                android:layout_height="wrap_content"/>
+            <EditText
+                android:id="@+id/my_size_height"
+                android:layout_width="120dp"
+                android:layout_below="@+id/my_size_guide_txt"
+                android:layout_toRightOf="@+id/my_size_width"
+                android:inputType="number"
+                android:hint="세로(mm)"
+                android:layout_height="wrap_content"/>
+            <EditText
+                android:id="@+id/my_size_depth"
+                android:layout_width="120dp"
+                android:layout_below="@+id/my_size_guide_txt"
+                android:layout_toRightOf="@+id/my_size_height"
+                android:inputType="number"
+                android:hint="두께(mm)"
+                android:layout_height="wrap_content"/>
+            <Button
+                android:id="@+id/my_upload_btn"
+                android:text="업로드"
+                android:drawableStart="@mipmap/round_check_circle_black"
+                android:textAlignment="textStart"
+                android:textSize="18dp"
+                android:paddingLeft="95sp"
+                android:textStyle="bold"
+                android:layout_below="@+id/my_size_depth"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
+                android:layout_marginBottom="25dp"
+                android:layout_centerHorizontal="true"
+                android:background="#3DC1AB"/>
+        </RelativeLayout>
+    </LinearLayout>
+</RelativeLayout>

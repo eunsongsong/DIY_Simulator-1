@@ -27,14 +27,12 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
     List<Tab4_Simulation_Item> unFilteredlist;
     List<Tab4_Simulation_Item> filteredList;
     int item_layout;
-    boolean isSeller;
 
-    public Tab4_Simulation_Adatper(Context context, List<Tab4_Simulation_Item> items , int item_layout, boolean isSeller ) {
+    public Tab4_Simulation_Adatper(Context context, List<Tab4_Simulation_Item> items , int item_layout) {
         this.context = context;
         this.unFilteredlist = items;
         this.filteredList = items;
         this.item_layout = item_layout;
-        this.isSeller = isSeller;
     }
     public List<Tab4_Simulation_Item> getFilteredList() {
         //for(int i = 0 ; i < filteredList.size(); i++)
@@ -97,7 +95,7 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
         //제품 이름, 가격 텍스트 나타내기
         holder.name.setText(item.getName());
 
-        if(isSeller){
+        if(item.isMy()){
             holder.myitem_modify_btn.setVisibility(View.GONE);
             holder.myitem_delete_btn.setVisibility(View.GONE);
         }

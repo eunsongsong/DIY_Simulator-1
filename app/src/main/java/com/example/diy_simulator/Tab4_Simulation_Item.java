@@ -10,8 +10,9 @@ public class Tab4_Simulation_Item {
     private String category;
     private String name;
     private boolean isSide;
+    private boolean isMy;
 
-    public Tab4_Simulation_Item(String preview_url, String[] url, int width, int height, int depth, String category, String name, boolean isSide) {
+    public Tab4_Simulation_Item(String preview_url, String[] url, int width, int height, int depth, String category, String name, boolean isSide, boolean isMy) {
         this.preview_url = preview_url;
         this.url = url;
         this.width = width;
@@ -20,6 +21,15 @@ public class Tab4_Simulation_Item {
         this.category = category;
         this.name = name;
         this.isSide = isSide;
+        this.isMy = isMy;
+    }
+
+    public boolean isMy() {
+        return isMy;
+    }
+
+    public void setMy(boolean my) {
+        isMy = my;
     }
 
     public String getPreview_url() {
