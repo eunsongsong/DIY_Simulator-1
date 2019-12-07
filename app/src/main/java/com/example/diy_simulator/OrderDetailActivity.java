@@ -475,6 +475,7 @@ public class OrderDetailActivity extends AppCompatActivity {
 
 
                 message_adapter.notifyDataSetChanged();
+
                 if(message_infos.size() == 0){
                     msg_content_recyclerview.setVisibility(View.GONE);
                     empty_img.setVisibility(View.VISIBLE);
@@ -485,7 +486,7 @@ public class OrderDetailActivity extends AppCompatActivity {
                     empty_img.setVisibility(View.GONE);
                     listViewDialog.setTitle("쪽지함");
                 }
-
+                msg_content_recyclerview.scrollToPosition(message_infos.size() - 1);
                 // 다이얼로그 보기
                 listViewDialog.show();
             }

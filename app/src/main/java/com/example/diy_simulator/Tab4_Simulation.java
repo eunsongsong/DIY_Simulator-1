@@ -35,7 +35,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,9 +51,16 @@ public class Tab4_Simulation extends Fragment {
     private View view;
     Animation animation;
     Switch all_etc_item_show;
+    Switch my_item_show;
+    ImageButton add_item_btn;
 
-    float oldXvalue;
-    float oldYvalue;
+    FirebaseStorage storage = FirebaseStorage.getInstance("gs://diy-simulator-607c9.appspot.com");
+    StorageReference storageRef = storage.getReference();
+    StorageReference mountainImagesRef;
+    ArrayList<byte[]> rm_data_arr;
+    UploadTask uploadTask;
+    ByteArrayOutputStream baos;
+
     RelativeLayout relativeLayout;
     int parentWidth;
     int parentHeight;
@@ -96,10 +107,6 @@ public class Tab4_Simulation extends Fragment {
     private int _xDelta;
     private int _yDelta;
 
-    private int pa;
-    private int paw;
-    private int pah;
-    private int tra_w;
     private int tra_h;
     private View dashline_var;
 
@@ -415,8 +422,10 @@ public class Tab4_Simulation extends Fragment {
         phonecase_btn = (ImageButton) rootview.findViewById(R.id.img_but2);
         acc_btn = (ImageButton) rootview.findViewById(R.id.img_but3);
         etc_btn = (ImageButton) rootview.findViewById(R.id.img_but4);
+        add_item_btn = (ImageButton) rootview.findViewById(R.id.add_btn);
 
         view_order = new ArrayList<>();
+
 
         keyring_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -479,7 +488,7 @@ public class Tab4_Simulation extends Fragment {
                                 if(TextUtils.isEmpty(cart))
                                 {
                                     empty_item.setVisibility(View.VISIBLE);
-                                    empty_item.setBackground(getResources().getDrawable(R.drawable.no_item_seller));
+                                    empty_item.setImageDrawable(getResources().getDrawable(R.drawable.no_item_seller));
                                 }
                                 else
                                     empty_item.setVisibility(View.GONE);
@@ -506,7 +515,7 @@ public class Tab4_Simulation extends Fragment {
                                 if(TextUtils.isEmpty(cart))
                                 {
                                     empty_item.setVisibility(View.VISIBLE);
-                                    empty_item.setBackground(getResources().getDrawable(R.drawable.empty_cart));
+                                    empty_item.setImageDrawable(getResources().getDrawable(R.drawable.empty_cart));
                                 }
                                 else
                                     empty_item.setVisibility(View.GONE);
@@ -550,13 +559,9 @@ public class Tab4_Simulation extends Fragment {
                     parentWidth = relativeLayout.getWidth();    // 부모 View 의 Width
                     parentHeight = relativeLayout.getHeight();    // 부모 View 의 Height
                     relativeLayout.setOnTouchListener(touchListener_rel);
-                    tra_w = trashView.getWidth();
                     tra_h= trashView.getHeight();
                     int[] location = new int[2];
                     relativeLayout.getLocationOnScreen(location);
-                    pa = location[1] + parentHeight / 2;
-                    paw = location[0];
-                    pah = location[1];
                     trashView.getLocationOnScreen(location);
                     check = false;
 

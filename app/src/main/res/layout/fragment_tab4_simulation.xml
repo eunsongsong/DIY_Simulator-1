@@ -27,10 +27,9 @@
             android:background="#FFFFFF"
             android:orientation="vertical">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
 
                 <ImageButton
                     android:id="@+id/x_button"
@@ -41,7 +40,16 @@
                     android:layout_marginBottom="5dp"
                     android:background="@mipmap/clear_black" />
 
-            </LinearLayout>
+                <ImageButton
+                    android:id="@+id/add_btn"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/plus"/>
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -144,7 +152,7 @@
                     <ImageView
                         android:id="@+id/no_simul_item"
                         android:layout_width="match_parent"
-                        android:layout_height="150dp"
+                        android:layout_height="250dp"
                         android:layout_centerInParent="true"
                         android:visibility="gone" />
 
@@ -155,8 +163,16 @@
                 </RelativeLayout>
 
                 <Switch
+                    android:id="@+id/myitem_checkbox"
+                    android:layout_width="220dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:switchMinWidth="30dp"
+                    android:text="내 아이템 보이기" />
+
+                <Switch
                     android:id="@+id/all_etc_item_show_checkbox"
-                    android:layout_width="wrap_content"
+                    android:layout_width="220dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:switchMinWidth="30dp"
@@ -199,16 +215,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/right_black" />
-            <!--
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:text="DIY-Simulator"
-                android:layout_marginTop="3dp"
-                android:textSize="25sp"
-                android:textStyle="italic" />
-                -->
+
             <ImageButton
                 android:id="@+id/order_front_1"
                 android:layout_width="35dp"
