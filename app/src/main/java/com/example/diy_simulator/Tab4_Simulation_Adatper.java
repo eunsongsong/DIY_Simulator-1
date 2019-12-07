@@ -95,7 +95,7 @@ public class Tab4_Simulation_Adatper extends  RecyclerView.Adapter<com.example.d
         //제품 이름, 가격 텍스트 나타내기
         holder.name.setText(item.getName());
 
-        if(item.isMy()){
+        if(!item.isMy()){
             holder.myitem_modify_btn.setVisibility(View.GONE);
             holder.myitem_delete_btn.setVisibility(View.GONE);
         }
