@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -1013,6 +1015,12 @@ public class Tab4_Simulation extends Fragment {
                     simulationAdatper.getFilter().filter("");
                     simulation_items = simulationAdatper.getFilteredList();
                     simulationAdatper.notifyDataSetChanged();
+                    if(simulation_items.size() == 0)
+                    {
+                        Toast toast = Toast.makeText(getContext(), "(+) 버튼을 눌러 내 아이템을 추가해보세요", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.CENTER,50,0);
+                        toast.show();
+                    }
                     hideProgress();
                 }
 
