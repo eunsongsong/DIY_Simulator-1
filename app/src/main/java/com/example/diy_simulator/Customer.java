@@ -13,7 +13,7 @@ public class Customer {
     private String cart;
     private String account_number;
     private String bank_name;
-    private String orderInfo;
+    private String orderinfo;
 
     //구매자 생성자
     public Customer(String email, String username, String phonenumber, String address, String account_number, String bank_name) {
@@ -24,7 +24,7 @@ public class Customer {
         this.account_number = account_number;
         this.bank_name = bank_name;
         this.cart = "";
-        this.orderInfo = "";
+        this.orderinfo = "";
     }
 
     public String getEmail() {
@@ -83,12 +83,12 @@ public class Customer {
         this.bank_name = bank_name;
     }
 
-    public String getOrderInfo() {
-        return orderInfo;
+    public String getOrderinfo() {
+        return orderinfo;
     }
 
-    public void setOrderInfo(String orderInfo) {
-        this.orderInfo = orderInfo;
+    public void setOrderinfo(String orderinfo) {
+        this.orderinfo = orderinfo;
     }
 }
 
