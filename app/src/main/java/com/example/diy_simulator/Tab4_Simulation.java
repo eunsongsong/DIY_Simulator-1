@@ -471,8 +471,8 @@ public class Tab4_Simulation extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            if (mFirebaseUser.getEmail().equals(ds.child("email").getValue().toString())) {
-                                cart = ds.child("material").getValue().toString();
+                            if (mFirebaseUser.getEmail().equals(String.valueOf(ds.child("email").getValue()))) {
+                                cart = String.valueOf(ds.child("material").getValue());
                                 if(TextUtils.isEmpty(cart))
                                 {
                                     empty_item.setVisibility(View.VISIBLE);
@@ -498,8 +498,8 @@ public class Tab4_Simulation extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            if (mFirebaseUser.getEmail().equals(ds.child("email").getValue().toString())) {
-                                cart = ds.child("cart").getValue().toString();
+                            if (mFirebaseUser.getEmail().equals(String.valueOf(ds.child("email").getValue()))) {
+                                cart = String.valueOf(ds.child("cart").getValue());
                                 if(TextUtils.isEmpty(cart))
                                 {
                                     empty_item.setVisibility(View.VISIBLE);

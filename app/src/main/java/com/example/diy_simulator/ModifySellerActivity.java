@@ -110,10 +110,10 @@ public class ModifySellerActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        String target = ds.child("email").getValue().toString();
+                        String target = String.valueOf(ds.child("email").getValue());
                         if (mFirebaseUser != null) {
                             if (target.equals(mFirebaseUser.getEmail())) {
-                                before_storename = ds.child("storename").getValue().toString();
+                                before_storename = String.valueOf(ds.child("storename").getValue());
                                 //변경사항이 있을 때 - Null 아닌 부분만 DB에 저장
                                 if (!(TextUtils.isEmpty(reSellerName))) {
                                     StringTokenizer st = new StringTokenizer(mFirebaseUser.getEmail(), "@");
@@ -155,7 +155,7 @@ public class ModifySellerActivity extends AppCompatActivity {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         for(DataSnapshot ds : dataSnapshot.getChildren()){
-                                            if(ds.child("storename").getValue().toString().equals(before_storename)){
+                                            if(String.valueOf(ds.child("storename").getValue()).equals(before_storename)){
                                                 myRef3.child(ds.getKey()).child("storename").setValue(reSellerStorename);
                                             }
                                         }

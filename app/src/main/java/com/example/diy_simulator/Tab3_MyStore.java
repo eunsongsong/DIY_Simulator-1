@@ -102,9 +102,9 @@ public class Tab3_MyStore extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     if(mFirebaseUser == null) break;
-                    if (mFirebaseUser.getEmail().equals(ds.child("email").getValue().toString())){
-                        material = ds.child("material").getValue().toString();
-                        String name = ds.child("storename").getValue().toString();
+                    if (mFirebaseUser.getEmail().equals(String.valueOf(ds.child("email").getValue()))){
+                        material = String.valueOf(ds.child("material").getValue());
+                        String name = String.valueOf(ds.child("storename").getValue());
                         //툴바 타이틀을 판매자의 가게 이름으로 설정
                         mystore_title.setText(name);
                         break;

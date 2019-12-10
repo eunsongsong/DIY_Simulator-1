@@ -51,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:text="3. 배경색이 제품색과 색 대비가 뚜렷할수록 더욱 깔끔하게 배경이 제거 됩니다."
+            android:text="3. 배경색이 제품색과 색 대비가 뚜렷할수록 더욱 깔끔하게 배경이 제거됩니다."
             android:lineSpacingExtra="3dp"
             android:paddingLeft="5dp"
             android:textColor="#000000"

@@ -75,41 +75,39 @@ public class Tab2_MyPage_Customer extends Fragment {
         customerModify = rootview.findViewById(R.id.mypage_customer_modify);
 
         //Current 유저 찾아서 DB에 저장된 정보 화면에 띄우기
-        if (FirebaseDatabase.getInstance().getReference() != null) {
-            if (mFirebaseUser != null) {
-                myRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        mypage_order_item.clear();
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            if (ds.child("email").getValue().toString().equals(mFirebaseUser.getEmail())) {
-                                String target = ds.child("username").getValue().toString();
-                                customerName.setText(target);
-                                target = ds.child("phonenumber").getValue().toString();
-                                customerPhonenumber.setText(target);
-                                target = ds.child("address").getValue().toString();
-                                customerAddress.setText(target);
-                                if(!TextUtils.isEmpty(ds.child("orderinfo").getValue().toString())){
-                                    for(DataSnapshot ds2 : ds.child("orderinfo").getChildren()){
-                                        Order_Info order1 = ds2.getValue(Order_Info.class);
-                                        mypage_order_item.add(order1);
-                                    }
-                                    Collections.reverse(mypage_order_item);
-                                    myPageOderAdapter.notifyDataSetChanged();
+        if (mFirebaseUser != null) {
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    mypage_order_item.clear();
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        if (String.valueOf(ds.child("email").getValue()).equals(mFirebaseUser.getEmail())) {
+                            String target = String.valueOf(ds.child("username").getValue());
+                            customerName.setText(target);
+                            target = String.valueOf(ds.child("phonenumber").getValue());
+                            customerPhonenumber.setText(target);
+                            target = String.valueOf(ds.child("address").getValue());
+                            customerAddress.setText(target);
+                            if(!TextUtils.isEmpty(String.valueOf(ds.child("orderinfo").getValue()))){
+                                for(DataSnapshot ds2 : ds.child("orderinfo").getChildren()){
+                                    Order_Info order1 = ds2.getValue(Order_Info.class);
+                                    mypage_order_item.add(order1);
                                 }
-                                break;
+                                Collections.reverse(mypage_order_item);
+                                myPageOderAdapter.notifyDataSetChanged();
                             }
+                            break;
                         }
-                        return;
                     }
+                    return;
+                }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
-                customerEmail.setText(mFirebaseUser.getEmail());
-            }
+                }
+            });
+            customerEmail.setText(mFirebaseUser.getEmail());
         }
 
         // 회원정보 수정

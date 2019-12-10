@@ -143,7 +143,7 @@ public class Product_Detail_Fragment extends Fragment {
 
                                 if(mFirebaseUser.getEmail().equals(ds.child("email").getValue().toString())){
                                     //현재 유저의 장바구니 값 받아오기
-                                    String cart_num = ds.child("cart").getValue().toString();
+                                    String cart_num = String.valueOf(ds.child("cart").getValue());
                                     //장바구니 숫자 정렬
                                     if(TextUtils.isEmpty(cart_num)) cart_num = uni_num;
                                     else cart_num = sortMaterialNumber(cart_num+"#"+uni_num);

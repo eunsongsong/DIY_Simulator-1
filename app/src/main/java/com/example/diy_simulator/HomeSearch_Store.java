@@ -80,11 +80,11 @@ public class HomeSearch_Store extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                  for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                     if (storename.equals(ds.child("storename").getValue().toString())){
-                         material = ds.child("material").getValue().toString();
-                         seller_name = ds.child("username").getValue().toString();
-                         seller_phone = ds.child("phonenumber").getValue().toString();
-                         seller_addr = ds.child("address").getValue().toString();
+                     if (storename.equals(String.valueOf(ds.child("storename").getValue()))){
+                         material = String.valueOf(ds.child("material").getValue());
+                         seller_name = String.valueOf(ds.child("username").getValue());
+                         seller_phone = String.valueOf(ds.child("phonenumber").getValue());
+                         seller_addr = String.valueOf(ds.child("address").getValue());
                          break;
                      }
                 }

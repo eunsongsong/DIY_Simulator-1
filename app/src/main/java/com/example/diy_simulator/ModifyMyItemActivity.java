@@ -72,7 +72,7 @@ public class ModifyMyItemActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds : dataSnapshot.getChildren()){
 
-                    if(ds.child("email").getValue().toString().equals(firebaseUser.getEmail())){
+                    if(String.valueOf(ds.child("email").getValue()).equals(firebaseUser.getEmail())){
                         if(!TextUtils.isEmpty(name))
                             myRef.child(ds.getKey()).child("my_image_url").child(modi_item2.getUnique_number()).child("material_name").setValue(name);
                         if(!TextUtils.isEmpty(width))
