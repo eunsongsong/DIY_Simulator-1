@@ -205,7 +205,7 @@ public class Tab3_MyStore_Adater extends  RecyclerView.Adapter<Tab3_MyStore_Adat
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                     // 장바구니 값 가져오기
-                                    String cart = ds.child("cart").getValue().toString();
+                                    String cart = String.valueOf(ds.child("cart").getValue());
                                     // 장바구니가 비어있지 않은 경우
                                     if(!TextUtils.isEmpty(cart)){
                                         String[] cart_arr = cart.split("#");

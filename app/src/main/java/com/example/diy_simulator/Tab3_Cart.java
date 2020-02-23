@@ -29,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class Tab3_Cart extends Fragment {
 
@@ -129,8 +130,8 @@ public class Tab3_Cart extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    if (mFirebaseUser.getEmail().equals(ds.child("email").getValue().toString())){
-                        cart = ds.child("cart").getValue().toString();
+                    if (Objects.equals(mFirebaseUser.getEmail(), String.valueOf(ds.child("email").getValue()))){
+                        cart = String.valueOf(ds.child("cart").getValue());
                         Log.i("카트 번호", cart+"  dl");
                         break;
                     }

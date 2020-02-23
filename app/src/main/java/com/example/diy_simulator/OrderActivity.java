@@ -191,11 +191,11 @@ public class OrderActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for(DataSnapshot ds : dataSnapshot.getChildren())
                         {
-                            if(!TextUtils.isEmpty(ds.child("storename").getValue().toString()))
+                            if(!TextUtils.isEmpty(String.valueOf(ds.child("storename").getValue())))
                             {
                                 if(position >= order_item.size()) break;
                                 if(order_item.get(position).getStorename()
-                                        .equals(ds.child("storename").getValue().toString()))
+                                        .equals(String.valueOf(ds.child("storename").getValue())))
                                 {
                                     order_confirm_product_info = new ArrayList<>();
                                     int order_price = 0;

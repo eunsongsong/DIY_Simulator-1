@@ -307,7 +307,7 @@ public class ImageUploadActivity extends AppCompatActivity {
                         if(data_arr.size() == 0) {
                             Toast.makeText(ImageUploadActivity.this, "상품 대표 사진이 필요합니다.", Toast.LENGTH_SHORT).show();
                         }
-                        if(rm_data_arr.size() == 0) {
+                        else if(rm_data_arr.size() == 0) {
                             Toast.makeText(ImageUploadActivity.this, "상품 배경이 지워진 사진이 필요합니다.", Toast.LENGTH_SHORT).show();
                         }
                         else{
@@ -670,8 +670,8 @@ public class ImageUploadActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds : dataSnapshot.getChildren()){
                     String u = mFirebaseUser.getEmail();
-                    if(u.equals(ds.child("email").getValue().toString())){
-                        String tmp = ds.child("material").getValue().toString();
+                    if(Objects.equals(u, String.valueOf(ds.child("email").getValue()))){
+                        String tmp = String.valueOf(ds.child("material").getValue());
                         if(TextUtils.isEmpty(tmp)) myRef2.child(ds.getKey()).child("material").setValue(count);
                         else myRef2.child(ds.getKey()).child("material").setValue(tmp+"#"+count);
                         break;

@@ -83,7 +83,7 @@ public class ModifyInfoActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        String target = ds.child("email").getValue().toString();
+                        String target = String.valueOf(ds.child("email").getValue());
                         if (mFirebaseUser != null) {
                             if (target.equals(mFirebaseUser.getEmail())) {
 

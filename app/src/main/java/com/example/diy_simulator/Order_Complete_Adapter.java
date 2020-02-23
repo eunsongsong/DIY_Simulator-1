@@ -53,6 +53,7 @@ public class Order_Complete_Adapter extends RecyclerView.Adapter<Order_Complete_
                 ClipData clipData = ClipData.newPlainText("Account_Number", holder.account.getText()); //클립보드에 ID라는 이름표로 id 값을 복사하여 저장
                 clipboardManager.setPrimaryClip(clipData);
                 holder.copy.setBackground(holder.copy.getResources().getDrawable(R.drawable.check_mint));
+                holder.copy.setEnabled(false);
             }
         });
 

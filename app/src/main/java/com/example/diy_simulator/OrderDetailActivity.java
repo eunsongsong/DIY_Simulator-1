@@ -1,5 +1,6 @@
 package com.example.diy_simulator;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +38,9 @@ import com.google.firebase.database.ValueEventListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +62,14 @@ public class OrderDetailActivity extends AppCompatActivity {
     private DatabaseReference myRef_seller = database.getReference("판매자");
 
     private ImageButton send_btn;
+    private ImageButton msg_content_btn;
+
+    private RecyclerView msg_content_recyclerview;
+    private List<Message_Info> message_infos = new ArrayList<>();
+    private Message_Adapter message_adapter;
+    private Activity activity;
+    private View view;
+
     AlertDialog.Builder ad;
     // EditText 삽입하기
     EditText et;
@@ -74,7 +86,7 @@ public class OrderDetailActivity extends AppCompatActivity {
     FirebaseUser firebaseUser;
     ProgressDialog pd;
     private String receiver_email;
-    private final int m_nMaxLengthOfDeviceName = 20;
+    private final int m_nMaxLengthOfDeviceName = 16;
     private int position;
     private boolean isSeller;
     @Override
@@ -82,13 +94,14 @@ public class OrderDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_detail);
 
+        activity = this;
+        message_adapter = new Message_Adapter(activity, message_infos, R.layout.msg_recycle_item);
         position = getIntent().getIntExtra("position",0);
         //메세지 보내기 처리
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
 
         showProgress();
-
 
         //리사이클러뷰 레이아웃 매니저 설정
         order_detail_recyclerView = findViewById(R.id.order_detail_items_recyclerView);
@@ -119,6 +132,7 @@ public class OrderDetailActivity extends AppCompatActivity {
 
         deposit_btn = findViewById(R.id.deposit_btn);
         send_btn = findViewById(R.id.send_img_btn);
+        msg_content_btn = findViewById(R.id.message_content_btn);
 
         isSeller = PreferenceUtil.getInstance(OrderDetailActivity.this).getBooleanExtra("isSeller");
         if(isSeller){
@@ -215,12 +229,7 @@ public class OrderDetailActivity extends AppCompatActivity {
                             for (DataSnapshot ds1 : ds.getChildren()){
                                 for(DataSnapshot ds2 : ds1.getChildren()) {
                                     if (ds2.getKey().equals(order_name)) {
-                                        //myRef.child(ds.getKey()).child(ds1.getKey()).child("orderinfo").child(order_name).child("order_state").setValue("입금 확인 완료");
                                         myRef.child(ds.getKey()).child(ds1.getKey()).child(ds2.getKey()).child("order_state").setValue("입금 확인 완료");
-                                        Log.d("뽑기", ds.getKey().toString());
-                                        Log.d("뽑기", ds1.getKey().toString());
-                                        Log.d("뽑기", ds2.getKey().toString());
-
                                     }
                                 }
 
@@ -244,13 +253,6 @@ public class OrderDetailActivity extends AppCompatActivity {
                                         myRef_seller.child(ds.getKey()).child(ds1.getKey()).child(ds2.getKey()).child("order_state").setValue("입금 확인 완료");
                                         state.setText("주문 상태 입금 확인 완료");
                                     }
-
-                                        //myRef_seller.child(ds.getKey()).child(ds1.getKey()).child("orderinfo").child(order_name).child("order_state").setValue("입금 확인 완료");
-                                   // return;
-                                    //myRef.child(ds.getKey()).child.child("orderinfo").child(order_name).child("order_state").setValue("입금 확인 완료");
-                                    //Log.d("뽑기",ds2.getKey().toString());
-
-
                                 }
 
                             }
@@ -274,6 +276,13 @@ public class OrderDetailActivity extends AppCompatActivity {
               //  TOPIC = "/topics/" + st.nextToken() + st.nextToken();
             }
         });
+
+        msg_content_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createMessageInfo();
+            }
+        });
     }
 
     //EditText Dialog
@@ -284,12 +293,14 @@ public class OrderDetailActivity extends AppCompatActivity {
                 ((ViewGroup) et.getParent()).removeView(et);
                 ad = new AlertDialog.Builder(OrderDetailActivity.this);
                 et = new EditText(OrderDetailActivity.this);
+                et.setHint("16자이내로 전송 가능합니다.");
                 ad.setView(et);
             }
         }
         else{
             ad = new AlertDialog.Builder(OrderDetailActivity.this);
             et = new EditText(OrderDetailActivity.this);
+            et.setHint("16자이내로 전송 가능합니다.");
             ad.setView(et);
         }
 
@@ -301,7 +312,7 @@ public class OrderDetailActivity extends AppCompatActivity {
         ad.setCancelable(false);
         ad.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(final DialogInterface dialog, int which) {
                 // Text 값 받아서 로그 남기기
                 StringTokenizer st = new StringTokenizer(receiver_email, "@");
                 TOPIC =  "/topics/"+ st.nextToken() + st.nextToken();
@@ -323,8 +334,37 @@ public class OrderDetailActivity extends AppCompatActivity {
                     Log.e(TAG, "onCreate: " + e.getMessage() );
                 }
                 sendNotification(notification);
-                dialog.dismiss();     //닫기
-                showProgress();
+
+                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for(DataSnapshot ds : dataSnapshot.getChildren())
+                        {
+                            if(isSeller){
+                                if(ds.child("email").getValue().equals(receiver_email)) {
+                                    myRef.child(ds.getKey()).child("orderinfo").child(order_name).child("msginfo").push().setValue(new Message_Info("판매자",NOTIFICATION_MESSAGE,getCurrentTime()));
+                                    dialog.dismiss();     //닫기
+                                    showProgress();
+                                }
+                            }
+                            else
+                            {
+                                if(ds.child("email").getValue().equals(firebaseUser.getEmail())) {
+                                    myRef.child(ds.getKey()).child("orderinfo").child(order_name).child("msginfo").push().setValue(new Message_Info("구매자",NOTIFICATION_MESSAGE,getCurrentTime()));
+                                    dialog.dismiss();     //닫기
+                                    showProgress();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
                 // Event
             }
         });
@@ -369,6 +409,110 @@ public class OrderDetailActivity extends AppCompatActivity {
         };
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
     }
+
+    private void createMessageInfo(){
+        view = activity.getLayoutInflater().inflate(R.layout.msg_recyclerview_layout, null);
+        msg_content_recyclerview = (RecyclerView) view.findViewById(R.id.msg_recycler);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        layoutManager.setOrientation(RecyclerView.VERTICAL);
+        msg_content_recyclerview.setHasFixedSize(true);
+        msg_content_recyclerview.setLayoutManager(layoutManager);
+        msg_content_recyclerview.setAdapter(message_adapter);
+
+        final ImageView empty_img = (ImageView) view.findViewById(R.id.empty_img);
+
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                message_infos.clear();
+                for(DataSnapshot ds : dataSnapshot.getChildren())
+                {
+                    for (DataSnapshot ds1 : ds.child("orderinfo").getChildren()){
+
+                        if (ds1.getKey().equals(order_name)) {
+                            for(DataSnapshot ds2 :ds1.getChildren())
+                            {
+                                if(ds2.getKey().equals("msginfo"))
+                                {
+                                    for(DataSnapshot ds3: ds2.getChildren()){
+                                        if(ds3.child("who").getValue().equals("판매자")){ //판매자가 남긴 쪽지를 읽은 경우
+                                            if(isSeller) //사용자가 판매자인경우
+                                                message_infos.add(new Message_Info("보낸 쪽지",ds3.child("msg_content").getValue().toString()
+                                                        ,ds3.child("time").getValue().toString()));
+                                            else
+                                            {
+                                                message_infos.add(new Message_Info("받은 쪽지",ds3.child("msg_content").getValue().toString()
+                                                        ,ds3.child("time").getValue().toString()));
+                                            }
+                                        }
+                                        else{ //구매자가 남긴 쪽지를 읽은 경우
+                                            if(isSeller) //사용자가 판매자인경우
+                                                message_infos.add(new Message_Info("받은 쪽지",ds3.child("msg_content").getValue().toString()
+                                                        ,ds3.child("time").getValue().toString()));
+                                            else
+                                            {
+                                                message_infos.add(new Message_Info("보낸 쪽지",ds3.child("msg_content").getValue().toString()
+                                                        ,ds3.child("time").getValue().toString()));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+                // 다이얼로그 생성
+                AlertDialog.Builder listViewDialog = new AlertDialog.Builder(activity);
+                // 리스트뷰 설정된 레이아웃
+                listViewDialog.setView(view);
+                // 확인버튼
+                listViewDialog.setPositiveButton("확인", null);
+
+
+                message_adapter.notifyDataSetChanged();
+
+                if(message_infos.size() == 0){
+                    msg_content_recyclerview.setVisibility(View.GONE);
+                    empty_img.setVisibility(View.VISIBLE);
+                    listViewDialog.setTitle("쪽지함이 비어있습니다.");
+                }
+                else {
+                    msg_content_recyclerview.setVisibility(View.VISIBLE);
+                    empty_img.setVisibility(View.GONE);
+                    listViewDialog.setTitle("쪽지함");
+                }
+                msg_content_recyclerview.scrollToPosition(message_infos.size() - 1);
+                // 다이얼로그 보기
+                listViewDialog.show();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+    }
+
+    public String getCurrentTime(){
+        // 현재시간을 msec 으로 구한다.
+        long now = System.currentTimeMillis();
+        // 현재시간을 date 변수에 저장한다.
+        Date date = new Date(now);
+        // 시간을 나타냇 포맷을 정한다 ( yyyy/MM/dd 같은 형태로 변형 가능 )
+        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        // nowDate 변수에 값을 저장한다.
+
+        String formatDate = sdfNow.format(date);
+
+        return formatDate;
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

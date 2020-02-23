@@ -2,12 +2,14 @@ package com.example.diy_simulator;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -47,9 +50,10 @@ public class Tab4_Simulation extends Fragment {
     private View view;
     Animation animation;
     Switch all_etc_item_show;
+    Switch my_item_show;
+    ImageButton add_item_btn;
+    boolean isSeller;
 
-    float oldXvalue;
-    float oldYvalue;
     RelativeLayout relativeLayout;
     int parentWidth;
     int parentHeight;
@@ -59,8 +63,8 @@ public class Tab4_Simulation extends Fragment {
 
     //그리드 리싸이클러뷰
     public RecyclerView simul_recyclerview;
-    private  List<Tab4_Simulation_Item> simulation_items = new ArrayList<>();
-    private final Tab4_Simulation_Adatper simulationAdatper = new Tab4_Simulation_Adatper(getContext(), simulation_items, R.layout.fragment_tab4_simulation);
+    private List<Tab4_Simulation_Item> simulation_items = new ArrayList<>();
+    private Tab4_Simulation_Adatper simulationAdatper;
 
     FirebaseAuth firebaseAuth;
     FirebaseUser mFirebaseUser;
@@ -96,13 +100,10 @@ public class Tab4_Simulation extends Fragment {
     private int _xDelta;
     private int _yDelta;
 
-    private int pa;
-    private int paw;
-    private int pah;
-    private int tra_w;
     private int tra_h;
     private View dashline_var;
 
+    public static Tab4_Simulation_Item modi_item2;
     // The ‘active pointer’ is the one currently moving our object.
     //싱글 터치
 
@@ -404,62 +405,56 @@ public class Tab4_Simulation extends Fragment {
         minimize_btn  = (ImageButton) rootview.findViewById(R.id.minimize);
 
         relativeLayout = (RelativeLayout) rootview.findViewById(R.id.relative);
-        all_etc_item_show = rootview.findViewById(R.id.all_etc_item_show_checkbox);
+        all_etc_item_show =(Switch) rootview.findViewById(R.id.all_etc_item_show_checkbox);
+        my_item_show = (Switch) rootview.findViewById(R.id.myitem_checkbox);
+
+        isSeller = PreferenceUtil.getInstance(getContext()).getBooleanExtra("isSeller");
+        simulationAdatper = new Tab4_Simulation_Adatper(getContext(), simulation_items, R.layout.fragment_tab4_simulation);
+
 
         firebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = firebaseAuth.getCurrentUser();
-        boolean isSeller = PreferenceUtil.getInstance(getContext()).getBooleanExtra("isSeller");
         trashView = (ImageView) rootview.findViewById(R.id.trash);
         empty_item = rootview.findViewById(R.id.no_simul_item);
         keyring_btn = (ImageButton) rootview.findViewById(R.id.img_but1);
         phonecase_btn = (ImageButton) rootview.findViewById(R.id.img_but2);
         acc_btn = (ImageButton) rootview.findViewById(R.id.img_but3);
         etc_btn = (ImageButton) rootview.findViewById(R.id.img_but4);
+        add_item_btn = (ImageButton) rootview.findViewById(R.id.add_btn);
 
         view_order = new ArrayList<>();
+
+        add_item_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainIntent = new Intent(getContext(), CustomerImageUploadActivity.class);
+                startActivity(mainIntent);
+            }
+        });
 
         keyring_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showProgress();
-                simulationAdatper.getFilter().filter("키링");
-                simulation_items = simulationAdatper.getFilteredList();
-                simulationAdatper.getFilter().filter("키링");
-                simulation_items = simulationAdatper.getFilteredList();
-                hideProgress();
+                loadSimulationItems(all_etc_item_show.isChecked(),"키링");
+
             }
         });
         phonecase_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showProgress();
-                simulationAdatper.getFilter().filter("폰케이스");
-                simulation_items = simulationAdatper.getFilteredList();
-                simulationAdatper.getFilter().filter("폰케이스");
-                simulation_items = simulationAdatper.getFilteredList();
-                hideProgress();
+                loadSimulationItems(all_etc_item_show.isChecked(),"폰케이스");
             }
         });
         acc_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showProgress();
-                simulationAdatper.getFilter().filter("액세서리");
-                simulation_items = simulationAdatper.getFilteredList();
-                simulationAdatper.getFilter().filter("액세서리");
-                simulation_items = simulationAdatper.getFilteredList();
-                hideProgress();
+                loadSimulationItems(all_etc_item_show.isChecked(),"액세서리");
             }
         });
         etc_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showProgress();
-                simulationAdatper.getFilter().filter("기타");
-                simulation_items = simulationAdatper.getFilteredList();
-                simulationAdatper.getFilter().filter("기타");
-                simulation_items = simulationAdatper.getFilteredList();
-                hideProgress();
+                loadSimulationItems(all_etc_item_show.isChecked(),"기타");
             }
         });
 
@@ -470,16 +465,18 @@ public class Tab4_Simulation extends Fragment {
             cart= "";
             // 판매자일 경우 내 가게 상품 목록 불러오기
             if(isSeller){
+                add_item_btn.setVisibility(View.GONE);
+                my_item_show.setVisibility(View.GONE);
                 myRef_seller.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            if (mFirebaseUser.getEmail().equals(ds.child("email").getValue().toString())) {
-                                cart = ds.child("material").getValue().toString();
+                            if (mFirebaseUser.getEmail().equals(String.valueOf(ds.child("email").getValue()))) {
+                                cart = String.valueOf(ds.child("material").getValue());
                                 if(TextUtils.isEmpty(cart))
                                 {
                                     empty_item.setVisibility(View.VISIBLE);
-                                    empty_item.setBackground(getResources().getDrawable(R.drawable.no_item_seller));
+                                    empty_item.setImageDrawable(getResources().getDrawable(R.drawable.no_item_seller));
                                 }
                                 else
                                     empty_item.setVisibility(View.GONE);
@@ -501,12 +498,12 @@ public class Tab4_Simulation extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            if (mFirebaseUser.getEmail().equals(ds.child("email").getValue().toString())) {
-                                cart = ds.child("cart").getValue().toString();
+                            if (mFirebaseUser.getEmail().equals(String.valueOf(ds.child("email").getValue()))) {
+                                cart = String.valueOf(ds.child("cart").getValue());
                                 if(TextUtils.isEmpty(cart))
                                 {
                                     empty_item.setVisibility(View.VISIBLE);
-                                    empty_item.setBackground(getResources().getDrawable(R.drawable.empty_cart));
+                                    empty_item.setImageDrawable(getResources().getDrawable(R.drawable.empty_cart));
                                 }
                                 else
                                     empty_item.setVisibility(View.GONE);
@@ -529,7 +526,6 @@ public class Tab4_Simulation extends Fragment {
         view = rootview.findViewById(R.id.side_btn);
         blur = rootview.findViewById(R.id.blur);
 
-
         //그리드 레이아웃으로 한줄에 2개씩 제품 보여주기
         simul_recyclerview = rootview.findViewById(R.id.simulation_menu_recycler);
         final GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
@@ -550,13 +546,9 @@ public class Tab4_Simulation extends Fragment {
                     parentWidth = relativeLayout.getWidth();    // 부모 View 의 Width
                     parentHeight = relativeLayout.getHeight();    // 부모 View 의 Height
                     relativeLayout.setOnTouchListener(touchListener_rel);
-                    tra_w = trashView.getWidth();
                     tra_h= trashView.getHeight();
                     int[] location = new int[2];
                     relativeLayout.getLocationOnScreen(location);
-                    pa = location[1] + parentHeight / 2;
-                    paw = location[0];
-                    pah = location[1];
                     trashView.getLocationOnScreen(location);
                     check = false;
 
@@ -613,7 +605,7 @@ public class Tab4_Simulation extends Fragment {
 
                 blur.setVisibility(View.GONE);
 
-                loadSimulationItems(all_etc_item_show.isChecked());
+                loadSimulationItems(all_etc_item_show.isChecked(),"");
             }
         });
 
@@ -631,6 +623,7 @@ public class Tab4_Simulation extends Fragment {
                 simul_menu_layout.setVisibility(View.GONE);
                 simul_menu_layout.setAnimation(animation);
                 blur.setVisibility(View.VISIBLE);
+
             }
         });
 
@@ -638,7 +631,23 @@ public class Tab4_Simulation extends Fragment {
         all_etc_item_show.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    CheckChangedListener();
+                CheckChangedListener();
+            }
+        });
+
+        my_item_show.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!my_item_show.isChecked()) {
+                    my_item_show.setChecked(false);
+                    MyCheckChangedListener();
+                    Log.d("dd","dd");
+                }
+                else
+                {
+                    my_item_show.setChecked(true);
+                    MyCheckChangedListener();
+                }
             }
         });
 
@@ -810,6 +819,15 @@ public class Tab4_Simulation extends Fragment {
             }
         });
 
+        simulationAdatper.setOnModifyItemClickListener(new Tab4_Simulation_Adatper.OnModifyItemClickListener() {
+            @Override
+            public void onModifyItemClick(View v, int position) {
+                modi_item2 = simulation_items.get(position);
+                startActivity(new Intent(getActivity(), ModifyMyItemActivity.class));
+                getActivity().overridePendingTransition(R.anim.enter_from_right, R.anim.fade_out);
+            }
+        });
+
         return rootview;
 
     }
@@ -856,28 +874,22 @@ public class Tab4_Simulation extends Fragment {
 
     }
 
-    public void addItemToRecyclerView(String preview, String[] url, int width, int height, int depth, String category, String name, boolean isSide){
-        Tab4_Simulation_Item item = new Tab4_Simulation_Item(preview, url, width, height, depth, category, name, isSide);
-        simulation_items.add(item);
-        simulationAdatper.notifyDataSetChanged();
-    }
 
     //시뮬레이션 아이템 불러오기
-    private void loadSimulationItems(final boolean show_all){
+    private void loadSimulationItems(final boolean show_all, final String category){
         // 시뮬레이션 아이템 불러오기
+        simulation_items.clear();
+        my_item_show.setChecked(false);
         if(!TextUtils.isEmpty(cart)) {
-
             Log.i("시뮬 로드합니다", show_all+"" +simulation_items.size() + " 사이즈");
 
             showProgress();
 
             empty_item.setVisibility(View.GONE);
             cart_arr = cart.split("#");
-            myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
+            myRef2.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    // Log.d("제발잠좀","자게해줘"+dataSnapshot.getValue().toString());
-                    //String url = dataSnapshot.child("image_RB_url").child(d.getKey()).getValue().toString();
                     simulation_items.clear();
                     int i = 0;
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
@@ -911,21 +923,38 @@ public class Tab4_Simulation extends Fragment {
                             if(show_all){
                                 int m;
                                 for (m = 0; m < url.length; m++) {
-                                    addItemToRecyclerView(url[m], url, width, height, depth, category, name+" - "+(m+1), false);
+                                    Tab4_Simulation_Item item = new Tab4_Simulation_Item(url[m], url, width, height, depth, category, name+" - "+(m+1), false,false);
+                                    simulation_items.add(item);
+                                    simulationAdatper.notifyDataSetChanged();
+
                                 }
                                 for (int n = 0; n < url_side.length; n++) { //측면
-                                    addItemToRecyclerView(url_side[n], url, width, height, depth, category, name+" - "+(m+1), true);
+                                    Tab4_Simulation_Item item = new Tab4_Simulation_Item(url_side[n], url, width, height, depth, category, name+" - "+(m+1), true,false);
+                                    simulation_items.add(item);
+                                    simulationAdatper.notifyDataSetChanged();
+
                                     m++;
                                 }
                             }
                             else{
-                                addItemToRecyclerView(preview_url, url, width, height, depth, category, name, false);
+                                Tab4_Simulation_Item item = new Tab4_Simulation_Item(preview_url, url, width, height, depth, category, name, false,false);
+                                simulation_items.add(item);
+                                simulationAdatper.notifyDataSetChanged();
+
                             }
                             i++;
                             continue;
                         }
                     }
+                    simulationAdatper.getFilter().filter(category+"");
+                    simulation_items = simulationAdatper.getFilteredList();
+                    simulationAdatper.getFilter().filter(category+"");
+                    simulation_items = simulationAdatper.getFilteredList();
+                    simulationAdatper.notifyDataSetChanged();
                     hideProgress();
+
+
+
                 }
 
                 @Override
@@ -939,19 +968,97 @@ public class Tab4_Simulation extends Fragment {
     private void CheckChangedListener(){
         if(all_etc_item_show.isChecked()) {
             Log.i("켜졌습니다", "ㅛ4ㄷ");
-            loadSimulationItems(true);
+            loadSimulationItems(true,"");
             simulationAdatper.getFilter().filter("");
             simulation_items = simulationAdatper.getFilteredList();
             simulationAdatper.getFilter().filter("");
             simulation_items = simulationAdatper.getFilteredList();
+            simulationAdatper.notifyDataSetChanged();
         }
         else{
             Log.d("꺼졌다", "ㅛ4ㄷ");
-            loadSimulationItems(false);
+            loadSimulationItems(false,"");
             simulationAdatper.getFilter().filter("");
             simulation_items = simulationAdatper.getFilteredList();
             simulationAdatper.getFilter().filter("");
             simulation_items = simulationAdatper.getFilteredList();
+            simulationAdatper.notifyDataSetChanged();
+        }
+    }
+
+    private void loadMyItem(){
+        if(my_item_show.isChecked()) {
+            showProgress();
+            myRef_customer.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    simulation_items.clear();
+                    for(DataSnapshot ds : dataSnapshot.getChildren()){
+                        if(ds.child("email").getValue().toString().equals(mFirebaseUser.getEmail())){
+
+                            for(DataSnapshot ds1 : ds.child("my_image_url").getChildren()){
+                                Tab4_Simulation_Item item = new Tab4_Simulation_Item();
+                                item.setPreview_url(ds1.child("image_url").getValue().toString());
+                                item.setName(ds1.child("material_name").getValue().toString());
+                                item.setWidth(Integer.parseInt(ds1.child("size_width").getValue().toString()));
+                                item.setHeight(Integer.parseInt(ds1.child("size_height").getValue().toString()));
+                                item.setMy(true);
+                                item.setUnique_number(ds1.getKey());
+                                simulation_items.add(item);
+                                Log.d("하나","마나");
+                                simulationAdatper.notifyDataSetChanged();
+                            }
+                        }
+                    }
+                    simulationAdatper.getFilter().filter("");
+                    simulation_items = simulationAdatper.getFilteredList();
+                    simulationAdatper.getFilter().filter("");
+                    simulation_items = simulationAdatper.getFilteredList();
+                    simulationAdatper.notifyDataSetChanged();
+                    if(simulation_items.size() == 0)
+                    {
+                        Toast toast = Toast.makeText(getContext(), "(+) 버튼을 눌러 내 아이템을 추가해보세요", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.CENTER,50,0);
+                        toast.show();
+                    }
+                    hideProgress();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+        else{
+            loadSimulationItems(false,"");
+            simulationAdatper.getFilter().filter("");
+            simulation_items = simulationAdatper.getFilteredList();
+            simulationAdatper.getFilter().filter("");
+            simulation_items = simulationAdatper.getFilteredList();
+            simulationAdatper.notifyDataSetChanged();
+        }
+    }
+    private void MyCheckChangedListener(){
+        all_etc_item_show.setChecked(false);
+
+        if(my_item_show.isChecked()) {
+            Log.i("켜졌습니다", "ㅛ4ㄷ");
+            loadMyItem();
+            simulationAdatper.getFilter().filter("");
+            simulation_items = simulationAdatper.getFilteredList();
+            simulationAdatper.getFilter().filter("");
+            simulation_items = simulationAdatper.getFilteredList();
+            simulationAdatper.notifyDataSetChanged();
+        }
+        else{
+            Log.d("꺼졌다", "ㅛ4ㄷ");
+            loadSimulationItems(false,"");
+            simulationAdatper.getFilter().filter("");
+            simulation_items = simulationAdatper.getFilteredList();
+            simulationAdatper.getFilter().filter("");
+            simulation_items = simulationAdatper.getFilteredList();
+            simulationAdatper.notifyDataSetChanged();
         }
     }
 

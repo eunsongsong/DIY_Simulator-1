@@ -16,6 +16,7 @@ public class Order_Info implements Serializable {
     private String order_state;
     private List<Order_Product_Info> order_items;
     private String order_number;
+    private String msg_cotent;
 
     public Order_Info(){
     }
@@ -129,5 +130,13 @@ public class Order_Info implements Serializable {
 
     public void setOrder_number(String order_number) {
         this.order_number = order_number;
+    }
+
+    public String getMsg_cotent() {
+        return msg_cotent;
+    }
+
+    public void setMsg_cotent(String msg_cotent) {
+        this.msg_cotent = msg_cotent;
     }
 }
